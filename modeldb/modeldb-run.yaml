@@ -1,0 +1,1098 @@
+279:
+    run:
+    - restart("tc1_cc")
+    - run()
+    - verify_graph_()
+2487:
+    run:
+    - run()
+    - verify_graph_()
+2730:
+    run:
+    - //launch but do not run
+2796:
+    run:
+    - run()
+    - verify_graph_()
+2798:
+    run:
+    - run_c()
+    - verify_graph_()
+2937:
+    run:
+    - run3()
+    - verify_graph_()
+3167:
+    run:
+    - use_mcell_ran4(1)
+    - run()
+    - verify_graph_()
+3263:
+    run:
+    - runb()
+    - verify_graph_()
+3264:
+    run:
+    - use_mcell_ran4(1)
+    - run_fig3a()
+    - init()
+    - run()
+    - verify_graph_()
+3289:
+    run:
+    - run()
+    - verify_graph_()
+3332:
+    run:
+    - run()
+    - verify_graph_()
+3342:
+    model_dir: .
+    run:
+    - run()
+    - verify_graph_()
+3343:
+    run:
+    - restart("Fspin")
+    - init()
+    - run()
+    - verify_graph_()
+3344:
+    run:
+    - run()
+    - verify_graph_()
+3434:
+    run:
+    - init()
+    - gr.showAllTimeGraphs=1
+    - tstop=1
+    - run()
+    - verify_graph_()
+3454:
+    run:
+    - run(NetStim[0].interval=10)
+    - verify_graph_()
+3457:
+    run:
+    - run()
+    - verify_graph_()
+3483:
+    run:
+    - run()
+    - verify_graph_()
+3488:
+    run:
+    - run()
+    - verify_graph_()
+3491:
+    run:
+    - run()
+    - verify_graph_()
+3493:
+    run:
+    - run()
+    - verify_graph_()
+3533:
+    run:
+    - run()
+    - verify_graph_()
+3648:
+    run:
+    - run()
+    - verify_graph_()
+3658:
+    run:
+    - glubes2D()
+    - run()
+    - verify_graph_()
+3660:
+    run:
+    - run()
+    - verify_graph_()
+3665:
+    run:
+    - run()
+    - verify_graph_()
+3670:
+    run:
+    - restart("Fig5A")
+    - run()
+    - verify_graph_()
+3673:
+    run:
+    - verify_graph_()
+    - objref save_window_[1]
+    - graphList[0].remove_all
+    - graphList[1].remove_all
+    - objref VoltageClamp
+    - load_file("fig3a.ses")
+    - run()
+    - verify_graph_()
+3676:
+    run:
+    - xopen("fig2.hoc")
+    - verify_graph_()
+3682:
+    run:
+    - verify_graph_()
+    script:
+    - echo 'use_mcell_ran4(1)' > temp
+    - cat mosinit.hoc >> temp
+    - mv temp  mosinit.hoc
+3684:
+    run:
+    - run()
+    - verify_graph_()
+3793:
+    run:
+    - restart("fig5a")
+    - verify_graph_()
+3798:
+    run:
+    - '{inter_fhdens(0.4e-3) demyl1(1,3) run()}'
+    - verify_graph_()
+3801:
+    run:
+    - run()
+    - verify_graph_()
+3802:
+    run:
+    - run()
+    - verify_graph_()
+3808:
+    run:
+    - xstatedum[2]=1
+    - new_experiment(3)
+    - run()
+    - verify_graph_()
+3810:
+    run:
+    - stdinit()
+    - continuerun(2)
+    - cvode_active(1)
+    - continuerun(150)
+    - verify_graph_()
+3815:
+    run:
+    - run_fig1a()
+    - init()
+    - run()
+    - verify_graph_()
+3817:
+    run:
+    - restart("demo_PY_RS")
+    - run()
+    - verify_graph_()
+5426:
+    run:
+    - verify_graph_()
+    - '{restart() load_file("hhk.ses") run() verify_graph_()}'
+    - '{restart() load_file("hhna.ses") run() verify_graph_()}'
+    - '{restart() load_file("hhkfit.ses") run() verify_graph_()}'
+    - '{restart() load_file("hhnafit.ses") run() verify_graph_()}'
+    - '{restart() load_file("hhna.ses") run() verify_graph_()}'
+6763:
+    run:
+    - run()
+    - verify_graph_()
+7386:
+    run:
+    - runc()
+    - verify_graph_()
+7659:
+    run:
+    - runp()
+    - verify_graph_()
+8115:
+    run:
+    - use_mcell_ran4(1)
+    - run()
+    - verify_graph_()
+8210:
+    run:
+    - dend_inj()
+    - verify_graph_()
+8284:
+    run:
+    - run()
+    - verify_graph_()
+9769:
+    run:
+    - use_mcell_ran4(1)
+    - rund()
+    - verify_graph_()
+17663:
+    run:
+    - restart("re1_cc")
+    - run()
+    - verify_graph_()
+18197:
+    run:
+    - restart("demo_glutamate_neuralcomputation")
+    - verify_graph_()
+18198:
+    run:
+    - restart("release")
+    - run()
+    - verify_graph_()
+18500:
+    run:
+    - 'duration = 2 '
+    - restart("demo_ampa")
+    - verify_graph_()
+18502:
+    run:
+    - restart("ltp_two")
+    - verify_graph_()
+18742:
+    run:
+    - restart("fig6A")
+    - verify_graph_()
+19022:
+    run:
+    - run()
+    - verify_graph_()
+19176:
+    run:
+    - experiment1()
+    - verify_graph_()
+19214:
+    run:
+    - Main(5)
+    - run()
+    - verify_graph_()
+19366:
+    run:
+    - Main(2)
+    - verify_graph_()
+19591:
+    run:
+    - restart("fig1a")
+    - verify_graph_()
+    - restart("fig2a1")
+    - verify_graph_()
+    - restart("fig2a2")
+    - verify_graph_()
+    - restart("fig2a3")
+    - verify_graph_()
+    - restart("fig2b1")
+    - verify_graph_()
+    - restart("fig2b2")
+    - verify_graph_()
+    - restart("fig2b3")
+    - verify_graph_()
+19696:
+    run:
+    - runh()
+    - verify_graph_()
+19746:
+    run:
+    - run()
+    - verify_graph_()
+19747:
+    run:
+    - run()
+    - verify_graph_()
+19920:
+    run:
+    - run()
+    - verify_graph_()
+20014:
+    run:
+    - Main(1)
+    - verify_graph_()
+20015:
+    run:
+    - run()
+    - verify_graph_()
+20212:
+    model_dir: mechanism
+    run:
+    - chdir("mechanism")
+    - xopen("mosinit.hoc")
+    - unix_spike_atten_hof()
+    - verify_graph_()
+20756:
+    run:
+    - 'pyr3_ = new pyr3( 21 ) '
+    - setFig2()
+    - tstop=100
+    - run()
+    - verify_graph_()
+21329:
+    comment: //do not run random seed different every time
+    run: null
+22203:
+    comment: //disregard cannot be run in batch mode
+    skip: true
+26997:
+    run:
+    - fig1a()
+    - verify_graph_()
+32992:
+    run:
+    - verify_graph_()
+    script:
+    - echo 'use_mcell_ran4(1)' > temp
+    - cat mosinit.hoc >> temp
+    - mv temp  mosinit.hoc
+33975:
+    run:
+    - ringperf()
+    - run()
+    - verify_graph_()
+37856:
+    run:
+    - runiv()
+    - verify_graph_()
+37857:
+    run:
+    - run()
+    - verify_graph_()
+43039:
+    run:
+    - rung()
+    - verify_graph_()
+44050:
+    run:
+    - runm()
+    - verify_graph_()
+50207:
+    run:
+    - run()
+    - verify_graph_()
+50210:
+    run:
+    - runshift()
+    - verify_graph_()
+50997:
+    run:
+    - restart("makefig7")
+    - verify_graph_()
+51196:
+    run:
+    - run()
+    - verify_graph_()
+51781:
+    run:
+    - load_file("testnet.hoc")
+    - verify_graph_()
+52034:
+    run:
+    - run_short()
+    - verify_graph_()
+53435:
+    comment: // disregard. mod files in subdirectory
+    skip: true
+53437:
+    run:
+    - run()
+    - verify_graph_()
+53451:
+    run:
+    - restart("fig7")
+    - verify_graph_()
+53569:
+    run:
+    - run()
+    - verify_graph_()
+53869:
+    run:
+    - //takes a long time
+53876:
+    run:
+    - restart("fig2c")
+    - verify_graph_()
+53893:
+    run:
+    - restart("fig3")
+    - verify_graph_()
+53965:
+    comment: // disregard
+    skip: true
+54903:
+    run:
+    - '{load_file("Fig6-B.ses")}'
+    - run()
+    - verify_graph_()
+55035:
+    run:
+    - runm()
+    - verify_graph_()
+62266:
+    run:
+    - run()
+    - verify_graph_()
+62284:
+    run:
+    - run()
+    - verify_graph_()
+64195:
+    comment: //do not run problem due to randomness and takes too long due to failure
+        to set steps_per_ms consistent with dt
+    run: null
+64228:
+    run:
+    - restart("0222AP_BR.ses")
+    - run()
+    - verify_graph_()
+64229:
+    model_dir: parbulbNet
+    run:
+    - run()
+    - verify_graph_()
+64259:
+    run:
+    - use_mcell_ran4(1)
+    - run()
+    - verify_graph_()
+64261:
+    comment: //do not run takes too long
+    run: null
+64296:
+    run:
+    - fig7A()
+    - verify_graph_()
+71312:
+    run:
+    - NregNsyn(4)
+    - verify_graph_()
+74298:
+    run:
+    - load_file("sample.hoc")
+    - verify_graph_()
+    script:
+    - sed 's,tstop *=,tstop = 100//,
+    - /whichAP/,$d
+    - ''' sample.hoc > temp.tmp'
+    - mv temp.tmp sample.hoc
+76879:
+    run:
+    - tstop=20
+    - run1(1)
+    - verify_graph_()
+80769:
+    run:
+    - restart("shortRun")
+    - verify_graph_()
+82364:
+    run:
+    - reg_20()
+    - verify_graph_()
+82784:
+    run:
+    - load_file("runShort.hoc")
+    - verify_graph_()
+82849:
+    run:
+    - load_file("fig2A.hoc")
+    - verify_graph_()
+83319:
+    comment: //disregard NEURON in subdirectory
+    skip: true
+83523:
+    run:
+    - //nothing to do
+83547:
+    run:
+    - run()
+    - verify_graph_()
+83590:
+    run: []
+    script:
+    - sed 's/mustart  = -0.400/mustart  = 0.800/
+    - ' s/sigmastart  = 0.064/sigmastart  = 0.128/'
+    - ''' mylibs/TFparams.hoc > temp.tmp'
+    - mv temp.tmp  mylibs/TFparams.hoc
+84589:
+    run:
+    - //ignore sim in subdirectory
+    - // have not been able to run yet
+    - ////model_dir mod
+    - // load_file("hoc/src/refs.hoc")
+    - // load_file("cells/d151.hoc")
+    - // load_file("hoc/src/file_util.hoc")
+    - // load_file("hoc/src/main.hoc")
+84612:
+    run:
+    - restart_("fig4b1")
+    - tstop=1000
+    - run()
+    - verify_graph_()
+156120:
+    model_dir: mods/other_mods;mods/synapse
+    run:
+    - run()
+    - verify_graph_()
+180373:
+    model_dir: simulationcode
+    run:
+    - run()
+    - verify_graph_()
+    script:
+    - echo 'VERBATIM\nextern void state_discontinuity(int i, double* pd, double d);\nENDVERBATIM' >> simulationcode/glutamate.mod
+    - ln -sf driver.hoc simulationcode/driver.hoc
+186977:
+    model_dir: mods/network_sims_MODs
+    run:
+    - tstop = 400
+    - run()
+    - verify_graph_()
+223031:
+    model_dir: S1
+    run:
+    - run()
+    - verify_graph_()
+235769:
+    model_dir: fig3
+    run:
+    - tstop = 1000
+    - run()
+    - verify_graph_()
+241165:
+    model_dir: mechanisms
+    run:
+    - tstop = 300 # original tstop is 30000 , too big
+    - run()
+    - verify_graph_()
+260971:
+    comment: tricky to set-up due to mosinit.hoc autodiscovery
+    skip: true
+84655:
+    run:
+    - run()
+    - verify_graph_()
+86537:
+    run:
+    - restart_("fig4")
+    - verify_graph_()
+87454:
+    run:
+    - chdir("NEURON_Chopper_Network_Simulation")
+    - xopen("mosinit.hoc")
+    - runhere()
+    - verify_graph_()
+87473:
+    comment: //disregard
+    skip: true
+87535:
+    run:
+    - runm()
+    - verify_graph_()
+87546:
+    run:
+    - cvode_active(1)
+    - tstop=200
+    - run()
+    - verify_graph_()
+93321:
+    run:
+    - fig3topleft()
+    - verify_graph_()
+93325:
+    run:
+    - run()
+    - verify_graph_()
+93326:
+    run:
+    - run()
+    - verify_graph_()
+93398:
+    run:
+    - restart("shortRun")
+    - verify_graph_()
+94321:
+    run:
+    - tstop=10
+    - init()
+    - run()
+    - verify_graph_()
+95870:
+    run:
+    - run()
+    - verify_graph_()
+95960:
+    run:
+    - fig6a()
+    - verify_graph_()
+96444:
+    run:
+    - chdir("ring")
+    - load_file("ringpar.hoc")
+    - verify_graph_()
+97263:
+    run:
+    - run()
+    - verify_graph_()
+97756:
+    run:
+    - xopen("show_start.hoc")
+    - verify_graph_()
+97860:
+    run:
+    - run()
+    - verify_graph_()
+97868:
+    comment: //do not run
+    run: null
+97874:
+    model_dir: modeldb
+    run:
+    - verify_graph_()
+97917:
+    run:
+    - traub_launch()
+    - verify_graph_()
+98005:
+    run:
+    - run()
+    - verify_graph_()
+98017:
+    comment: //do not run
+    run: null
+101629:
+    run:
+    - tstop=250
+    - run()
+    - verify_graph_()
+102288:
+    run:
+    - fig9A1()
+    - verify_graph_()
+105385:
+    run:
+    - loadfig9()
+    - tstop=100
+    - run()
+    - verify_graph_()
+105507:
+    run:
+    - load_file("batch_.hoc")
+    - verify_graph_()
+    script:
+    - sed 's/batch_flag=0/batch_flag=1/
+    - s/tstop = 1e3/tstop = 20/' batch_.hoc > temp.tmp
+    - mv temp.tmp batch_.hoc
+106551:
+    run:
+    - use_mcell_ran4(1)
+    - tstop=10
+    - run()
+    - verify_graph_()
+106891:
+    run:
+    - tstop=10
+    - runeg()
+    - verify_graph_()
+108458:
+    run:
+    - AP3_toq = 1
+    - set_stim()
+    - run()
+    - verify_graph_()
+108459:
+    run:
+    - run()
+    - verify_graph_()
+110560:
+    run:
+    - xopen("calcium.hoc")
+    - fig1b()
+    - objref gg, rvp_
+    - gg = new Graph()
+    - gg.size(-250,250,-80, 80)
+    - rvp_ = new RangeVarPlot("v")
+    - a_dend_3_0_0_0_1_1_1 rvp_.begin(1)
+    - a_dend_1_0_1_0_1_1_1 rvp_.end(1)
+    - rvp_.origin(9.96606)
+    - gg.addobject(rvp_, 2, 1, 0.8, 0.9)
+    - verify_graph_()
+112086:
+    run:
+    - use_mcell_ran4(1)
+    - restart("metal()")
+    - run()
+    - verify_graph_()
+112359:
+    run:
+    - tstop=2000
+    - tstop_changed()
+    - control()
+    - verify_graph_()
+112546:
+    run:
+    - runiv()
+    - verify_graph_()
+112685:
+    run:
+    - run()
+    - verify_graph_()
+113446:
+    run:
+    - tstop=500
+    - tstop_changed()
+    - run()
+    - verify_graph_()
+113732:
+    run:
+    - use_mcell_ran4(1)
+    - suprathresh()
+    - tstop=50
+    - tstop_changed()
+    - run()
+    - verify_graph_()
+113997:
+    run:
+    - restart("demo_HPGA_non-saturating.hoc")
+    - tstop=30000
+    - run()
+    - verify_graph_()
+114047:
+    run:
+    - tstop=1e1
+    - xopen("fig6.hoc")
+    - verify_graph_()
+114355:
+    model_dir: mechanisms
+    run:
+    - forall delete_section()
+    - chdir("main")
+    - load_file("main.hoc")
+    - cell_cfg(1)
+    - tstop = 10
+    - tstop_changed()
+    - run()
+    - verify_graph_()
+114394:
+    run:
+    - run()
+    - verify_graph_()
+114665:
+    run:
+    - disp()
+    - verify_graph_()
+114685:
+    run:
+    - short_run()
+    - verify_graph_()
+114735:
+    run:
+    - run()
+    - verify_graph_()
+115356:
+    run:
+    - short_test()
+    - verify_graph_()
+115357:
+    run:
+    - makeplusplus()
+    - verify_graph_()
+116094:
+    run:
+    - load_file("mosinit.hoc")
+    - run_experiment("fig2ace")
+    - tstop=40
+    - init()
+    - run()
+    - verify_graph_()
+    - run_experiment("fig1")
+    - tstop=1
+    - init()
+    - run_fig1bde()
+    - verify_graph_()
+116096:
+    run:
+    - tstop=1
+    - init()
+    - run()
+    - verify_graph_()
+116491:
+    run:
+    - nrnpython("import ch6_model")
+    - verify_graph_()
+116740:
+    run:
+    - '{init() run()}'
+    - verify_graph_()
+116830:
+    run:
+    - // takes too long and no gout data
+    - //load_file("init.hoc")
+    - //verify_graph_()
+    script:
+    - sed 's/tstop = 100/tstop = 20/' init.hoc > temp.tmp
+    - mv temp.tmp init.hoc
+116835:
+    run:
+    - tstop=10
+    - run()
+    - verify_graph_()
+116838:
+    run:
+    - tstop=10
+    - run()
+    - verify_graph_()
+    script:
+    - sed 's/^showdemo=1/showdemo=0/' mosinit.hoc > temp.tmp
+    - mv temp.tmp mosinit.hoc
+116956:
+    run:
+    - run()
+    - verify_graph_()
+116981:
+    run:
+    - fig5()
+    - verify_graph_()
+116983:
+    run:
+    - tstop=10
+    - run()
+    - verify_graph_()
+117207:
+    run:
+    - restart("AckerAnticBasalBackprop")
+    - RunAll()
+    - verify_graph_()
+117459:
+    model_dir: No5HT/3cell
+    run:
+    - run()
+    - verify_graph_()
+121600:
+    model_dir: model/4
+    run:
+    - run()
+    - verify_graph_()
+118098:
+    run:
+    - newPlotV()
+    - run()
+    - Graph[0].exec_menu("View = plot")
+    - verify_graph_()
+118631:
+    run:
+    - use_mcell_ran4(1)
+    - graph_and_run()
+    - verify_graph_()
+118662:
+    run:
+    - proc run(){}
+    - restart_("figure_4a_cell1")
+    - newPlotV()
+    - proc run() { stdinit() continuerun(tstop) }
+    - run()
+    - verify_graph_()
+118986:
+    run:
+    - run()
+    - verify_graph_()
+119266:
+    run:
+    - run()
+    - verify_graph_()
+119283:
+    run:
+    - use_mcell_ran4(1)
+    - runi()
+    - verify_graph_()
+120692:
+    run:
+    - load("fig7.hoc")
+    - verify_graph_()
+120910:
+    run:
+    - run()
+    - verify_graph_()
+121060:
+    run:
+    - Exec()
+    - verify_graph_()
+121253:
+    run:
+    - short_run()
+    - verify_graph_()
+121259:
+    run:
+    - load_file("homrun.hoc")
+    - verify_graph_()
+122329:
+    run:
+    - '{ load_file("withSKsoma.hoc") init() }'
+    - tstop = 500
+    - run()
+    - verify_graph_()
+122442:
+    run:
+    - load_file("DCM_0.6um_axon.ses")
+    - newPlotV()
+    - run()
+    - verify_graph_()
+123453:
+    run:
+    - run_model(prot)
+    - verify_graph_()
+123623:
+    run:
+    - run()
+    - verify_graph_()
+123815:
+    run:
+    - tstop=5
+    - newPlotV()
+    - run()
+    - verify_graph_()
+123897:
+    run:
+    - xopen("experiment/Pyramidal_Main.hoc")
+    - freePlay()
+    - tstop=20
+    - run()
+    - verify_graph_()
+124043:
+    run:
+    - tstop=80
+    - run()
+    - verify_graph_()
+124063:
+    run:
+    - tstop=10
+    - run()
+    - verify_graph_()
+    script:
+    - sed 's/tstop = 6500/tstop = 100/' session.ses > temp.tmp
+    - mv temp.tmp session.ses
+124291:
+    run:
+    - stim.amp = 0.1
+    - runa()
+    - verify_graph_()
+    script: # todo -> fix model for NEURON 8.0.0 and remove this script
+    - sed 's/return 0;//' MOPP_Fig_1B_left/ichan2.mod > temp.tmp
+    - mv temp.tmp MOPP_Fig_1B_left/ichan2.mod
+138321:
+    run:
+    - run()
+    - verify_graph_()
+    model_dir: OneDimension/Neuron
+138379:
+    run:
+    - mytstop=0.1e3
+    - tstop=mytstop
+    - finish_run()
+    - verify_graph_()
+139656:
+    comment: //do not run
+    run: null
+140881:
+    comment: //do not run Lytton model takes too long to run and complex to edit
+    run: null
+141063:
+    comment: //do not run Problem is that Vbox.dialog() steals the focus (complex
+        to fix)
+    run: null
+141272:
+    comment: //do not run Problem is that Vbox.dialog() steals the focus (complex
+        to fix)
+    run: null
+141505:
+    comment: //do not run Specialized installation environment
+    run: null
+144523:
+    run:
+    - objref test_graph_
+    - test_graph_ = new Graph()
+    - graphList[0].append(test_graph_)
+    - test_graph_.addexpr("v(.5)", 1, 1, 0.8, 0.9, 2)
+    - tstop=10
+    - init()
+    - run()
+    - verify_graph_()
+145836:
+    run:
+    - ParmFitnessGui[0].run()
+    - verify_graph_()
+147461:
+    comment: //do not run Minimum time would be 1/2 hr default time is about 8.3 hours
+    run: null
+149739:
+    run:
+    - demo_run()
+    - verify_graph_()
+150245:
+    run:
+    - tstop=100
+    - init()
+    - run()
+    - verify_graph_()
+150284:
+    comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
+    run: null
+167772:
+    comment: //do not run Tried "initDialog.unmap(1)" - didnt work.  Need to change
+        archive
+    run: null
+206244:
+    run:
+    - chdir("mechanism")
+    - xopen("mosinit.hoc")
+    - unix_spike_atten_hof()
+    - verify_graph_()
+223962:
+    skip: true
+    comment: takes too long, need to see how to reduce time
+149174:
+    skip: true
+    comment: testing in Python + hardcoded NEURON
+258867:
+    run:
+    - run()
+    - verify_graph_()
+    script:
+    - sed -i 's/tstop = /tstop = 50\/\//' Fig8_tuft_NMDA_spike.hoc
+    - sed -i 's/simul_iter=/simul_iter=2 \/\//' Fig8_tuft_NMDA_spike.hoc
+    comment: usual simulation time is ~ 10 minutes (tstop = 120 and simul_iter=10)
+206267:
+    run:
+    - run()
+    - verify_graph_()
+    script:
+    - sed -i 's/tstop=/tstop=100 \/\//' Start.hoc
+157157:
+    run:
+    - run()
+    - verify_graph_()
+    script:
+    - sed -i 's/tstop = 5000/tstop = 250 \/\//g' PC.ses
+244848:
+    run: null
+    comment: not straightforward to cut down simulation time, takes too long
+#    run:
+#    - run()
+#    - verify_graph_()
+#    script:
+#    - sed 's/tstop=/tstop=20\/\//g' Fig_13.hoc > temp.tmp
+#    - mv temp.tmp Fig_13.hoc
+244922:
+    run:
+    - run()
+    - verify_graph_()
+    script:
+    - sed -i 's/500/5/g' BPF.hoc
+    - sed -i 's/2\([0|1]\)000/2\1/g' BPF.hoc
+    comment: diving some numbers with 100 halvened the sim time
+151126:
+    run:
+    - run()
+    - verify_graph_()
+    script:
+    - sed -i 's/tstop = 550/tstop = 100/' HAM_SR1.ses
+# python models
+189922:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - 2to3 -w .
+    - sed -i 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
+
+

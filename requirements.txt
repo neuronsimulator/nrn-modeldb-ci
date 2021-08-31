@@ -1,0 +1,11 @@
+# core
+requests
+pyyaml
+docopt
+
+# for running models
+pyqt5
+ipython
+matplotlib
+scipy
+2to3
