@@ -228,7 +228,10 @@ def run_model(model):
     try:
         nrn_exe = "./x86_64/special" if mods is not None and len(mods) else "nrniv"
         # '-nogui' creates segfault
-        model_run_cmds = [nrn_exe, '-nobanner', '-python' if model.run_py else "", model.run_info["init"], model.run_info["driver"]]
+        model_run_cmds = [nrn_exe, '-nobanner']
+        if model.run_py:
+            model_run_cmds.append('-python')
+        model_run_cmds += [model.run_info["init"], model.run_info["driver"]]
         append_log(model, model.nrn_run, "RUNNING -> {}".format(" ".join(model_run_cmds)))
         run_neuron_cmds(model, model_run_cmds)
         with open(os.path.join(model.model_dir, "gout"), 'r') as gout:
