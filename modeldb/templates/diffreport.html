@@ -1,0 +1,116 @@
+
+<!doctype html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <style type="text/css">
+        table.diff {font-family:Courier; border:medium;}
+        .diff_header {background-color:#e0e0e0}
+        td.diff_header {text-align:right}
+        .diff_next {background-color:#c0c0c0}
+        .diff_add {background-color:#aaffaa}
+        .diff_chg {background-color:#ffff77}
+        .diff_sub {background-color:#ffaaaa}
+    </style>
+</head>
+<body>
+    <details open="true">
+        <summary>{{ title }} : Run Info</summary>
+        <div id="run_info"></div>
+    </details>
+
+    <br/>
+    <details open="true">
+        <summary>{{ title }} : Models with different nrn runs</summary>
+        <div id="run-diff-models"></div>
+    </details>
+    <br/>
+    <details open="true">
+            <summary>{{ title }} : Models with different gout</summary>
+        <div id="gout-diff-models"></div>
+    </details>
+    <br/>
+<label for="fSearch">Search entire report</label>
+<input type="text" id="fSearch" name="fSearch">
+<div id="example-table"></div>
+
+<script src="https:////ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link href="https://unpkg.com/tabulator-tables@5.1.1/dist/css/tabulator.min.css" rel="stylesheet">
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.1.1/dist/js/tabulator.min.js"></script>
+
+        <script>
+            $(document).ready ( function() {
+                            // report = JSON.parse(JSON.stringify(report));
+                            var report_data = [];
+                            diff_dict = {{ diff_dict }};
+                            gout_dict = {{ gout_dict }};
+                            function htmlDecode(input) {
+                              return input
+                                    .replace(/\\/g, "")
+                                    .replace(/^"(.*)"$/, '$1');
+                            }
+                            document.getElementById("run_info").innerHTML=htmlDecode(JSON.stringify(diff_dict[0]));
+                            delete(diff_dict[0])
+                            document.getElementById("run-diff-models").innerHTML=JSON.stringify(Object.keys(diff_dict));
+                            document.getElementById("gout-diff-models").innerHTML=JSON.stringify(Object.keys(gout_dict));
+                            for(var i in diff_dict){
+                                report_data.push( {"id":i, "difftype":"nrn run", "diff": diff_dict [i] });
+                            }
+                            for(var i in gout_dict){
+                                report_data.push( {"id":i, "difftype":"gout", "diff": gout_dict [i] });
+                            }
+                            var customMutator = function(value, data, type, params, component){
+                                    if(value)
+                                        return value.join("\n");
+                                    return value;
+                            }
+                            var jsonMutator = function(value, data, type, params, component){
+                                    if(value)
+                                        return JSON.stringify(value,undefined,2);
+                                    return value;
+                            }
+                            const input = document.getElementById("fSearch");
+                            input.addEventListener("keyup", function() {
+                                table.setFilter(matchAny, { value: input.value });
+                                if (input.value == " ") {
+                                    table.clearFilter()
+                                }
+                            });
+                            function matchAny(data, filterParams) {
+                                var match = false;
+                                const regex = RegExp(filterParams.value, 'i');
+
+                                for (var key in data) {
+                                    if (regex.test(data[key]) == true) {
+                                        match = true;
+                                    }
+                                }
+                                return match;
+                            }
+
+                            var table = new Tabulator("#example-table", {
+                                data:report_data,               //load row data from array
+                                height:"100%",
+                                layout:"fitData",               //fit columns to width of table
+                                addRowPos:"top",                //when adding a new row, add it to the top of the table
+                                history:true,                   //allow undo and redo actions on the table
+                                pagination:"local",             //paginate the data
+                                paginationSize:10,              //allow 7 rows per page of data
+                                paginationCounter:"rows",       //display count of paginated rows in footer
+                                movableColumns:true,            //allow column order to be changed
+                                resizableRows:true,             //allow row order to be changed
+                                initialSort:[                   //set the initial sort order of the data
+                                    {column:"id", dir:"asc"},
+                                ],
+                                columns:[                 //define the table columns
+                                    {title:"Acc. No.", field:"id"},
+                                    {title:"diff type", field:"difftype", },
+                                    {title:"diff", field:"diff",formatter:"html", },
+                                ],
+
+                            });
+                        }
+            )
+    </script>
+    </body>
+</html>

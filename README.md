@@ -18,13 +18,40 @@ The following commands are now available:
   ```
   getmodels -h
   ```
+
   
 * `runmodels` -> run `nrn-modeldb-ci` for all or specified models.
   ```
   runmodels -h
   ```
   Note that models have to be downloaded beforehand with `getmodels`.
+
+
+* `report2html` -> create an interactive HTML report for a given json report (obtained with `runmodels`)
+  ```
+  report2html -h
+  ```
+  Note that the generated HTML file makes use of the json report file and its path.
+
+
+* `diffgout` -> launch `nrngui` and display the two gout files in different colors.
+  ```
+  diffgout -h
+  ```
+  This can come in handy when comparing/investigating results from binary incompatible neuron versions. 
+
+
+* `diffreports2html` -> create an interactive `NEURONv1-vs-NEURONv2` HTML report 
+  ```
+  diffreports2html -h
+  ```
+  The differences that are taken into account:
+  * `nrn_run` and `moderr` from the json reports -> outputs side-by-side diffs
+  * `gout` -> outputs git-like diffs; **NOTE**: this walks gout paths from json report `run_info`, make sure they are present.
   
+  Note that the generated HTML file is self-contained.
+  
+
 * `modeldb-config` -> list configuration for `nrn-modeldb-ci`:
   ```
     modeldb-config
@@ -80,6 +107,7 @@ runmodels --gout test3682 3682
 we will generate report `test3782.json` :
 ```yaml
 {
+    "0": {...} # runmodels stats, see next section
     "3682": {
         "gout": [
             "Graphs 1\n",
@@ -89,7 +117,7 @@ we will generate report `test3782.json` :
             "xvec1\n",
             "0\n",
             "0.025\n",
-            ".....",            # truncated
+            ".....",            # truncated (can be HUGE)
             "-57.9912\n",
             "\n"
         ],
@@ -98,25 +126,19 @@ we will generate report `test3782.json` :
             "",
             "/usr/bin/xcrun",
             "%model_dir%",
-            "-n Mod files:",
-            "-n  \"%model_dir%/hh3.mod\"",
-            "-n  \"%model_dir%/rglu_score.mod\"",
-            "",
+            "Mod files: \"%model_dir%/hh3.mod\" \"%model_dir%/rglu_score.mod\"",
             "",
             "Creating x86_64 directory for .o files.",
             "",
             "COBJS=''",
-            " -> \u001b[32mCompiling\u001b[0m mod_func.c",
-            "gcc -O2   -I.   -I/Users/savulesc/Library/Python/3.9/lib/python/site-packages/neuron/.data/include  -I/usr/local/Cellar/open-mpi/4.0.5/include -fPIC -c mod_func.c -o mod_func.o",
             " -> \u001b[32mNMODL\u001b[0m %model_dir%/hh3.mod",
+            " -> \u001b[32mCompiling\u001b[0m mod_func.cpp",
             " -> \u001b[32mNMODL\u001b[0m %model_dir%/rglu_score.mod",
-            "(cd \"%model_dir%\"; MODLUNIT=/Users/savulesc/Library/Python/3.9/lib/python/site-packages/neuron/.data/share/nrn/lib/nrnunits.lib /Users/savulesc/Library/Python/3.9/lib/python/site-packages/neuron/.data/bin/nocmodl rglu_score.mod -o \"%model_dir%/x86_64\")",
-            "(cd \"%model_dir%\"; MODLUNIT=/Users/savulesc/Library/Python/3.9/lib/python/site-packages/neuron/.data/share/nrn/lib/nrnunits.lib /Users/savulesc/Library/Python/3.9/lib/python/site-packages/neuron/.data/bin/nocmodl hh3.mod -o \"%model_dir%/x86_64\")",
-            "Translating rglu_score.mod into %model_dir%/x86_64/rglu_score.c",
-            "Notice: VERBATIM blocks are not thread safe",
             "Translating hh3.mod into %model_dir%/x86_64/hh3.c",
             "Notice: VERBATIM blocks are not thread safe",
+            "Translating rglu_score.mod into %model_dir%/x86_64/rglu_score.c",
             "Notice: This mechanism cannot be used with CVODE",
+            "Notice: VERBATIM blocks are not thread safe",
             "Notice: Assignment to the GLOBAL variable, \"inf\", is not thread safe",
             "Notice: This mechanism cannot be used with CVODE",
             "Notice: Assignment to the GLOBAL variable, \"Rtau_AMPA\", is not thread safe",
@@ -127,19 +149,15 @@ we will generate report `test3782.json` :
             "Warning: Default -100 of PARAMETER ek will be ignored and set by NEURON.",
             "Warning: Default 40 of PARAMETER ena will be ignored and set by NEURON.",
             " -> \u001b[32mCompiling\u001b[0m hh3.c",
-            "gcc -O2   -I\"%model_dir%\" -I.   -I/Users/savulesc/Library/Python/3.9/lib/python/site-packages/neuron/.data/include  -I/usr/local/Cellar/open-mpi/4.0.5/include -fPIC -c hh3.c -o hh3.o",
             " -> \u001b[32mCompiling\u001b[0m rglu_score.c",
-            "gcc -O2   -I\"%model_dir%\" -I.   -I/Users/savulesc/Library/Python/3.9/lib/python/site-packages/neuron/.data/include  -I/usr/local/Cellar/open-mpi/4.0.5/include -fPIC -c rglu_score.c -o rglu_score.o",
             " => \u001b[32mLINKING\u001b[0m shared library ./libnrnmech.dylib",
-            "g++ -O2 -DVERSION_INFO='7.8.2' -std=c++11 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -fPIC  -I /Users/savulesc/Library/Python/3.9/lib/python/site-packages/neuron/.data/include -o ./libnrnmech.dylib -Wl,-install_name,@rpath/libnrnmech.dylib \\",
-            "\t  ./mod_func.o ./hh3.o ./rglu_score.o  -L/Users/savulesc/Library/Python/3.9/lib/python/site-packages/neuron/.data/lib -lnrniv -Wl,-rpath,/Users/savulesc/Library/Python/3.9/lib/python/site-packages/neuron/.data/lib    -lreadline",
-            "rm -f ./.libs/libnrnmech.so ; mkdir -p ./.libs ; cp ./libnrnmech.dylib ./.libs/libnrnmech.so",
+            " => \u001b[32mLINKING\u001b[0m executable ./special LDFLAGS are:   ",
             "Successfully created x86_64/special",
+            "INFO : Using neuron-nightly Package (Developer Version)",
             ""
         ],
         "nrn_run": [
-            "RUNNING -> ./x86_64/special -nobanner  %model_dir%/mosinit.hoc %model_dir%/driver.hoc",
-            "0 /Users/savulesc/Library/Python/3.9/bin/nrniv: can't open ",
+            "RUNNING -> ./x86_64/special -nobanner %model_dir%/mosinit.hoc %model_dir%/driver.hoc",
             "\t0 ",
             "\t1 ",
             "\t1 ",
@@ -173,7 +191,33 @@ we will generate report `test3782.json` :
             ],
             "start_dir": "/Users/savulesc/Workspace/nrn-modeldb-ci/test3682/synmap"
         },
-        "run_time": "5.724453152"
+        "run_time": "7.595794515"
     }
 }
+```
+
+Every `runmodels` report will hold out run statistics in the `"0"` key: 
+```yaml
+    "0": {
+        "NEURON version": "8.0a-743-g3871f82a",
+        "Stats": {
+            "Failed models": {
+                "Accession numbers": [
+                    20212,
+                    97868,
+                    144549,
+                    186768,
+                    244262
+                ],
+                "Count": 5
+            },
+            "Failed runs": {
+                "Accession numbers": [
+                    194897
+                ],
+                "Count": 1
+            },
+            "No. of models run": 659
+        }
+    },
 ```

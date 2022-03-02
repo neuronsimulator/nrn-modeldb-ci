@@ -28,7 +28,10 @@ def setup_package():
             console_scripts=[
                 'runmodels = modeldb.commands:runmodels',
                 'getmodels = modeldb.commands:getmodels',
+                'diffgout = modeldb.commands:diffgout',
                 'modeldb-config = modeldb.commands:modeldb_config',
+                'report2html = modeldb.commands:report2html',
+                'diffreports2html = modeldb.commands:diffreports2html',
             ]
         ),
     )

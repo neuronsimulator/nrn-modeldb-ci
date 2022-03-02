@@ -1,29 +1,64 @@
-import pandas as pd
 import numpy as np
 import json
-from pprint import pprint
+import re
+import difflib
+import os
+import subprocess
+import filecmp
+from collections import defaultdict
+
+
+def curate_run_data(run_data):
+    curated_data = run_data
+
+    regex_dict = {
+        # /../nrniv: Assignment to modern physical constant FARADAY	<-> ./x86_64/special: Assignment to modern physical constant FARADAY
+        "^/.*?/nrniv:": "",
+        "^\\./x86_64/special:": "",
+    }
+
+    for regex_key, regex_value in regex_dict.items():
+        curated_data = [re.sub(regex_key, regex_value, line) for line in curated_data]
+
+    return curated_data
 
 
 def diff_reports(report1_json, report2_json):
-    with open(report1_json, 'r+') as f:
+    diff_dict = {}
+    gout_dict = {}
+
+    with open(report1_json, 'r+') as f, open(report2_json, 'r+') as f2:
         data_a = json.load(f)
-        with open(report2_json, 'r+') as f2:
-            data_b = json.load(f2)
-            import difflib
-            import webbrowser
+        data_b = json.load(f2)
 
-            with open('output.html', 'w') as fh:
-                d = difflib.HtmlDiff()  # wrapcolumn=10)
-                for k in data_a.keys():
-                    if data_a[k]["nrn_run"] != data_b[k]["nrn_run"]:
-                        html = d.make_file(data_a[k]["nrn_run"], data_b[k]["nrn_run"])
-                        # save in file
-                        fh.write(k)
-                        fh.write(html)
+        hd = difflib.HtmlDiff()
+        diff_dict["0"] = hd.make_table(json.dumps(data_a["0"], indent='\t').split('\n'),
+                                             json.dumps(data_b["0"], indent='\t').split('\n')).replace("\n", "")
+        for k in data_a.keys():
+            if int(k) == 0:
+                continue  # skip info key
+            curated_a = curate_run_data(data_a[k]["nrn_run"])
+            curated_b = curate_run_data(data_b[k]["nrn_run"])
+            if curated_a != curated_b:
+                diff_dict[k] = hd.make_table(curated_a, curated_b, context=True).replace("\n", " ")
+            if "do_not_run" not in data_a[k]:
+                gout_a_file = os.path.join(data_a[k]["run_info"]["start_dir"], "gout")
+                gout_b_file = os.path.join(data_b[k]["run_info"]["start_dir"], "gout")
 
-            # open in web browser
-            webbrowser.open('output.html')
+                if os.path.isfile(gout_a_file) and not filecmp.cmp(gout_a_file, gout_b_file, shallow=False):
+                    gout_dict[k] = subprocess.getoutput("diff -u {} {} | head -n 30 |  pygmentize -l diff -f html -O full,style=colorful,linenos=1".format(gout_a_file, gout_b_file,k))
+
+    return diff_dict, gout_dict
 
 
 if __name__ == "__main__":
-    diff_reports('test.json', 'test2.json')
+    d1, d2 = diff_reports('802.json', 'nightly.json')
+    with open("output.html", 'w') as outhdl:
+        for k, v in d1.items():
+            outhdl.write(str(k))
+            outhdl.write('<pre>{}</pre>'.format(str(v)))
+    with open("output-gout.html", 'w') as outhdl:
+        for k, v in d2.items():
+            outhdl.write(str(k))
+            outhdl.write('<pre>{}</pre>'.format(str(v)))
+

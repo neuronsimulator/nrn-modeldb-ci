@@ -2,6 +2,7 @@
 requests
 pyyaml
 docopt
+jinja2
 
 # for running models
 pyqt5

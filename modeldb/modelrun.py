@@ -95,7 +95,7 @@ def run_neuron_cmds(model, cmds):
 
     model.nrn_run.extend(curate_log_string(model, out).split('\n'))
     if sp.returncode > 1:
-        model.nrn_run_error = True
+        model._nrn_run_error = True
 
 
 def clean_model_dir(model):
@@ -234,8 +234,9 @@ def run_model(model):
         model_run_cmds += [model.run_info["init"], model.run_info["driver"]]
         append_log(model, model.nrn_run, "RUNNING -> {}".format(" ".join(model_run_cmds)))
         run_neuron_cmds(model, model_run_cmds)
-        with open(os.path.join(model.model_dir, "gout"), 'r') as gout:
-            model._gout = gout.readlines()
+        if os.path.isfile(os.path.join(model.model_dir, "gout")):
+            with open(os.path.join(model.model_dir, "gout"), 'r') as gout:
+                model._gout = gout.readlines()
     except Exception:  # noqa
         append_log(model, model.nrn_run, traceback.format_exc())
         model._nrn_run_error = True
@@ -277,9 +278,9 @@ class ModelRunManager(object):
         self.logger.addHandler(self.fileHandler)
         self.logger.addHandler(self.consoleHandler)
 
-    def _grep_mod_errors(self):
+    def _grep_for_errors(self):
         if len(self.run_logs):
-            self.logger.info("Grepping all models for ' error:'")
+            self.logger.info("Grepping all models for ' error:' and dumping run errors")
 
             for model_id, logs in self.run_logs.items():
                 mod_errors = list(filter(lambda x: " error:" in x, logs["logs"]))
@@ -288,11 +289,55 @@ class ModelRunManager(object):
                     self.logger.error(
                         str(model_id) + "\n\t" + "\t".join(mod_errors)
                     )
+                if "nrn_run_err" in logs and logs["nrn_run_err"] is True:
+                    self.logger.error(
+                        str(model_id) + "\n\t" + "\t".join(logs["nrn_run"])
+                    )
 
     def _dump_run(self):
         self.logger.info("Dumping run logs to {} ...".format(self.dumpfile))
+
+        # Run info, use key 0
+        self.run_logs[0] = {}
+        from neuron import __version__ as nrn_ver
+        self.run_logs[0]["NEURON version"] = nrn_ver
+        self.run_logs[0]["Stats"] = self._run_stats(self.run_logs)
+
+        # Dump logs
         with open(self.dumpfile, "w+") as dump_file:
             json.dump(self.run_logs, dump_file, indent=4, sort_keys=True)
+
+    @staticmethod
+    def _run_stats(json_report):
+        stats = {}
+        stats["Total nof models run"] = len(json_report) - 1  # discard 0
+        failed_mods = []
+        failed_runs = []
+        skipped_runs = []
+        
+        for model_id in json_report.keys():
+            # look for models that are marked `skip` in `modeldb-run.yaml`
+            if "do_not_run" in json_report[model_id]:
+                skipped_runs.append(model_id)
+
+            # moderr happens if mods present and nrnivmodl failed
+            # if no moderr we look for nrn_run_err    
+            if "moderr" in json_report[model_id]:
+                failed_mods.append(model_id)
+            elif "nrn_run_err" in json_report[model_id]:
+                failed_runs.append(model_id)
+
+        stats["Failed models"] = {"Count": len(failed_mods),
+                                "Accession numbers": failed_mods}
+
+        stats["Failed runs"] = {"Count": len(failed_runs),
+                                "Accession numbers": failed_runs}
+
+        stats["Skipped runs"] = {"Count": len(skipped_runs),
+                                "Accession numbers": skipped_runs}
+
+        return stats
+
 
     def _run_models(self, model_runs):
         pool = multiprocessing.Pool()
@@ -314,7 +359,7 @@ class ModelRunManager(object):
             self.run_logs[model.id]["run_time"] = model.run_time
             self.logger.debug("Done for: " + str(model.id))
 
-        self._grep_mod_errors()
+        self._grep_for_errors()
         self._dump_run()
 
     def run_models(self, model_list=None):
