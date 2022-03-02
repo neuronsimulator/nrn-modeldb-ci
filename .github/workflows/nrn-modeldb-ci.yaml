@@ -1,0 +1,105 @@
+name: NEURON ModelDB CI
+
+on:
+  push:
+    branches: [master]
+  schedule:
+    # Run at 2am every day
+    - cron:  '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      neuron_v1:
+        description: 'Last official release (neuron) / NEURON pinned version / Azure drop (artifacts) url'
+        default: 'neuron'
+        required: true
+      neuron_v2:
+        description: 'Last nightly release (neuron-nightly) / NEURON pinned version / Azure drop (artifacts) url'
+        default: 'neuron-nightly'
+        required: true
+      models_to_run:
+        description: 'Empty for all models, space separated accession numbers for specific models'
+        default: ''
+        required: true
+
+jobs:
+  nrn-modeldb-ci:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9"]
+    env:
+      DISPLAY: :0
+      GH_REPO: ${{ github.server_url }}/${{ github.repository }}
+      NEURON_V1: ${{ github.event.inputs.neuron_v1 || 'neuron' }}
+      NEURON_V2: ${{ github.event.inputs.neuron_v2 || 'neuron-nightly' }}
+      MODELS_TO_RUN: ${{ github.event.inputs.models_to_run || '279' }} # temp 279
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies and project
+      run: |
+        set
+        # Set up Xvfb
+        sudo apt-get install xvfb
+        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1600x1200x24 &  # run in bg
+        # Install python dependencies
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        #Install project in editable mode
+        python -m pip install -e .
+    
+    - name: Cache ModelDB models
+      id: cache-models
+      uses: actions/cache@v2
+      with:
+        path: |
+          cache
+          modeldb/modeldb-meta.yaml
+        key: models
+
+    - name: Get ModelDB models
+      if: steps.cache-models.outputs.cache-hit != 'true'
+      run: getmodels
+
+    - name: Run Models with NEURON V1 -> ${{ env.NEURON_V1 }}
+      run: |
+        # Install NEURON V1
+        python -m pip install $NEURON_V1
+        nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
+        runmodels $nrn_ver $MODELS_TO_RUN
+        report2html ${nrn_ver}.json
+        python -m pip uninstall --yes neuron
+        echo "nrn1_ver=$nrn_ver" >> $GITHUB_ENV
+
+    - name: Run Models with NEURON V2 -> ${{ env.NEURON_V2 }}
+      if: env.NEURON_V1 != env.NEURON_V2
+      run: |
+        # Install NEURON V2
+        python -m pip install $NEURON_V2
+        nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
+        runmodels $nrn_ver $MODELS_TO_RUN
+        report2html ${nrn_ver}.json
+        python -m pip uninstall --yes neuron
+        echo "nrn2_ver=$nrn_ver" >> $GITHUB_ENV
+
+    - name: diffreports2html ${{ env.nrn1_ver }}.json <-> ${{ env.nrn2_ver }}.json
+      if: env.NEURON_V1 != env.NEURON_V2
+      run: |
+        diffreports2html ${nrn1_ver}.json ${nrn2_ver}.json
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.nrn1_ver }}-vs-${{ env.nrn2_ver }}
+        path: |
+          ./*.json
+          ./*.html
+    - name: live debug session on failure
+      if: failure()
+      uses: mxschmitt/action-tmate@v3
