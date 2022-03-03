@@ -127,10 +127,10 @@ def report2html(args=None):
 
     report_filename = os.path.join(os.path.splitext(json_report)[0] + '.html')
     print('Writing {} ...'.format(report_filename))
-    with open(report_filename, 'w') as fh:
+    with open(report_filename, 'w') as fh, open(json_report, 'r+') as jr:
         fh.write(template.render(
             title="{} : nr-modeldb-ci HTML report".format(json_report),
-            json_report=os.path.relpath(json_report),
+            json_report=json.load(jr),
         ))
     print('Done.')
 

@@ -6,7 +6,7 @@
 </head>
 <body>
     <details open="true">
-        <summary>Run Info for {{ json_report }}</summary>
+        <summary>Run Info for {{ title }}</summary>
         <pre id="run_info"></pre>
     </details>
 
@@ -21,18 +21,16 @@
 <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.1.1/dist/js/tabulator.min.js"></script>
 
     <script>
-            fetch('{{ json_report }}')
-                  .then(response => response.json())
-                  .then(data => report=JSON.parse(JSON.stringify(data)))
-                  .then(function(report) {
-                            // report = JSON.parse(JSON.stringify(report));
+             $(document).ready ( function(report) {
+                            const True = true, False = false;
                             var report_data = [];
-
+                            report = {{ json_report }};
 
                             document.getElementById("run_info").textContent = JSON.stringify(report[0], undefined, 5);
+                            delete(report[0])
                             for(var i in report){
                                 report[i]["id"]=i
-                                if (i>0){ report_data.push(report [i]);}
+                                report_data.push(report [i]);
                             }
                             var customMutator = function(value, data, type, params, component){
                                     if(value)
@@ -62,7 +60,7 @@
                                 }
                                 return match;
                             }
-                            console.log(report_data)
+
                             var table = new Tabulator("#example-table", {
                                 data:report_data,               //load row data from array
                                 height:"100%",
@@ -98,7 +96,6 @@
 
                             });
                         })
-                  .catch(error => console.log(error));
     </script>
 </body>
 </html>

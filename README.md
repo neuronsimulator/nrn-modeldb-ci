@@ -31,7 +31,7 @@ The following commands are now available:
   ```
   report2html -h
   ```
-  Note that the generated HTML file makes use of the json report file and its path.
+  Note that the generated HTML file is self-contained.
 
 
 * `diffgout` -> launch `nrngui` and display the two gout files in different colors.
