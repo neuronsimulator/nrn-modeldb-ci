@@ -96,9 +96,29 @@ def diffgout(args=None):
 
 
 def modeldb_config(args=None):
+    """modeldb-config
+
+    Print out ModelDB configuration items
+
+    Usage:
+        modeldb-config [options]
+        modeldb-config -h    Print help
+
+    Options:
+        --item=ARG          Print out value for specific config item
+
+    Examples
+        modeldb-config
+        modeldb-config --item=MDB_NEURON_MODELS_URL
+    """
+    options = docopt(modeldb_config.__doc__, args)
+    item = options.pop("--item", None)
     cfg_module = globals().get('config', None)
-    pprint({var: getattr(cfg_module, var) for var in dir(cfg_module) if
+    if item is None:
+        pprint({var: getattr(cfg_module, var) for var in dir(cfg_module) if
             not inspect.ismodule(var) and not var.startswith("__") and not var.endswith("__")})
+    else:
+        print(getattr(cfg_module, item))
 
 
 def report2html(args=None):
