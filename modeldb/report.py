@@ -12,8 +12,8 @@ def curate_run_data(run_data):
 
     regex_dict = {
         # /../nrniv: Assignment to modern physical constant FARADAY	<-> ./x86_64/special: Assignment to modern physical constant FARADAY
-        "^/.*?/nrniv:": "",
-        "^\\./x86_64/special:": "",
+        "^/.*?/nrniv:": "%neuron-executable%",
+        "^\\./x86_64/special:": "%neuron-executable%",
         # nrniv: unable to open font "*helvetica-medium-r-normal*--14*", using "fixed" <-> special: unableto open font "*helvetica-medium-r-normal*--14*", using "fixed"
         "^nrniv:": "%neuron-executable%",
         "^special:": "%neuron-executable%",
