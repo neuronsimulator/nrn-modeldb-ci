@@ -3,6 +3,8 @@ name: NEURON ModelDB CI
 on:
   push:
     branches: [master]
+  pull_request:
+      branches: [ master ]
   schedule:
     # Run at 2am every day
     - cron:  '0 2 * * *'
@@ -41,6 +43,12 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
+    - name: Set models to run for PR
+      run: |
+        # Select a few models to run CI for PRs 
+        echo 'MODELS_TO_RUN=279 3264 22203 144549 194897' >> $GITHUB_ENV
+      if: github.event_name == 'pull_request'
 
     - name: Install dependencies and project
       run: |
