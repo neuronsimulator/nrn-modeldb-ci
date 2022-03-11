@@ -4,7 +4,6 @@ import re
 import difflib
 import os
 import subprocess
-import filecmp
 from collections import defaultdict
 
 
@@ -45,8 +44,9 @@ def diff_reports(report1_json, report2_json):
                 gout_a_file = os.path.join(data_a[k]["run_info"]["start_dir"], "gout")
                 gout_b_file = os.path.join(data_b[k]["run_info"]["start_dir"], "gout")
 
-                if os.path.isfile(gout_a_file) and not filecmp.cmp(gout_a_file, gout_b_file, shallow=False):
-                    gout_dict[k] = subprocess.getoutput("diff -u {} {} | head -n 30 |  pygmentize -l diff -f html -O full,style=colorful,linenos=1".format(gout_a_file, gout_b_file,k))
+                # gout may be missing in one of the paths. `diff -N` treats non-existent files as empty.
+                if os.path.isfile(gout_a_file) or os.path.isfile(gout_b_file):
+                    gout_dict[k] = subprocess.getoutput("diff -uN {} {} | head -n 30 |  pygmentize -l diff -f html -O full,style=colorful,linenos=1".format(gout_a_file, gout_b_file,k))
 
     return diff_dict, gout_dict
 
