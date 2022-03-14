@@ -47,7 +47,7 @@ jobs:
     - name: Set models to run for PR
       run: |
         # Select a few models to run CI for PRs 
-        echo 'MODELS_TO_RUN=279 3264 22203 144549 194897' >> $GITHUB_ENV
+        echo 'MODELS_TO_RUN=279 3264 22203 144549 105507 194897' >> $GITHUB_ENV
       if: github.event_name == 'pull_request'
 
     - name: Install dependencies and project
