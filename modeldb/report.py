@@ -4,7 +4,9 @@ import re
 import difflib
 import os
 import subprocess
-from collections import defaultdict
+from pygments import highlight
+from pygments.lexers import DiffLexer
+from pygments.formatters import HtmlFormatter
 
 
 def curate_run_data(run_data):
@@ -12,8 +14,11 @@ def curate_run_data(run_data):
 
     regex_dict = {
         # /../nrniv: Assignment to modern physical constant FARADAY	<-> ./x86_64/special: Assignment to modern physical constant FARADAY
-        "^/.*?/nrniv:": "",
-        "^\\./x86_64/special:": "",
+        "^/.*?/nrniv:": "%neuron-executable%:",
+        "^\\./x86_64/special:": "%neuron-executable%:",
+        # nrniv: unable to open font "*helvetica-medium-r-normal*--14*", using "fixed" <-> special: unableto open font "*helvetica-medium-r-normal*--14*", using "fixed"
+        "^nrniv:": "%neuron-executable%:",
+        "^special:": "%neuron-executable%:",
     }
 
     for regex_key, regex_value in regex_dict.items():
@@ -46,7 +51,9 @@ def diff_reports(report1_json, report2_json):
 
                 # gout may be missing in one of the paths. `diff -N` treats non-existent files as empty.
                 if os.path.isfile(gout_a_file) or os.path.isfile(gout_b_file):
-                    gout_dict[k] = subprocess.getoutput("diff -uN {} {} | head -n 30 |  pygmentize -l diff -f html -O full,style=colorful,linenos=1".format(gout_a_file, gout_b_file,k))
+                    diff_out = subprocess.getoutput("diff -uN {} {} | head -n 30".format(gout_a_file, gout_b_file))
+                    if diff_out:
+                        gout_dict[k] = highlight(diff_out, DiffLexer(), HtmlFormatter(linenos=True, cssclass="colorful", full=True))
 
     return diff_dict, gout_dict
 
