@@ -31,6 +31,7 @@ def runmodels(args=None):
 
     Options:
         --gout                  Include gout into the report. Note that gout data can be very big, so disabled by default.
+        --virtual               Run in headless mode. You need a back-end like Xvfb.
 
     Examples
         runmodels /path/to/workdir
@@ -40,8 +41,17 @@ def runmodels(args=None):
     working_dir = options.pop("<WorkingDirectory>")
     model_ids = [int(model_id) for model_id in options.pop("<model_id>")]
     gout = options.pop("--gout", False)
+    virtual = options.pop("--virtual", False)
 
-    ModelRunManager(working_dir, gout=gout).run_models(model_list=model_ids if model_ids else None)
+    mrm = ModelRunManager(working_dir, gout=gout)
+    model_list = model_ids if model_ids else None
+
+    if virtual:
+        from pyvirtualdisplay import Display
+        with Display() as _:
+            mrm.run_models(model_list)
+    else:
+        mrm.run_models(model_list)
 
 
 def getmodels(args=None):

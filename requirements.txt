@@ -3,6 +3,7 @@ requests
 pyyaml
 docopt
 jinja2
+pyvirtualdisplay
 
 # for running models
 pyqt5
