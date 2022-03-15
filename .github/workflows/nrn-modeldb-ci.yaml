@@ -80,7 +80,7 @@ jobs:
         # Install NEURON V1
         python -m pip install $NEURON_V1
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        runmodels $nrn_ver $MODELS_TO_RUN
+        runmodels --virtual $nrn_ver $MODELS_TO_RUN
         report2html ${nrn_ver}.json
         python -m pip uninstall --yes $NEURON_V1
         echo "nrn1_ver=$nrn_ver" >> $GITHUB_ENV
@@ -91,7 +91,7 @@ jobs:
         # Install NEURON V2
         python -m pip install $NEURON_V2
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        runmodels $nrn_ver $MODELS_TO_RUN
+        runmodels --virtual $nrn_ver $MODELS_TO_RUN
         report2html ${nrn_ver}.json
         python -m pip uninstall --yes $NEURON_V2
         echo "nrn2_ver=$nrn_ver" >> $GITHUB_ENV
