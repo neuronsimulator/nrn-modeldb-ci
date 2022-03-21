@@ -2,14 +2,17 @@ import numpy as np
 import json
 import re
 import difflib
+import logging
 import os
 import subprocess
+from .modeldb import ModelDB
 from pygments import highlight
 from pygments.lexers import DiffLexer
 from pygments.formatters import HtmlFormatter
 
+mdb = ModelDB()
 
-def curate_run_data(run_data):
+def curate_run_data(run_data, model=None):
     curated_data = run_data
 
     regex_dict = {
@@ -19,10 +22,22 @@ def curate_run_data(run_data):
         # nrniv: unable to open font "*helvetica-medium-r-normal*--14*", using "fixed" <-> special: unableto open font "*helvetica-medium-r-normal*--14*", using "fixed"
         "^nrniv:": "%neuron-executable%:",
         "^special:": "%neuron-executable%:",
+        "(Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d+ \d+:\d+:\d+ [A-Z]+ \d+": "%date_command%",
+        "total run time [0-9\.]+": "total run time %run_time%",
     }
 
+    for model_specific_substitution in mdb.run_instr.get(model, {}).get("curate_patterns", []):
+        regex_dict[model_specific_substitution["pattern"]] = model_specific_substitution["repl"]
+
     for regex_key, regex_value in regex_dict.items():
-        curated_data = [re.sub(regex_key, regex_value, line) for line in curated_data]
+        updated_data = []
+        for line in curated_data:
+            new_line, number_of_subs = re.subn(regex_key, regex_value, line)
+            if number_of_subs:
+                logging.debug("{} matched {} time(s)".format(regex_key, number_of_subs))
+                logging.debug("{} -> {}".format(line, new_line))
+            updated_data.append(new_line)
+        curated_data = updated_data
 
     return curated_data
 
@@ -41,8 +56,8 @@ def diff_reports(report1_json, report2_json):
         for k in data_a.keys():
             if int(k) == 0:
                 continue  # skip info key
-            curated_a = curate_run_data(data_a[k]["nrn_run"])
-            curated_b = curate_run_data(data_b[k]["nrn_run"])
+            curated_a = curate_run_data(data_a[k]["nrn_run"], model=int(k))
+            curated_b = curate_run_data(data_b[k]["nrn_run"], model=int(k))
             if curated_a != curated_b:
                 diff_dict[k] = hd.make_table(curated_a, curated_b, context=True).replace("\n", " ")
             if "do_not_run" not in data_a[k]:
