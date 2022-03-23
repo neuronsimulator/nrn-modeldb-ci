@@ -1000,6 +1000,8 @@
 141505:
     comment: //do not run Specialized installation environment
     run: null
+144385:
+  model_dir: mod
 144523:
     run:
     - objref test_graph_
@@ -1020,7 +1022,7 @@
         repl: 'Setup time for simulation: %setup_time% seconds'
       - pattern: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: \d+/\d+/\d+,\d+:\d+:\d+ [AP]{1}M:\d+'
         repl: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: %current_date%'
-      - pattern: 'Finished simulation in [0-9]+\.[0-9]+ seconds'
+      - pattern: 'Finished simulation in [0-9\.]+ seconds'
         repl: 'Finished simulation in %simulation_time% seconds'
       - pattern: 'Current time: \d+/\d+/\d+,\d+:\d+:\d+ [AP]{1}M:\d+'
         repl: 'Current time: %current_time%'
