@@ -13,11 +13,26 @@ import glob
 import traceback
 import json
 import time
+import shutil
 
 ModelDB = modeldb.ModelDB()
 
+
+def is_dir_non_empty(directory):
+    """
+    Returns True if the `directory` exists and is non-empty
+    """
+    try:
+        if any(os.scandir(directory)):
+            return True
+    except Exception:  # noqa
+        pass
+
+    return False
+
+
 class ModelRun(dict):
-    def __init__(self, model, working_dir):
+    def __init__(self, model, working_dir, clean=False):
         self._model = model
         self._working_dir = os.path.abspath(working_dir)
         self._logs = []
@@ -27,6 +42,7 @@ class ModelRun(dict):
         self._no_mosinit_hoc = False
         self._run_time = 0
         self._run_py = False
+        self._clean = clean
 
         self["run_info"] = {}
 
@@ -161,10 +177,13 @@ def prepare_model(model):
     with zipfile.ZipFile(
             os.path.join(MODELS_ZIP_DIR, str(model.id) + ".zip"), "r"
     ) as zip_ref:
-        zip_ref.extractall(model.working_dir)
-        model.run_info["model_dir"] = os.path.join(
+        model_dir = os.path.join(
             model.working_dir, os.path.dirname(zip_ref.infolist()[0].filename)
         )
+        if model._clean and is_dir_non_empty(model_dir):
+            shutil.rmtree(model_dir)
+        zip_ref.extractall(model.working_dir)
+        model.run_info["model_dir"] = model_dir
 
     # write driver.hoc
     build_driver_hoc(model)
@@ -249,7 +268,7 @@ def run_model(model):
 
 
 class ModelRunManager(object):
-    def __init__(self, master_dir, gout=False):
+    def __init__(self, master_dir, gout=False, clean=False):
         self.master_dir = master_dir
         self.logfile = str(master_dir) + ".log"
         self.dumpfile = str(master_dir) + ".json"
@@ -259,6 +278,7 @@ class ModelRunManager(object):
         )
         self.run_logs = {}
         self._gout = gout
+        self._clean = clean
 
     def _setup_logging(self):
         self.logger = logging.getLogger("dev")
@@ -380,7 +400,7 @@ class ModelRunManager(object):
 
         # prepare ModelRun objects
         models_to_run = (
-            ModelRun(mdl, self.master_dir) for mdl in models_selected
+            ModelRun(mdl, self.master_dir, self._clean) for mdl in models_selected
         )
 
         # number of models
