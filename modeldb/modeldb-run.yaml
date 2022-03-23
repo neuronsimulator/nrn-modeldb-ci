@@ -1000,6 +1000,8 @@
 141505:
     comment: //do not run Specialized installation environment
     run: null
+144385:
+  model_dir: mod
 144523:
     run:
     - objref test_graph_
