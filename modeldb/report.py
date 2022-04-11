@@ -63,7 +63,10 @@ def diff_reports(report1_json, report2_json):
                                              fromdesc=data_a[k]["run_info"]["start_dir"],
                                              todesc=data_b[k]["run_info"]["start_dir"],
                                              context=True).replace("\n", " ")
-            if "do_not_run" not in data_a[k]:
+
+            # List of keys that make gout comparison pointless
+            skip_gout_keys = {"do_not_run", "moderr", "nrn_run_err"}
+            if skip_gout_keys.isdisjoint(data_a[k]) and skip_gout_keys.isdisjoint(data_b[k]):
                 gout_a_file = os.path.join(data_a[k]["run_info"]["start_dir"], "gout")
                 gout_b_file = os.path.join(data_b[k]["run_info"]["start_dir"], "gout")
 

@@ -3,17 +3,19 @@ from docopt import docopt
 from os.path import abspath
 from pprint import pprint
 from . import config
-from .modelrun import ModelRunManager
+from .modelrun import ModelRunManager, is_dir_non_empty
 from .modeldb import ModelDB
 import inspect
 import shlex
 import subprocess
 from jinja2 import Environment, FileSystemLoader
 import os
+import sys
 from .config import *
 from pathlib import Path
 from .report import diff_reports
 import json
+import shutil
 
 
 def runmodels(args=None):
@@ -22,28 +24,39 @@ def runmodels(args=None):
     Run nrn-modeldb-ci for all or specified models
 
     Usage:
-        runmodels <WorkingDirectory> [options] [<model_id>...]
+        runmodels --workdir=<PATH> [options] [<model_id>...]
         runmodels -h    Print help
 
     Arguments:
-        WorkingDirectory=PATH   Required: directory where to run the models and store the reports
+        --workdir=<PATH>          Required: directory where to run the models and store the reports
         model_id=<n>            Optional: ModelDB accession number(s) to run; default is all available models
 
     Options:
         --gout                  Include gout into the report. Note that gout data can be very big, so disabled by default.
         --virtual               Run in headless mode. You need a back-end like Xvfb.
+        --clean                 Auto-clean model working directory before running (useful for consecutive runs and failsafe)
 
     Examples
-        runmodels /path/to/workdir
-        runmodels /path/to/workdir 23613 12344
+        runmodels --workdir=/path/to/workdir                        # run all models
+        runmodels --clean --workdir=/path/to/workdir 23613 12344    # run models 23613 & 12344
     """
     options = docopt(runmodels.__doc__, args)
-    working_dir = options.pop("<WorkingDirectory>")
+    working_dir = options.pop("--workdir")
     model_ids = [int(model_id) for model_id in options.pop("<model_id>")]
     gout = options.pop("--gout", False)
     virtual = options.pop("--virtual", False)
+    clean = options.pop("--clean", False)
 
-    mrm = ModelRunManager(working_dir, gout=gout)
+    if os.path.abspath(working_dir) == ROOT_DIR:
+        print("Cannot run models directly into nrn-modeldb-ci ROOT_DIR -> {}".format(ROOT_DIR))
+        sys.exit(1)
+
+    if not clean and is_dir_non_empty(working_dir):
+        print("WARNING: WorkingDirectory {} exists and is non empty.".format(working_dir))
+        print("\tre-run with --clean if you wish to overwrite model runs!")
+        sys.exit(1)
+
+    mrm = ModelRunManager(working_dir, gout=gout, clean=clean)
     model_list = model_ids if model_ids else None
 
     if virtual:
@@ -102,7 +115,7 @@ def diffgout(args=None):
     cmd = 'nrngui -c "strdef gout1" -c "gout1=\\"{}\\"" -c "strdef gout2" -c "gout2=\\"{}\\"" modeldb/showgout.hoc'.format(
         gout_file1, gout_file2)
     commands = shlex.split(cmd)
-    p = subprocess.Popen(commands)
+    _ = subprocess.Popen(commands)
 
 
 def modeldb_config(args=None):

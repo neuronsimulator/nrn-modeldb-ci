@@ -25,7 +25,8 @@ The following commands are now available:
   runmodels -h
   ```
   Note that models have to be downloaded beforehand with `getmodels`.
-  You can specify `--virtual` so that NEURON GUI is run in headless mode. It requires a backend (n.r. `Xvfb`)
+  You can specify `--virtual` so that NEURON GUI is run in headless mode. It requires a backend (n.r. `Xvfb`).
+  Re-running in the same `--workdir` can mangle results. Please use `--clean` if you wish to re-run in the same `--workdir`.
   
 
 * `report2html` -> create an interactive HTML report for a given json report (obtained with `runmodels`)
@@ -103,7 +104,7 @@ The generated report following `runmodels` contains te following info:
 
 For example, by running:
 ```
-runmodels --gout test3682 3682
+runmodels --gout --workdir=test3682 3682
 ```
 we will generate report `test3782.json` :
 ```yaml
@@ -222,3 +223,10 @@ Every `runmodels` report will hold out run statistics in the `"0"` key:
         }
     },
 ```
+
+## Funding
+
+
+`nrn-modeldb-ci` is developed in a joint collaboration between the Blue Brain Project and Yale University. This work is supported by funding to the Blue Brain Project, a research center of the École polytechnique fédérale de Lausanne (EPFL), from the Swiss government’s ETH Board of the Swiss Federal Institutes of Technology, NIH grant number R01NS11613 (Yale University), the European Union Seventh Framework Program (FP7/20072013) under grant agreement n◦ 604102 (HBP) and the European Union’s Horizon 2020 Framework Programme for Research and Innovation under Specific Grant Agreement n◦ 720270 (Human Brain Project SGA1), n◦ 785907 (Human Brain Project SGA2) and n◦ 945539 (Human Brain Project SGA3).
+
+Copyright (c) 2022 Yale University & Blue Brain Project/EPFL
