@@ -60,7 +60,10 @@ def diff_reports(report1_json, report2_json):
             curated_b = curate_run_data(data_b[k]["nrn_run"], model=int(k))
             if curated_a != curated_b:
                 diff_dict[k] = hd.make_table(curated_a, curated_b, context=True).replace("\n", " ")
-            if "do_not_run" not in data_a[k]:
+
+            # List of keys that make gout comparison pointless
+            skip_gout_keys = {"do_not_run", "moderr", "nrn_run_err"}
+            if skip_gout_keys.isdisjoint(data_a[k]) and skip_gout_keys.isdisjoint(data_b[k]):
                 gout_a_file = os.path.join(data_a[k]["run_info"]["start_dir"], "gout")
                 gout_b_file = os.path.join(data_b[k]["run_info"]["start_dir"], "gout")
 
