@@ -25,7 +25,8 @@ The following commands are now available:
   runmodels -h
   ```
   Note that models have to be downloaded beforehand with `getmodels`.
-  You can specify `--virtual` so that NEURON GUI is run in headless mode. It requires a backend (n.r. `Xvfb`)
+  You can specify `--virtual` so that NEURON GUI is run in headless mode. It requires a backend (n.r. `Xvfb`).
+  Re-running in the same `--workdir` can mangle results. Please use `--clean` if you wish to re-run in the same `--workdir`.
   
 
 * `report2html` -> create an interactive HTML report for a given json report (obtained with `runmodels`)
@@ -103,7 +104,7 @@ The generated report following `runmodels` contains te following info:
 
 For example, by running:
 ```
-runmodels --gout test3682 3682
+runmodels --gout --workdir=test3682 3682
 ```
 we will generate report `test3782.json` :
 ```yaml
