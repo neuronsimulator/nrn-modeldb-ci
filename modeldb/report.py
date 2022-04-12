@@ -59,7 +59,10 @@ def diff_reports(report1_json, report2_json):
             curated_a = curate_run_data(data_a[k]["nrn_run"], model=int(k))
             curated_b = curate_run_data(data_b[k]["nrn_run"], model=int(k))
             if curated_a != curated_b:
-                diff_dict[k] = hd.make_table(curated_a, curated_b, context=True).replace("\n", " ")
+                diff_dict[k] = hd.make_table(curated_a, curated_b,
+                                             fromdesc=data_a[k]["run_info"]["start_dir"],
+                                             todesc=data_b[k]["run_info"]["start_dir"],
+                                             context=True).replace("\n", " ")
 
             # List of keys that make gout comparison pointless
             skip_gout_keys = {"do_not_run", "moderr", "nrn_run_err"}
