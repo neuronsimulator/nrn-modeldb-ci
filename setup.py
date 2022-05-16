@@ -1,29 +1,42 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pathlib
 from setuptools import setup, find_packages
-import pkg_resources
 
+install_requires = [
+    # core
+    'requests',
+    'pyyaml',
+    'docopt',
+    'jinja2',
+    'pyvirtualdisplay',
 
-def get_install_requires():
-    install_requires = []
-    with pathlib.Path('requirements.txt').open() as requirements_txt:
-        install_requires = [
-            str(requirement)
-            for requirement
-            in pkg_resources.parse_requirements(requirements_txt)
-        ]
-    return install_requires
+    # for running models
+    'pyqt5',
+    'ipython',
+    'matplotlib',
+    'scipy',
+    '2to3',
+]
+
+with open('README.md', 'r', encoding='utf-8') as f:
+    long_description = f.read()
 
 
 def setup_package():
 
     setup(
         name='nrn-modeldb-ci',
-        version='0.0.1',
+        description='NEURON ModelDB CI tools',
+        url='https://github.com/neuronsimulator/nrn-modeldb-ci',
+        author='EPFL Blue Brain Project & Yale',
+        author_email='alexandru.savulescu@epfl.ch',
+        license='BSD-3-Clause',
         packages=find_packages(),
-        install_requires=get_install_requires(),
+        use_scm_version=True,
+        include_package_data=True,
+        install_requires=install_requires,
+        setup_requires=['setuptools_scm'],
         entry_points=dict(
             console_scripts=[
                 'runmodels = modeldb.commands:runmodels',
@@ -34,6 +47,8 @@ def setup_package():
                 'diffreports2html = modeldb.commands:diffreports2html',
             ]
         ),
+        long_description=long_description,
+        long_description_content_type="text/markdown",
     )
 
 
