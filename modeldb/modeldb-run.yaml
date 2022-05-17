@@ -565,12 +565,15 @@
 239177:
     github: 'pull/1'
 241165:
+    github: 'pull/1'
     model_dir: mechanisms
     run:
     - tstop = 300 # original tstop is 30000 , too big
     - run()
     - verify_graph_()
 241240:
+    github: 'pull/1'
+247968:
     github: 'pull/1'
 260971:
     comment: tricky to set-up due to mosinit.hoc autodiscovery
@@ -992,6 +995,8 @@
     - mv temp.tmp MOPP_Fig_1B_left/ichan2.mod
 136095:
     github: 'pull/1'
+136310:
+    github: 'pull/1'
 138321:
     run:
     - run()
@@ -1077,6 +1082,8 @@
 150284:
     comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
     run: null
+150556:
+    github: 'pull/1'
 153280:
     github: 'pull/1'
 154732:
