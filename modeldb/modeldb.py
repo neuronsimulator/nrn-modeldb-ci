@@ -11,7 +11,8 @@ from .config import *
 import traceback
 from pprint import pformat
 
-def download_model(model_id):
+def download_model(arg_tuple):
+    model_id, model_run_info = arg_tuple
     try:
         model_json = requests.get(MDB_MODEL_DOWNLOAD_URL.format(model_id=model_id)).json()
         model = Model(
@@ -31,6 +32,26 @@ def download_model(model_id):
         )
         with open(model_zip_uri, "wb+") as zipfile:
             zipfile.write(base64.standard_b64decode(url["file_content"]))
+
+        if 'github' in model_run_info:
+            # This means we should try to replace the version of the model that
+            # we downloaded from the ModelDB API just above with a version from
+            # GitHub
+            github = model_run_info['github']
+            if github == 'default':
+                suffix = ''
+            elif github.startswith('pull/'):
+                pr_number = int(github[5:])
+                suffix = '/pull/{}/head'.format(pr_number)
+            else:
+                raise Exception("Invalid value for github key: {}".format(github))
+            github_url = 'https://api.github.com/repos/ModelDBRepository/{model_id}/zipball{suffix}'.format(model_id=model_id, suffix=suffix)
+            # Replace the local file `model_zip_uri` with the zip file we
+            # downloaded from `github_url`
+            github_response = requests.get(github_url)
+            assert github_response.status_code == requests.codes.ok
+            with open(model_zip_uri, "wb+") as zipfile:
+                zipfile.write(github_response.content)
     except Exception as e:   #  noqa
         model = e
 
@@ -64,7 +85,7 @@ class ModelDB(object):
             os.mkdir(MODELS_ZIP_DIR)
         models = requests.get(MDB_NEURON_MODELS_URL).json() if model_list is None else model_list
         pool = multiprocessing.Pool()
-        processed_models = pool.imap_unordered(download_model, models)
+        processed_models = pool.imap_unordered(download_model, [(model_id, self._run_instr[model_id]) for model_id in models])
         download_err = {}
         for model_id, model in ProgressBar.iter(processed_models, len(models)):
             if not isinstance(model, Exception):
