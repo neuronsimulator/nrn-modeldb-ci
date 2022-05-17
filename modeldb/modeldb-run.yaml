@@ -202,6 +202,10 @@
     run:
     - runc()
     - verify_graph_()
+7399:
+    github: 'pull/1'
+7400:
+    github: 'pull/1'
 7659:
     run:
     - runp()
@@ -332,6 +336,7 @@
     comment: //disregard cannot be run in batch mode
     skip: true
 26997:
+    github: 'pull/1'
     run:
     - fig1a()
     - verify_graph_()
@@ -347,6 +352,8 @@
     - ringperf()
     - run()
     - verify_graph_()
+37819:
+    github: 'pull/1'
 37856:
     run:
     - runiv()
@@ -1039,6 +1046,8 @@
     - init()
     - run()
     - verify_graph_()
+144538:
+    github: 'pull/1'
 144586:
     github: 'pull/1'
 145836:
