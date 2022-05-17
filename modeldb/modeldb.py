@@ -89,7 +89,7 @@ class ModelDB(object):
         pool = multiprocessing.Pool()
         processed_models = pool.imap_unordered(
             download_model,
-            [(model_id, self._run_instr[model_id]) for model_id in models],
+            [(model_id, self._run_instr.get(model_id, {})) for model_id in models],
         )
         download_err = {}
         for model_id, model in ProgressBar.iter(processed_models, len(models)):

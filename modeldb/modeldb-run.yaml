@@ -225,6 +225,8 @@
     - use_mcell_ran4(1)
     - rund()
     - verify_graph_()
+12631:
+    github: default
 17663:
     run:
     - restart("re1_cc")
@@ -378,10 +380,12 @@
     - run()
     - verify_graph_()
 51781:
+    github: 'pull/1'
     run:
     - load_file("testnet.hoc")
     - verify_graph_()
 52034:
+    github: 'pull/1'
     run:
     - run_short()
     - verify_graph_()
@@ -523,6 +527,8 @@
     - tstop=1000
     - run()
     - verify_graph_()
+87585:
+    github: 'pull/1'
 156120:
     model_dir: mods/other_mods;mods/synapse
     run:
@@ -543,22 +549,29 @@
     - run()
     - verify_graph_()
 223031:
+    github: 'pull/1'
     model_dir: S1
     run:
     - run()
     - verify_graph_()
+231427:
+    github: 'default'
 235769:
     model_dir: fig3
     run:
     - tstop = 1000
     - run()
     - verify_graph_()
+239177:
+    github: 'pull/1'
 241165:
     model_dir: mechanisms
     run:
     - tstop = 300 # original tstop is 30000 , too big
     - run()
     - verify_graph_()
+241240:
+    github: 'pull/1'
 260971:
     comment: tricky to set-up due to mosinit.hoc autodiscovery
     skip: true
@@ -637,6 +650,7 @@
     - run()
     - verify_graph_()
 97868:
+    github: 'default'
     comment: //do not run
     run: null
 97874:
@@ -819,6 +833,7 @@
     - '{init() run()}'
     - verify_graph_()
 116830:
+    github: 'pull/1'
     run:
     - // takes too long and no gout data
     - //load_file("init.hoc")
@@ -940,6 +955,7 @@
     - run()
     - verify_graph_()
 123815:
+    github: 'pull/1'
     run:
     - tstop=5
     - newPlotV()
@@ -973,12 +989,15 @@
     script: # todo -> fix model for NEURON 8.0.0 and remove this script
     - sed 's/return 0;//' MOPP_Fig_1B_left/ichan2.mod > temp.tmp
     - mv temp.tmp MOPP_Fig_1B_left/ichan2.mod
+136095:
+    github: 'pull/1'
 138321:
     run:
     - run()
     - verify_graph_()
     model_dir: OneDimension/Neuron
 138379:
+    github: 'pull/1'
     run:
     - mytstop=0.1e3
     - tstop=mytstop
@@ -1000,6 +1019,7 @@
     run: null
 141505:
     comment: //do not run Specialized installation environment
+    github: 'pull/1'
     run: null
 144385:
   model_dir: mod
@@ -1013,6 +1033,8 @@
     - init()
     - run()
     - verify_graph_()
+144586:
+    github: 'pull/1'
 145836:
     run:
     - ParmFitnessGui[0].run()
@@ -1027,9 +1049,13 @@
         repl: 'Finished simulation in %simulation_time% seconds'
       - pattern: 'Current time: \d+/\d+/\d+,\d+:\d+:\d+ [AP]{1}M:\d+'
         repl: 'Current time: %current_time%'
+146949:
+    github: 'pull/1'
 147461:
     comment: //do not run Minimum time would be 1/2 hr default time is about 8.3 hours
     run: null
+149000:
+    github: 'default'
 149739:
     run:
     - demo_run()
@@ -1043,13 +1069,33 @@
     - init()
     - run()
     - verify_graph_()
+150240:
+    github: 'pull/1'
+150245:
+    github: 'pull/1'
 150284:
     comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
     run: null
+153280:
+    github: 'pull/1'
+154732:
+    github: 'pull/1'
+155568:
+    github: 'pull/1'
+155601:
+    github: 'pull/1'
+155602:
+    github: 'pull/1'
+156780:
+    github: 'pull/1'
 167772:
     comment: //do not run Tried "initDialog.unmap(1)" - didnt work.  Need to change
         archive
     run: null
+181967:
+    github: 'pull/1'
+185355:
+    github: 'pull/2'
 187604:
   curate_patterns:
     - pattern: 'TIME HOST 0: [0-9\.]+ seconds \(set up\)'
@@ -1083,12 +1129,14 @@
     script:
     - sed -i 's/tstop=/tstop=100 \/\//' Start.hoc
 157157:
+    github: 'pull/1'
     run:
     - run()
     - verify_graph_()
     script:
     - sed -i 's/tstop = 5000/tstop = 250 \/\//g' PC.ses
 244848:
+    github: 'pull/2'
     run: null
     comment: not straightforward to cut down simulation time, takes too long
 #    run:
@@ -1105,7 +1153,12 @@
     - sed -i 's/500/5/g' BPF.hoc
     - sed -i 's/2\([0|1]\)000/2\1/g' BPF.hoc
     comment: diving some numbers with 100 halvened the sim time
+249463:
+    github: 'pull/1'
+256388:
+    github: 'pull/1'
 151126:
+    github: 'pull/1'
     run:
     - run()
     - verify_graph_()
