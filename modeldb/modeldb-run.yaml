@@ -1111,6 +1111,8 @@
 223962:
     skip: true
     comment: takes too long, need to see how to reduce time
+225080:
+    github: 'pull/1'
 149174:
     skip: true
     comment: testing in Python + hardcoded NEURON
