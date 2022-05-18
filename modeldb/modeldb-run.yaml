@@ -355,6 +355,8 @@
     - ringperf()
     - run()
     - verify_graph_()
+35358:
+    github: 'pull/2'
 37819:
     github: 'pull/1'
 37856:
@@ -1141,7 +1143,10 @@
       repl: 'TIME HOST 0: %elapsed_time% seconds (set up)'
     - pattern: 'TIME HOST 0: [0-9\.]+ seconds \(created cells\)'
       repl: 'TIME HOST 0: %elapsed_time% seconds (created cells)'
+  github: 'pull/2'
 194897:
+    github: 'pull/1'
+195615:
     github: 'pull/1'
 206244:
     run:
