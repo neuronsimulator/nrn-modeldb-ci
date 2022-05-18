@@ -104,6 +104,7 @@
     - run()
     - verify_graph_()
 3658:
+    github: 'pull/1'
     run:
     - glubes2D()
     - run()
@@ -229,6 +230,8 @@
     - use_mcell_ran4(1)
     - rund()
     - verify_graph_()
+9889:
+    github: 'pull/1'
 12631:
     github: default
 17663:
@@ -562,7 +565,7 @@
     - run()
     - verify_graph_()
 231427:
-    github: 'default'
+    github: 'pull/2'
 235769:
     model_dir: fig3
     run:
@@ -667,6 +670,7 @@
     model_dir: modeldb
     run:
     - verify_graph_()
+    github: 'pull/1'
 97917:
     run:
     - traub_launch()
@@ -694,6 +698,7 @@
     - run()
     - verify_graph_()
 105507:
+    github: 'pull/2'
     run:
     - load_file("batch_.hoc")
     - verify_graph_()
@@ -866,6 +871,8 @@
     script:
     - sed 's/^showdemo=1/showdemo=0/' mosinit.hoc > temp.tmp
     - mv temp.tmp mosinit.hoc
+116862:
+    github: 'pull/1'
 116956:
     run:
     - run()
@@ -1094,7 +1101,11 @@
 150284:
     comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
     run: null
+150551:
+    github: 'pull/1'
 150556:
+    github: 'pull/1'
+150691:
     github: 'pull/1'
 153280:
     github: 'pull/1'
@@ -1147,7 +1158,10 @@
     script:
     - sed -i 's/tstop = /tstop = 50\/\//' Fig8_tuft_NMDA_spike.hoc
     - sed -i 's/simul_iter=/simul_iter=2 \/\//' Fig8_tuft_NMDA_spike.hoc
-    comment: usual simulation time is ~ 10 minutes (tstop = 120 and simul_iter=10)
+    comment: usual simulation time is ~ 10 minutes (tstop = 120 and
+    simul_iter=10)
+259366:
+    github: 'pull/1'
 206267:
     run:
     - run()
