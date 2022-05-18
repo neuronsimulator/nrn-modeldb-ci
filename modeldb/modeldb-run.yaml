@@ -1146,6 +1146,8 @@
     - pattern: 'TIME HOST 0: [0-9\.]+ seconds \(created cells\)'
       repl: 'TIME HOST 0: %elapsed_time% seconds (created cells)'
   github: 'pull/2'
+189154:
+    github: 'pull/1'
 194897:
     github: 'pull/1'
 195615:
