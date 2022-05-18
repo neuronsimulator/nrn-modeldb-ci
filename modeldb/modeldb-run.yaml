@@ -1158,8 +1158,7 @@
     script:
     - sed -i 's/tstop = /tstop = 50\/\//' Fig8_tuft_NMDA_spike.hoc
     - sed -i 's/simul_iter=/simul_iter=2 \/\//' Fig8_tuft_NMDA_spike.hoc
-    comment: usual simulation time is ~ 10 minutes (tstop = 120 and
-    simul_iter=10)
+    comment: usual simulation time is ~ 10 minutes (tstop = 120 and simul_iter=10)
 259366:
     github: 'pull/1'
 206267:
