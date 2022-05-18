@@ -672,7 +672,7 @@
     model_dir: modeldb
     run:
     - verify_graph_()
-    github: 'pull/1'
+    github: 'pull/2'
 97917:
     run:
     - traub_launch()
