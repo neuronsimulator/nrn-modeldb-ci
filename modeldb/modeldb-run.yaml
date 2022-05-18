@@ -1030,6 +1030,7 @@
     comment: //do not run
     run: null
 140881:
+    github: 'pull/1'
     comment: //do not run Lytton model takes too long to run and complex to edit
     run: null
 141063:
@@ -1129,6 +1130,10 @@
     github: 'pull/1'
 185355:
     github: 'pull/2'
+185858:
+    github: 'pull/1'
+186768:
+    github: 'pull/1'
 187604:
   curate_patterns:
     - pattern: 'TIME HOST 0: [0-9\.]+ seconds \(set up\)'
