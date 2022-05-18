@@ -233,7 +233,7 @@
 9889:
     github: 'pull/1'
 12631:
-    github: default
+    github: 'pull/2'
 17663:
     run:
     - restart("re1_cc")
