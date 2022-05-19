@@ -50,11 +50,22 @@ def download_model(arg_tuple):
             )
             # Replace the local file `model_zip_uri` with the zip file we
             # downloaded from `github_url`
-            github_response = requests.get(github_url)
-            assert github_response.status_code == requests.codes.ok
+            num_attempts = 3
+            status_codes = []
+            for _ in range(num_attempts):
+                github_response = requests.get(github_url)
+                status_codes.append(github_response.status_code)
+                if github_response.status_code == requests.codes.ok:
+                    break
+            else:
+                raise Exception(
+                    "Failed to download {} with status codes {}".format(
+                        github_url, status_codes
+                    )
+                )
             with open(model_zip_uri, "wb+") as zipfile:
                 zipfile.write(github_response.content)
-    except Exception as e:   #  noqa
+    except Exception as e:  #  noqa
         model = e
 
     return model_id, model
