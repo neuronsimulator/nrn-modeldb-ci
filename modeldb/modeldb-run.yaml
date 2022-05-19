@@ -1171,6 +1171,11 @@
 149174:
     skip: true
     comment: testing in Python + hardcoded NEURON
+244262:
+    github: 'pull/1'
+    script:
+    - if [[ ! -f Iintra.dat ]]; then unzip Iintra.dat.zip; fi
+    - ls -l Iintra.dat
 258867:
     run:
     - run()
