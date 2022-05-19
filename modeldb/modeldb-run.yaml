@@ -665,7 +665,7 @@
     - run()
     - verify_graph_()
 97868:
-    github: 'default'
+    github: 'pull/2'
     comment: //do not run
     run: null
 97874:
