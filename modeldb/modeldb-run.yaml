@@ -674,6 +674,7 @@
     - verify_graph_()
     github: 'pull/2'
 97917:
+    github: 'pull/2'
     run:
     - traub_launch()
     - verify_graph_()
