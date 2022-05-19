@@ -1095,14 +1095,13 @@
     curate_patterns:
       - pattern: 't=100\.00;122\([0-9]+\.[0-9]+\)'
         repl: 't=100.00;122(%some_kind_of_clock%)'
+    github: 'pull/1'
     run:
     - tstop=100
     - init()
     - run()
     - verify_graph_()
 150240:
-    github: 'pull/1'
-150245:
     github: 'pull/1'
 150284:
     comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
