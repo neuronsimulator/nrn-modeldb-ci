@@ -4,6 +4,7 @@ import multiprocessing
 import base64
 import os
 import requests
+import time
 from .progressbar import ProgressBar
 import yaml
 from .data import Model
@@ -57,6 +58,7 @@ def download_model(arg_tuple):
                 status_codes.append(github_response.status_code)
                 if github_response.status_code == requests.codes.ok:
                     break
+                time.sleep(5)
             else:
                 raise Exception(
                     "Failed to download {} with status codes {}".format(
