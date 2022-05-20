@@ -705,10 +705,6 @@
     run:
     - load_file("batch_.hoc")
     - verify_graph_()
-    script:
-    - sed 's/batch_flag=0/batch_flag=1/
-    - s/tstop = 1e3/tstop = 20/' batch_.hoc > temp.tmp
-    - mv temp.tmp batch_.hoc
 106551:
     run:
     - use_mcell_ran4(1)
