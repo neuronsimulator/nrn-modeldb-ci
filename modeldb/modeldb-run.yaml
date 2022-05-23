@@ -4,12 +4,16 @@
     - run()
     - verify_graph_()
 2487:
+    github: 'pull/1'
     run:
     - run()
     - verify_graph_()
 2730:
+    github: 'pull/1'
     run:
     - //launch but do not run
+2733:
+    github: 'pull/1'
 2796:
     run:
     - run()
@@ -457,6 +461,7 @@
     - run()
     - verify_graph_()
 64229:
+    github: 'pull/1'
     model_dir: parbulbNet
     run:
     - run()
@@ -470,6 +475,7 @@
     comment: //do not run takes too long
     run: null
 64296:
+    github: 'pull/1'
     run:
     - fig7A()
     - verify_graph_()
@@ -618,6 +624,7 @@
     - run()
     - verify_graph_()
 93321:
+    github: 'pull/1'
     run:
     - fig3topleft()
     - verify_graph_()
@@ -822,6 +829,7 @@
     - makeplusplus()
     - verify_graph_()
 116094:
+    github: 'pull/1'
     run:
     - load_file("mosinit.hoc")
     - run_experiment("fig2ace")
@@ -1087,6 +1095,7 @@
 149000:
     github: 'default'
 149739:
+    github: 'pull/1'
     run:
     - demo_run()
     - verify_graph_()
@@ -1135,6 +1144,8 @@
     github: 'pull/1'
 182129:
     github: 'pull/1'
+183300:
+    github: 'pull/1'
 185355:
     github: 'pull/2'
 185858:
@@ -1151,7 +1162,7 @@
 189154:
     github: 'pull/1'
 194897:
-    github: 'pull/1'
+    github: 'pull/2'
 195615:
     github: 'pull/1'
 206244:
@@ -1164,6 +1175,8 @@
     skip: true
     comment: takes too long, need to see how to reduce time
 225080:
+    github: 'pull/1'
+232097:
     github: 'pull/1'
 149174:
     skip: true
