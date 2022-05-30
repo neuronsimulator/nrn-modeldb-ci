@@ -4,16 +4,12 @@
     - run()
     - verify_graph_()
 2487:
-    github: 'pull/1'
     run:
     - run()
     - verify_graph_()
 2730:
-    github: 'pull/1'
     run:
     - //launch but do not run
-2733:
-    github: 'pull/1'
 2796:
     run:
     - run()
@@ -108,7 +104,6 @@
     - run()
     - verify_graph_()
 3658:
-    github: 'pull/1'
     run:
     - glubes2D()
     - run()
@@ -207,10 +202,6 @@
     run:
     - runc()
     - verify_graph_()
-7399:
-    github: 'pull/1'
-7400:
-    github: 'pull/1'
 7659:
     run:
     - runp()
@@ -225,7 +216,6 @@
     - dend_inj()
     - verify_graph_()
 8284:
-    github: 'pull/1'
     run:
     - run()
     - verify_graph_()
@@ -234,10 +224,6 @@
     - use_mcell_ran4(1)
     - rund()
     - verify_graph_()
-9889:
-    github: 'pull/1'
-12631:
-    github: 'pull/2'
 17663:
     run:
     - restart("re1_cc")
@@ -343,7 +329,6 @@
     comment: //disregard cannot be run in batch mode
     skip: true
 26997:
-    github: 'pull/1'
     run:
     - fig1a()
     - verify_graph_()
@@ -359,10 +344,6 @@
     - ringperf()
     - run()
     - verify_graph_()
-35358:
-    github: 'pull/2'
-37819:
-    github: 'pull/1'
 37856:
     run:
     - runiv()
@@ -396,12 +377,10 @@
     - run()
     - verify_graph_()
 51781:
-    github: 'pull/1'
     run:
     - load_file("testnet.hoc")
     - verify_graph_()
 52034:
-    github: 'pull/1'
     run:
     - run_short()
     - verify_graph_()
@@ -461,7 +440,6 @@
     - run()
     - verify_graph_()
 64229:
-    github: 'pull/1'
     model_dir: parbulbNet
     run:
     - run()
@@ -475,7 +453,6 @@
     comment: //do not run takes too long
     run: null
 64296:
-    github: 'pull/1'
     run:
     - fig7A()
     - verify_graph_()
@@ -545,8 +522,6 @@
     - tstop=1000
     - run()
     - verify_graph_()
-87585:
-    github: 'pull/1'
 156120:
     model_dir: mods/other_mods;mods/synapse
     run:
@@ -567,32 +542,22 @@
     - run()
     - verify_graph_()
 223031:
-    github: 'pull/1'
     model_dir: S1
     run:
     - run()
     - verify_graph_()
-231427:
-    github: 'pull/2'
 235769:
     model_dir: fig3
     run:
     - tstop = 1000
     - run()
     - verify_graph_()
-239177:
-    github: 'pull/1'
 241165:
-    github: 'pull/1'
     model_dir: mechanisms
     run:
     - tstop = 300 # original tstop is 30000 , too big
     - run()
     - verify_graph_()
-241240:
-    github: 'pull/1'
-247968:
-    github: 'pull/1'
 260971:
     comment: tricky to set-up due to mosinit.hoc autodiscovery
     skip: true
@@ -624,7 +589,6 @@
     - run()
     - verify_graph_()
 93321:
-    github: 'pull/1'
     run:
     - fig3topleft()
     - verify_graph_()
@@ -672,14 +636,12 @@
     - run()
     - verify_graph_()
 97868:
-    github: 'pull/2'
     comment: //do not run
     run: null
 97874:
     model_dir: modeldb
     run:
     - verify_graph_()
-    github: 'pull/2'
 97917:
     github: 'pull/2'
     run:
@@ -712,6 +674,10 @@
     run:
     - load_file("batch_.hoc")
     - verify_graph_()
+    script:
+    - sed 's/batch_flag=0/batch_flag=1/
+    - s/tstop = 1e3/tstop = 20/' batch_.hoc > temp.tmp
+    - mv temp.tmp batch_.hoc
 106551:
     run:
     - use_mcell_ran4(1)
@@ -719,7 +685,6 @@
     - run()
     - verify_graph_()
 106891:
-    github: 'pull/3'
     run:
     - tstop=10
     - runeg()
@@ -774,7 +739,6 @@
     - run()
     - verify_graph_()
 113732:
-    github: 'pull/1'
     run:
     - use_mcell_ran4(1)
     - suprathresh()
@@ -829,7 +793,6 @@
     - makeplusplus()
     - verify_graph_()
 116094:
-    github: 'pull/1'
     run:
     - load_file("mosinit.hoc")
     - run_experiment("fig2ace")
@@ -857,7 +820,6 @@
     - '{init() run()}'
     - verify_graph_()
 116830:
-    github: 'pull/1'
     run:
     - // takes too long and no gout data
     - //load_file("init.hoc")
@@ -871,7 +833,6 @@
     - run()
     - verify_graph_()
 116838:
-    github: 'pull/1'
     run:
     - tstop=10
     - run()
@@ -879,8 +840,6 @@
     script:
     - sed 's/^showdemo=1/showdemo=0/' mosinit.hoc > temp.tmp
     - mv temp.tmp mosinit.hoc
-116862:
-    github: 'pull/1'
 116956:
     run:
     - run()
@@ -982,7 +941,6 @@
     - run()
     - verify_graph_()
 123815:
-    github: 'pull/1'
     run:
     - tstop=5
     - newPlotV()
@@ -1016,10 +974,6 @@
     script: # todo -> fix model for NEURON 8.0.0 and remove this script
     - sed 's/return 0;//' MOPP_Fig_1B_left/ichan2.mod > temp.tmp
     - mv temp.tmp MOPP_Fig_1B_left/ichan2.mod
-136095:
-    github: 'pull/1'
-136310:
-    github: 'pull/1'
 137845:
     github: 'pull/1'
 138321:
@@ -1028,20 +982,17 @@
     - verify_graph_()
     model_dir: OneDimension/Neuron
 138379:
-    github: 'pull/1'
     run:
     - mytstop=0.1e3
     - tstop=mytstop
     - finish_run()
     - verify_graph_()
-139421:
-    github: 'pull/1'
 139656:
     comment: //do not run
     run: null
 140881:
-    github: 'pull/1'
     comment: //do not run Lytton model takes too long to run and complex to edit
+    github: 'pull/1'
     run: null
 141063:
     comment: //do not run Problem is that Vbox.dialog() steals the focus (complex
@@ -1067,12 +1018,6 @@
     - init()
     - run()
     - verify_graph_()
-144538:
-    github: 'pull/1'
-144549:
-    github: 'pull/1'
-144586:
-    github: 'pull/1'
 145836:
     run:
     - ParmFitnessGui[0].run()
@@ -1087,15 +1032,10 @@
         repl: 'Finished simulation in %simulation_time% seconds'
       - pattern: 'Current time: \d+/\d+/\d+,\d+:\d+:\d+ [AP]{1}M:\d+'
         repl: 'Current time: %current_time%'
-146949:
-    github: 'pull/1'
 147461:
     comment: //do not run Minimum time would be 1/2 hr default time is about 8.3 hours
     run: null
-149000:
-    github: 'default'
 149739:
-    github: 'pull/1'
     run:
     - demo_run()
     - verify_graph_()
@@ -1103,68 +1043,26 @@
     curate_patterns:
       - pattern: 't=100\.00;122\([0-9]+\.[0-9]+\)'
         repl: 't=100.00;122(%some_kind_of_clock%)'
-    github: 'pull/1'
     run:
     - tstop=100
     - init()
     - run()
     - verify_graph_()
-150240:
-    github: 'pull/1'
 150284:
     comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
     run: null
-150551:
-    github: 'pull/1'
-150556:
-    github: 'pull/1'
-150691:
-    github: 'pull/1'
-151282:
-    github: 'pull/1'
-153280:
-    github: 'pull/1'
-154732:
-    github: 'pull/1'
-155568:
-    github: 'pull/1'
-155601:
-    github: 'pull/1'
-155602:
-    github: 'pull/1'
-156780:
-    github: 'pull/1'
 167772:
     comment: //do not run Tried "initDialog.unmap(1)" - didnt work.  Need to change
         archive
     run: null
-168874:
-    github: 'pull/4'
-181967:
-    github: 'pull/1'
-182129:
-    github: 'pull/1'
-183300:
-    github: 'pull/1'
-185355:
-    github: 'pull/2'
-185858:
-    github: 'pull/1'
-186768:
-    github: 'pull/1'
 187604:
   curate_patterns:
     - pattern: 'TIME HOST 0: [0-9\.]+ seconds \(set up\)'
       repl: 'TIME HOST 0: %elapsed_time% seconds (set up)'
     - pattern: 'TIME HOST 0: [0-9\.]+ seconds \(created cells\)'
       repl: 'TIME HOST 0: %elapsed_time% seconds (created cells)'
-  github: 'pull/2'
-189154:
-    github: 'pull/1'
 194897:
     github: 'pull/2'
-195615:
-    github: 'pull/1'
 206244:
     run:
     - chdir("mechanism")
@@ -1174,18 +1072,13 @@
 223962:
     skip: true
     comment: takes too long, need to see how to reduce time
-225080:
-    github: 'pull/1'
-232097:
-    github: 'pull/1'
-149174:
-    skip: true
-    comment: testing in Python + hardcoded NEURON
 244262:
-    github: 'pull/1'
     script:
     - if [[ ! -f Iintra.dat ]]; then unzip Iintra.dat.zip; fi
     - ls -l Iintra.dat
+149174:
+    skip: true
+    comment: testing in Python + hardcoded NEURON
 258867:
     run:
     - run()
@@ -1194,8 +1087,6 @@
     - sed -i 's/tstop = /tstop = 50\/\//' Fig8_tuft_NMDA_spike.hoc
     - sed -i 's/simul_iter=/simul_iter=2 \/\//' Fig8_tuft_NMDA_spike.hoc
     comment: usual simulation time is ~ 10 minutes (tstop = 120 and simul_iter=10)
-259366:
-    github: 'pull/1'
 206267:
     run:
     - run()
@@ -1203,14 +1094,12 @@
     script:
     - sed -i 's/tstop=/tstop=100 \/\//' Start.hoc
 157157:
-    github: 'pull/1'
     run:
     - run()
     - verify_graph_()
     script:
     - sed -i 's/tstop = 5000/tstop = 250 \/\//g' PC.ses
 244848:
-    github: 'pull/2'
     run: null
     comment: not straightforward to cut down simulation time, takes too long
 #    run:
@@ -1227,12 +1116,7 @@
     - sed -i 's/500/5/g' BPF.hoc
     - sed -i 's/2\([0|1]\)000/2\1/g' BPF.hoc
     comment: diving some numbers with 100 halvened the sim time
-249463:
-    github: 'pull/1'
-256388:
-    github: 'pull/1'
 151126:
-    github: 'pull/1'
     run:
     - run()
     - verify_graph_()
