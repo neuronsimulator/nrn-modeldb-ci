@@ -643,7 +643,6 @@
     run:
     - verify_graph_()
 97917:
-    github: 'pull/2'
     run:
     - traub_launch()
     - verify_graph_()
@@ -670,7 +669,6 @@
     - run()
     - verify_graph_()
 105507:
-    github: 'pull/2'
     run:
     - load_file("batch_.hoc")
     - verify_graph_()
@@ -974,8 +972,6 @@
     script: # todo -> fix model for NEURON 8.0.0 and remove this script
     - sed 's/return 0;//' MOPP_Fig_1B_left/ichan2.mod > temp.tmp
     - mv temp.tmp MOPP_Fig_1B_left/ichan2.mod
-137845:
-    github: 'pull/1'
 138321:
     run:
     - run()
@@ -992,7 +988,6 @@
     run: null
 140881:
     comment: //do not run Lytton model takes too long to run and complex to edit
-    github: 'pull/1'
     run: null
 141063:
     comment: //do not run Problem is that Vbox.dialog() steals the focus (complex
@@ -1004,7 +999,6 @@
     run: null
 141505:
     comment: //do not run Specialized installation environment
-    github: 'pull/1'
     run: null
 144385:
   model_dir: mod
@@ -1061,8 +1055,6 @@
       repl: 'TIME HOST 0: %elapsed_time% seconds (set up)'
     - pattern: 'TIME HOST 0: [0-9\.]+ seconds \(created cells\)'
       repl: 'TIME HOST 0: %elapsed_time% seconds (created cells)'
-194897:
-    github: 'pull/2'
 206244:
     run:
     - chdir("mechanism")
