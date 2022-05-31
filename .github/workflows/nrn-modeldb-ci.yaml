@@ -106,7 +106,7 @@ jobs:
         key: models-${{steps.install-deps.outputs.date}}
 
     - name: Get ModelDB models
-      # if: steps.cache-models.outputs.cache-hit != 'true'
+      if: steps.cache-models.outputs.cache-hit != 'true'
       run: getmodels
 
     - name: Run Models with NEURON V1 -> ${{ env.NEURON_V1 }}
