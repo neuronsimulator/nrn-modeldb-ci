@@ -83,6 +83,7 @@ jobs:
       if: github.event_name == 'pull_request'
 
     - name: Install dependencies and project
+      id: install-deps
       run: |
         set
         # Set up Xvfb
@@ -93,15 +94,16 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         #Install project in editable mode
         python -m pip install -e .
+        echo "::set-output name=date::$(date -u "+%Y%m")"
     
     - name: Cache ModelDB models
       id: cache-models
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           cache
           modeldb/modeldb-meta.yaml
-        key: models
+        key: models-${{steps.install-deps.outputs.date}}
 
     - name: Get ModelDB models
       if: steps.cache-models.outputs.cache-hit != 'true'

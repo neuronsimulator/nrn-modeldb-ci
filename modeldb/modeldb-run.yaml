@@ -1064,6 +1064,10 @@
 223962:
     skip: true
     comment: takes too long, need to see how to reduce time
+244262:
+    script:
+    - if [[ ! -f Iintra.dat ]]; then unzip Iintra.dat.zip; fi
+    - ls -l Iintra.dat
 149174:
     skip: true
     comment: testing in Python + hardcoded NEURON
