@@ -35,6 +35,7 @@ def runmodels(args=None):
         --gout                  Include gout into the report. Note that gout data can be very big, so disabled by default.
         --virtual               Run in headless mode. You need a back-end like Xvfb.
         --clean                 Auto-clean model working directory before running (useful for consecutive runs and failsafe)
+        --norun                 Compile and link only (nrnivmodl).
 
     Examples
         runmodels --workdir=/path/to/workdir                        # run all models
@@ -46,6 +47,7 @@ def runmodels(args=None):
     gout = options.pop("--gout", False)
     virtual = options.pop("--virtual", False)
     clean = options.pop("--clean", False)
+    norun = options.pop("--norun", False)
 
     if os.path.abspath(working_dir) == ROOT_DIR:
         print("Cannot run models directly into nrn-modeldb-ci ROOT_DIR -> {}".format(ROOT_DIR))
@@ -56,7 +58,7 @@ def runmodels(args=None):
         print("\tre-run with --clean if you wish to overwrite model runs!")
         sys.exit(1)
 
-    mrm = ModelRunManager(working_dir, gout=gout, clean=clean)
+    mrm = ModelRunManager(working_dir, gout=gout, clean=clean, norun=norun)
     model_list = model_ids if model_ids else None
 
     if virtual:

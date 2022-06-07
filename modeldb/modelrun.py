@@ -32,7 +32,7 @@ def is_dir_non_empty(directory):
 
 
 class ModelRun(dict):
-    def __init__(self, model, working_dir, clean=False):
+    def __init__(self, model, working_dir, clean=False, norun=False):
         self._model = model
         self._working_dir = os.path.abspath(working_dir)
         self._logs = []
@@ -43,6 +43,7 @@ class ModelRun(dict):
         self._run_time = 0
         self._run_py = False
         self._clean = clean
+        self._norun = norun
 
         self["run_info"] = {}
 
@@ -62,6 +63,9 @@ class ModelRun(dict):
                 self["run"] = ["python mosinit.py"]
             else:
                 self["run"] = ["verify_graph_()"]
+
+        if self._norun:
+            self["norun"] = True
 
     run_info = property(lambda self: self["run_info"])
 
@@ -244,21 +248,26 @@ def run_model(model):
         append_log(model, model.logs, traceback.format_exc())
 
     # run NEURON
-    try:
-        nrn_exe = "./x86_64/special" if mods is not None and len(mods) else "nrniv"
-        # '-nogui' creates segfault
-        model_run_cmds = [nrn_exe, '-nobanner']
-        if model.run_py:
-            model_run_cmds.append('-python')
-        model_run_cmds += [model.run_info["init"], model.run_info["driver"]]
-        append_log(model, model.nrn_run, "RUNNING -> {}".format(" ".join(model_run_cmds)))
-        run_neuron_cmds(model, model_run_cmds)
-        if os.path.isfile(os.path.join(model.model_dir, "gout")):
-            with open(os.path.join(model.model_dir, "gout"), 'r') as gout:
-                model._gout = gout.readlines()
-    except Exception:  # noqa
-        append_log(model, model.nrn_run, traceback.format_exc())
-        model._nrn_run_error = True
+    if "norun" in model:
+        append_log(model, model.logs,
+            "Model is not run due to --norun option"
+        )
+    else:
+        try:
+            nrn_exe = "./x86_64/special" if mods is not None and len(mods) else "nrniv"
+            # '-nogui' creates segfault
+            model_run_cmds = [nrn_exe, '-nobanner']
+            if model.run_py:
+                model_run_cmds.append('-python')
+            model_run_cmds += [model.run_info["init"], model.run_info["driver"]]
+            append_log(model, model.nrn_run, "RUNNING -> {}".format(" ".join(model_run_cmds)))
+            run_neuron_cmds(model, model_run_cmds)
+            if os.path.isfile(os.path.join(model.model_dir, "gout")):
+                with open(os.path.join(model.model_dir, "gout"), 'r') as gout:
+                    model._gout = gout.readlines()
+        except Exception:  # noqa
+            append_log(model, model.nrn_run, traceback.format_exc())
+            model._nrn_run_error = True
 
     stop_time = time.perf_counter()
 
@@ -268,7 +277,7 @@ def run_model(model):
 
 
 class ModelRunManager(object):
-    def __init__(self, master_dir, gout=False, clean=False):
+    def __init__(self, master_dir, gout=False, clean=False, norun=False):
         self.master_dir = master_dir
         self.logfile = str(master_dir) + ".log"
         self.dumpfile = str(master_dir) + ".json"
@@ -279,6 +288,7 @@ class ModelRunManager(object):
         self.run_logs = {}
         self._gout = gout
         self._clean = clean
+        self._norun = norun
 
     def _setup_logging(self):
         self.logger = logging.getLogger("dev")
@@ -400,7 +410,7 @@ class ModelRunManager(object):
 
         # prepare ModelRun objects
         models_to_run = (
-            ModelRun(mdl, self.master_dir, self._clean) for mdl in models_selected
+            ModelRun(mdl, self.master_dir, self._clean, self._norun) for mdl in models_selected
         )
 
         # number of models
