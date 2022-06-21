@@ -1122,5 +1122,117 @@
     script:
     - 2to3 -w .
     - sed -i 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
-
+# find * -name mosinit.py
+156039:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - 2to3 -w .
+#194897: Dura-BernalEtAl2017
+#    python: true
+#    run:
+#    - import os; os.system("python mosinit.py"); quit();
+#    script:
+#    - 2to3 -w .
+#    - reindent .
+226422:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - 2to3 -w .
+186768:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - 2to3 -w .
+    - reindent .
+#189922: ClayEtAl2008
+#    python: true
+#    run:
+#    - import os; os.system("python mosinit.py"); quit();
+#    script:
+#    - 2to3 -w .
+#    - reindent .
+#    - sed -i 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
+#195615: spidemo
+#    python: true
+#    run:
+#    - import os; os.system("python mosinit.py"); quit();
+#    script:
+#    - 2to3 -w .
+139421:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - 2to3 -w .
+144586:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - 2to3 -w .
+#244412: SolinasEtAl2019
+#    python: true
+#    run:
+#    - import os; os.system("python mosinit.py"); quit();
+#    script:
+#    - 2to3 -w .
+39948:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - 2to3 -w .
+#195569: HuangEtAl2015
+#    python: true
+#    run:
+#    - import os; os.system("python mosinit.py"); quit();
+#    script:
+#    - 2to3 -w .
+249404:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+206400:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - 2to3 -w .
+# find * -name run.py
+144511:
+    python: true
+    run:
+    - import os; os.system("python run.py"); quit();
+    script:
+    - 2to3 -w .
+#229276: Final
+#    python: true
+#    run:
+#    - import os; os.system("python run.py"); quit();
+#    script:
+#    - 2to3 -w .
+#151282: ca3ihdemo
+#    python: true
+#    run:
+#    - import os; os.system("python run.py"); quit();
+#    script:
+#    - 2to3 -w .
+#264834:
+#    python: true
+#    run:
+#    - import os; os.system("python run.py --plot 1"); quit();
+#    script:
+#    - 2to3 -w .
+#151685:
+#    python: true
+#    run:
+#    - import os; os.system("python run.py param/gamma_L5weak_L2weak.param"); quit();
+#    script:
+#    - 2to3 -w .
+#241165: AberraEtAl2018
 
