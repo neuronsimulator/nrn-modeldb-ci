@@ -1115,13 +1115,6 @@
     script:
     - sed -i 's/tstop = 550/tstop = 100/' HAM_SR1.ses
 # python models
-189922:
-    python: true
-    run:
-    - import os; os.system("python mosinit.py"); quit();
-    script:
-    - 2to3 -w .
-    - sed -i 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
 # find * -name mosinit.py
 156039:
     python: true
@@ -1157,6 +1150,9 @@
     python: true
     run:
     - import os; os.system("python mosinit.py"); quit();
+    script:
+    - 2to3 -w .
+    - sed -i 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
 195615:
     python: true
     run:
@@ -1243,4 +1239,3 @@
     model_dir: mod
     run:
     - import os; os.system("python run.py param/gamma_L5weak_L2weak.param"); quit();
-#241165: AberraEtAl2018
