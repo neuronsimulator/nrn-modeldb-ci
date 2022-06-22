@@ -1129,13 +1129,17 @@
     - import os; os.system("python mosinit.py"); quit();
     script:
     - 2to3 -w .
-#194897: Dura-BernalEtAl2017
-#    python: true
-#    run:
-#    - import os; os.system("python mosinit.py"); quit();
-#    script:
-#    - 2to3 -w .
-#    - reindent .
+194897:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - 2to3 -w .
+    - reindent .
+    - sed -i 's/figure, hold, isscalar/figure, isscalar/g;s/hold(True)/#hold(True)/g' analysis.py
+    - sed -i 's/hashlib.md5(obj)/hashlib.md5(obj.encode("utf-8"))/g' shared.py
+    - sed -i 's/cell.t0 = .0/#cell.t0 = .0/g' izhi.py
+    - sed -i "s/list(range(s.motorCmdStartCell/list(np.arange(s.motorCmdStartCell/g;s/s.nMuscles))))/s.nMuscles),dtype=int)))/g;s/'w'/'wb'/g;39iimport numpy as np" network.py
 226422:
     python: true
     run:
@@ -1149,20 +1153,18 @@
     script:
     - 2to3 -w .
     - reindent .
-#189922: ClayEtAl2008
-#    python: true
-#    run:
-#    - import os; os.system("python mosinit.py"); quit();
-#    script:
-#    - 2to3 -w .
-#    - reindent .
-#    - sed -i 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
-#195615: spidemo
-#    python: true
-#    run:
-#    - import os; os.system("python mosinit.py"); quit();
-#    script:
-#    - 2to3 -w .
+189922:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+195615:
+    python: true
+    run:
+    - import os; os.system("python sim.py PTcell.cfg"); quit();
+    script:
+    - 2to3 -w .
+    - reindent .
+    - sed -i "s/from time import time, clock/from time import time/g;67s/    exec(cmd)/    exec(cmd,globals())/;s/'w'/'wb'/g" sim.py
 139421:
     python: true
     run:
@@ -1175,24 +1177,27 @@
     - import os; os.system("python mosinit.py"); quit();
     script:
     - 2to3 -w .
-#244412: SolinasEtAl2019
-#    python: true
-#    run:
-#    - import os; os.system("python mosinit.py"); quit();
-#    script:
-#    - 2to3 -w .
+244412:
+    python: true
+    model_dir: mod_files
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - 2to3 -w .
+    - sed -i 's/Run_GUI/run_GUI/g' mosinit.py
 39948:
     python: true
     run:
     - import os; os.system("python mosinit.py"); quit();
     script:
     - 2to3 -w .
-#195569: HuangEtAl2015
-#    python: true
-#    run:
-#    - import os; os.system("python mosinit.py"); quit();
-#    script:
-#    - 2to3 -w .
+195569:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - 2to3 -w .
+    - sed -i "s/f = open(fname)/f = open(fname,'rb')/g" fig2a_show.py
 249404:
     python: true
     run:
@@ -1210,29 +1215,32 @@
     - import os; os.system("python run.py"); quit();
     script:
     - 2to3 -w .
-#229276: Final
-#    python: true
-#    run:
-#    - import os; os.system("python run.py"); quit();
-#    script:
-#    - 2to3 -w .
-#151282: ca3ihdemo
-#    python: true
-#    run:
-#    - import os; os.system("python run.py"); quit();
-#    script:
-#    - 2to3 -w .
-#264834:
-#    python: true
-#    run:
-#    - import os; os.system("python run.py --plot 1"); quit();
-#    script:
-#    - 2to3 -w .
-#151685:
-#    python: true
-#    run:
-#    - import os; os.system("python run.py param/gamma_L5weak_L2weak.param"); quit();
-#    script:
-#    - 2to3 -w .
+229276:
+    python: true
+    model_dir: mechanisms
+    run:
+    - import os; os.system("python run.py"); quit();
+    script:
+    - 2to3 -w .
+    - sed -i 's/cADpyr232_L5_TTPC1_b6836fcf6f(1 if add_synapses else 0)/cADpyr232_L5_TTPC1_b6836fcf6f(1 if add_synapses else 0,1)/g' run.py
+151282:
+    python: true
+    model_dir: .
+    run:
+    - import os; os.system("python sim.py"); quit();
+    script:
+    - 2to3 -w .
+    - reindent .
+264834:
+    python: true
+    model_dir: mechanisms
+    run:
+    - import os; os.system("python run.py --plot trace"); quit();
+    script:
+    - 2to3 -w .
+151685:
+    python: true
+    model_dir: mod
+    run:
+    - import os; os.system("python run.py param/gamma_L5weak_L2weak.param"); quit();
 #241165: AberraEtAl2018
-
