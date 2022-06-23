@@ -36,6 +36,7 @@ def runmodels(args=None):
         --virtual               Run in headless mode. You need a back-end like Xvfb.
         --clean                 Auto-clean model working directory before running (useful for consecutive runs and failsafe)
         --norun                 Compile and link only (nrnivmodl).
+        --inplace               Skip model preparation logic, simply run NEURON.
 
     Examples
         runmodels --workdir=/path/to/workdir                        # run all models
@@ -48,17 +49,24 @@ def runmodels(args=None):
     virtual = options.pop("--virtual", False)
     clean = options.pop("--clean", False)
     norun = options.pop("--norun", False)
+    inplace = options.pop("--inplace", False)
 
     if os.path.abspath(working_dir) == ROOT_DIR:
         print("Cannot run models directly into nrn-modeldb-ci ROOT_DIR -> {}".format(ROOT_DIR))
         sys.exit(1)
 
-    if not clean and is_dir_non_empty(working_dir):
-        print("WARNING: WorkingDirectory {} exists and is non empty.".format(working_dir))
-        print("\tre-run with --clean if you wish to overwrite model runs!")
+    if clean and inplace:
+        print("ERROR: --clean and --inplace are mutually exclusive")
         sys.exit(1)
 
-    mrm = ModelRunManager(working_dir, gout=gout, clean=clean, norun=norun)
+    if not (clean or inplace) and is_dir_non_empty(working_dir):
+        print("ERROR: WorkingDirectory {} exists and is non empty.".format(working_dir))
+        print("\t re-run with one of these options:\n"
+              "\t\t--clean \t-> if you wish to OVERWRITE model runs (delete content from --workdir and re-build from cache)\n"
+              "\t\t--inplace \t-> if you wish to re-run the same model (content in --workdir is kept)\n")
+        sys.exit(1)
+
+    mrm = ModelRunManager(working_dir, gout=gout, clean=clean, norun=norun, inplace=inplace)
     model_list = model_ids if model_ids else None
 
     if virtual:
