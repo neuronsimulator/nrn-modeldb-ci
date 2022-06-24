@@ -1223,10 +1223,11 @@
     python: true
     model_dir: .
     run:
-    - import os; os.system("python sim.py"); quit();
+    - import os; os.system("python sim.py 1 1 100"); quit();
     script:
     - 2to3 -w .
     - reindent .
+    - sed -i 's/show()/show(block=False);pause(1);close()/g' sim.py
 264834:
     python: true
     model_dir: mechanisms
@@ -1240,4 +1241,4 @@
     run:
     - import os; os.system("python run.py param/gamma_L5weak_L2weak.param"); quit();
     script:
-    -  sed -i 's/from mpi4py/#from mpi4py/g' run.py
+    - sed -i 's/from mpi4py/#from mpi4py/g' run.py
