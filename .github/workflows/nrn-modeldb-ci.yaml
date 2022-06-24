@@ -80,7 +80,8 @@ jobs:
     - name: Set models to run for PR
       run: |
         # Select a few models to run CI for PRs 
-        echo 'MODELS_TO_RUN=279 3264 22203 144549 105507 194897' >> $GITHUB_ENV
+        #TODO - temporary run added python models
+        echo 'MODELS_TO_RUN=156039 194897 226422 186768 189922 195615 139421 144586 244412 39948 195569 249404 206400 144511 229276 151282 264834 151685' >> $GITHUB_ENV
       if: github.event_name == 'pull_request'
 
     - name: Install dependencies and project
@@ -96,6 +97,7 @@ jobs:
         #Install project in editable mode
         python -m pip install -e .
         echo "::set-output name=date::$(date -u "+%Y%m")"
+        
     
     - name: Cache ModelDB models
       id: cache-models

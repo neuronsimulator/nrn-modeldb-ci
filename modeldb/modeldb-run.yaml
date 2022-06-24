@@ -1239,3 +1239,5 @@
     model_dir: mod
     run:
     - import os; os.system("python run.py param/gamma_L5weak_L2weak.param"); quit();
+    script:
+    -  sed -i 's/from mpi4py/#from mpi4py/g' run.py
