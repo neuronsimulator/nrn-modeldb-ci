@@ -94,6 +94,7 @@ def append_log(model, model_sink, text):
 def run_commands(model, cmds, work_dir=None):
     out, _ = subprocess.Popen(
             cmds,
+            shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
