@@ -18,6 +18,7 @@ install_requires = [
     'scipy',
     '2to3',
     'reindent',
+    'h5py'
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:

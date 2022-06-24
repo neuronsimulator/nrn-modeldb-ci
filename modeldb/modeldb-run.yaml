@@ -1139,6 +1139,7 @@
     - import os; os.system("python mosinit.py"); quit();
     script:
     - 2to3 -w .
+    - sed -i 's/pyplot.show()/pyplot.show(block=False);pyplot.pause(1);pyplot.close();quit()/' MAT_Neuron_StepCurrent.py
 186768:
     python: true
     run:
@@ -1146,6 +1147,7 @@
     script:
     - 2to3 -w .
     - reindent .
+    - sed -i 's/tstop =/tstop = 100#/g' mosinit.py
 189922:
     python: true
     run:
@@ -1161,18 +1163,21 @@
     - 2to3 -w .
     - reindent .
     - sed -i "s/from time import time, clock/from time import time/g;67s/    exec(cmd)/    exec(cmd,globals())/;s/'w'/'wb'/g" sim.py
+    - sed -i "s/baset = /baset = 2900.0#/g" PTcell.cfg
 139421:
     python: true
     run:
     - import os; os.system("python mosinit.py"); quit();
     script:
     - 2to3 -w .
+    - sed -i -e 's/tstop = /tstop = 10#/g' mosinit.py
 144586:
     python: true
     run:
     - import os; os.system("python mosinit.py"); quit();
     script:
     - 2to3 -w .
+    - sed -i 's/nq = anet.randruns(/nq = anet.randruns(1000)#/g' mosinit.py
 244412:
     python: true
     model_dir: mod_files
@@ -1194,6 +1199,7 @@
     script:
     - 2to3 -w .
     - sed -i "s/f = open(fname)/f = open(fname,'rb')/g" fig2a_show.py
+    - sed -i 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close()/g' fig2a_show.py
 249404:
     python: true
     run:
@@ -1204,6 +1210,7 @@
     - import os; os.system("python mosinit.py"); quit();
     script:
     - 2to3 -w .
+    - sed -i 's/pyl.show()/pyl.show(block=False);pyl.pause(1);pyl.close()/g' model.py
 # find * -name run.py
 144511:
     python: true
@@ -1212,13 +1219,9 @@
     script:
     - 2to3 -w .
 229276:
-    python: true
     model_dir: mechanisms
-    run:
-    - import os; os.system("python run.py"); quit();
     script:
-    - 2to3 -w .
-    - sed -i 's/cADpyr232_L5_TTPC1_b6836fcf6f(1 if add_synapses else 0)/cADpyr232_L5_TTPC1_b6836fcf6f(1 if add_synapses else 0,1)/g' run.py
+    - sed -i -e 's/tstop=/tstop=100\/\//g' createsimulation.hoc
 151282:
     python: true
     model_dir: .
@@ -1242,3 +1245,4 @@
     - import os; os.system("python run.py param/gamma_L5weak_L2weak.param"); quit();
     script:
     - sed -i 's/from mpi4py/#from mpi4py/g' run.py
+    - sed -i "s/nrn.tstop =/nrn.tstop = 50#/g" run.py
