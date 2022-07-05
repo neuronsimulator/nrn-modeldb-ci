@@ -224,6 +224,24 @@ Every `runmodels` report will hold out run statistics in the `"0"` key:
     },
 ```
 
+For every model there is a `<model.id>.yaml` that is dumped in the model run directory.
+This is used in case the model is re-run in `--inplace` mode (also useful for debugging). 
+
+```bash
+(venv) nrn-modeldb-ci$ cat test3682/synmap/3682.yaml
+```
+```yaml
+driver: /home/savulesc/Workspace/nrn-modeldb-ci/test3682/synmap/driver.hoc
+init: /home/savulesc/Workspace/nrn-modeldb-ci/test3682/synmap/mosinit.hoc
+model_dir: /home/savulesc/Workspace/nrn-modeldb-ci/test3682/synmap
+script:
+- echo 'use_mcell_ran4(1)' > temp
+- cat mosinit.hoc >> temp
+- mv temp  mosinit.hoc
+start_dir: /home/savulesc/Workspace/nrn-modeldb-ci/test3682/synmap
+(venv) savulesc@bbd-cjngk03:~/Workspace/nrn-modeldb-ci$ 
+```
+
 ## Funding
 
 

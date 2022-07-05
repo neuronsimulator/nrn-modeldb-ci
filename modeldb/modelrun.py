@@ -14,6 +14,7 @@ import traceback
 import json
 import time
 import shutil
+import yaml
 
 ModelDB = modeldb.ModelDB()
 
@@ -32,7 +33,8 @@ def is_dir_non_empty(directory):
 
 
 class ModelRun(dict):
-    def __init__(self, model, working_dir, clean=False, norun=False):
+    def __init__(self, model, working_dir, clean=False, norun=False, inplace=False):
+        super().__init__()
         self._model = model
         self._working_dir = os.path.abspath(working_dir)
         self._logs = []
@@ -44,6 +46,7 @@ class ModelRun(dict):
         self._run_py = False
         self._clean = clean
         self._norun = norun
+        self._inplace = inplace
 
         self["run_info"] = {}
 
@@ -66,6 +69,9 @@ class ModelRun(dict):
 
         if self._norun:
             self["norun"] = True
+
+        if self._inplace:
+            self["inplace"] = True
 
     run_info = property(lambda self: self["run_info"])
 
@@ -184,32 +190,37 @@ def prepare_model(model):
         model_dir = os.path.join(
             model.working_dir, os.path.dirname(zip_ref.infolist()[0].filename)
         )
-        if model._clean and is_dir_non_empty(model_dir):
-            shutil.rmtree(model_dir)
-        zip_ref.extractall(model.working_dir)
-        model.run_info["model_dir"] = model_dir
+        model_run_info_file = os.path.join(model_dir, str(model.id) + '.yaml')
+        if model._inplace and os.path.isfile(model_run_info_file):
+            with open(model_run_info_file) as run_info_file:
+                model["run_info"] = yaml.load(run_info_file, yaml.Loader)
+        else:
+            if model._clean and is_dir_non_empty(model_dir):
+                shutil.rmtree(model_dir)
+            zip_ref.extractall(model.working_dir)
 
-    # write driver.hoc
-    build_driver_hoc(model)
+            # set model_dir
+            model.run_info["model_dir"] = model_dir
 
-    # write and execute extra script if specified in the run instructions
-    build_and_run_script(model)
+            # write driver.hoc
+            build_driver_hoc(model)
 
-    # Determine init file: HOC or Python.
-    # Python
-    if model.run_py:
-        build_python_runfile(model)
-    # HOC: If 'run' is None -> quit.hoc (DoNotRun = yes) else look for 'mosinit.hoc'
-    elif model["run"] is None:
-        build_quit_hoc(model)
-    else:
-        select_mosinit(model)
-    if model["run"] is None:
-        append_log(model, model.logs,
-            "Model in do not run mode according to modeldb-run.yaml:\n\t{}\n".format(
-                model["comment"]
-            )
-        )
+            # write and execute extra script if specified in the run instructions
+            build_and_run_script(model)
+
+            # Determine init file: HOC or Python.
+            # Python
+            if model.run_py:
+                build_python_runfile(model)
+            # HOC: If 'run' is None -> quit.hoc (DoNotRun = yes) else look for 'mosinit.hoc'
+            elif model["run"] is None:
+                build_quit_hoc(model)
+            else:
+                select_mosinit(model)
+
+            # dump run_info into model_dir
+            with open(model_run_info_file, "w+") as run_info_file:
+                yaml.dump(model.run_info, run_info_file, sort_keys=True)
 
 
 def run_model(model):
@@ -227,6 +238,13 @@ def run_model(model):
     try:
         # prepare model
         prepare_model(model)
+
+        if model["run"] is None:
+            append_log(model, model.logs,
+                       "Model in do not run mode according to modeldb-run.yaml:\n\t{}\n".format(
+                           model["comment"]
+                       )
+           )
 
         # Get mod files. Model can have a custom mod directory or directories, otherwise we search in the start_dir
         if "model_dir" in model:
@@ -277,7 +295,7 @@ def run_model(model):
 
 
 class ModelRunManager(object):
-    def __init__(self, master_dir, gout=False, clean=False, norun=False):
+    def __init__(self, master_dir, gout=False, clean=False, norun=False, inplace=False):
         self.master_dir = master_dir
         self.logfile = str(master_dir) + ".log"
         self.dumpfile = str(master_dir) + ".json"
@@ -289,6 +307,7 @@ class ModelRunManager(object):
         self._gout = gout
         self._clean = clean
         self._norun = norun
+        self._inplace = inplace
 
     def _setup_logging(self):
         self.logger = logging.getLogger("dev")
@@ -410,7 +429,7 @@ class ModelRunManager(object):
 
         # prepare ModelRun objects
         models_to_run = (
-            ModelRun(mdl, self.master_dir, self._clean, self._norun) for mdl in models_selected
+            ModelRun(mdl, self.master_dir, self._clean, self._norun, self._inplace) for mdl in models_selected
         )
 
         # number of models
