@@ -1122,6 +1122,7 @@
     - import os; os.system("python mosinit.py"); quit();
     script:
     - 2to3 -w .
+    - sed -i 's/h.tstop = 2500/h.tstop = 1500/g' mosinit.py # reduce sim time
 194897:
     python: true
     run:
@@ -1168,7 +1169,7 @@
     - 2to3 -w .
     - reindent .
     - sed -i "s/from time import time, clock/from time import time/g;67s/    exec(cmd)/    exec(cmd,globals())/;s/'w'/'wb'/g" sim.py
-    - sed -i "s/baset = /baset = 2900.0#/g" PTcell.cfg
+    - sed -i "s/baset = /baset = 2900.0#/g;s/tstop = 3000.0/tstop = 1000.0/g" PTcell.cfg # reduce sim time
 139421:
     python: true
     run:
@@ -1243,6 +1244,8 @@
     - import os; os.system("python run.py --plot trace"); quit();
     script:
     - 2to3 -w .
+    # reduce sim time
+    - sed -i 's/,180)/,10)/g;s/,500)/,10)/g' run.py
 151685:
     python: true
     model_dir: mod
