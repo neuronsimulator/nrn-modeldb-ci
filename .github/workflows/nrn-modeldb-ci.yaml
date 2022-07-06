@@ -111,7 +111,10 @@ jobs:
     - name: Get ModelDB models
       if: steps.cache-models.outputs.cache-hit != 'true'
       run: getmodels
-
+    
+    - name: live debug session
+      uses: mxschmitt/action-tmate@v3
+    
     - name: Run Models with NEURON V1 -> ${{ env.NEURON_V1 }}
       run: |
         # Install NEURON V1
