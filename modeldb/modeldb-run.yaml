@@ -1134,7 +1134,7 @@
     - sed -i 's/figure, hold, isscalar/figure, isscalar/g;s/hold(True)/#hold(True)/g' analysis.py
     - sed -i 's/hashlib.md5(obj)/hashlib.md5(obj.encode("utf-8"))/g' shared.py
     - sed -i 's/cell.t0 = .0/#cell.t0 = .0/g' izhi.py
-    - sed -i "s/list(range(s.motorCmdStartCell/list(np.arange(s.motorCmdStartCell/g;s/s.nMuscles))))/s.nMuscles),dtype=int)))/g;s/'w'/'wb'/g;39iimport numpy as np" network.py
+    - sed -i "s/(nCells\/s.nMuscles)/int(nCells\/s.nMuscles)/g;s/'w'/'wb'/g;s/s.hostspikevecs\[c\]/\[s.hostspikevecs\[c\].x\[i\] for i in range(s.hostspikevecs\[c\].size())\]/g" network.py
     #reduce sim time (need to reduce more)
     - sed -i "s/s.trainTime =/s.trainTime = 50#/g" network.py
     - sed -i "s/testTime =/testTime = 50#/g" shared.py
