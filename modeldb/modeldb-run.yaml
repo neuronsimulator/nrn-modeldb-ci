@@ -1131,6 +1131,7 @@
     - 2to3 -w .
     - reindent .
     # TODO - PR to update model for python3 support
+    - sed -i 's/# matplotlib/matplotlib/g' main.py
     - sed -i 's/figure, hold, isscalar/figure, isscalar/g;s/hold(True)/#hold(True)/g' analysis.py
     - sed -i 's/hashlib.md5(obj)/hashlib.md5(obj.encode("utf-8"))/g' shared.py
     - sed -i 's/cell.t0 = .0/#cell.t0 = .0/g' izhi.py
