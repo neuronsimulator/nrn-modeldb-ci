@@ -1,7 +1,7 @@
 import logging
 import multiprocessing
 import subprocess
-import os
+import platform
 import sys
 from .progressbar import ProgressBar
 from .data import Model
@@ -126,7 +126,7 @@ def run_neuron_cmds(model, cmds):
 
 def clean_model_dir(model):
     # delete x86_64 folder
-    run_commands(model, ["/bin/sh", "-c", "rm -rf ./x86_64/"], work_dir=model.run_info["start_dir"])
+    run_commands(model, ["/bin/sh", "-c", "rm -rf ./{}/".format(platform.machine())], work_dir=model.run_info["start_dir"])
 
 
 def compile_mods(model, mods):
@@ -272,7 +272,7 @@ def run_model(model):
         )
     else:
         try:
-            nrn_exe = "./x86_64/special" if mods is not None and len(mods) else "nrniv"
+            nrn_exe = "./{}/special".format(platform.machine()) if mods is not None and len(mods) else "nrniv"
             # '-nogui' creates segfault
             model_run_cmds = [nrn_exe, '-nobanner']
             if model.run_py:
@@ -406,7 +406,7 @@ class ModelRunManager(object):
                 self.run_logs[model.id]["no_mosinit_hoc"] = True
             self.run_logs[model.id]["run_info"] = model.run_info
             self.run_logs[model.id]["run_time"] = model.run_time
-            self.logger.debug("Done for: " + str(model.id))
+            self.logger.debug("Done for: {} in {}".format(str(model.id), model.run_time))
 
         self._grep_for_errors()
         self._dump_run()
