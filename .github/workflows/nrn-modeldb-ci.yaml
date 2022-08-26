@@ -32,7 +32,6 @@ jobs:
       matrix:
         python-version: ["3.9"]
     env:
-      DISPLAY: ${{ ':0' }}
       NEURON_V1: ${{ github.event.inputs.neuron_v1 || 'neuron' }}
       NEURON_V2: ${{ github.event.inputs.neuron_v2 || 'neuron-nightly' }}
       MODELS_TO_RUN: ${{ github.event.inputs.models_to_run || '' }}
@@ -89,7 +88,7 @@ jobs:
         set
         # Set up Xvfb
         sudo apt-get install xvfb
-        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1600x1200x24 &  # run in bg
+        # sudo /usr/bin/Xvfb $DISPLAY -screen 0 1600x1200x24 &  # run in bg
         # Install python dependencies
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
@@ -119,7 +118,7 @@ jobs:
           python -m pip install $NEURON_V1
         fi
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        runmodels --virtual --workdir=$nrn_ver $MODELS_TO_RUN
+        xvfb-run runmodels --virtual --workdir=$nrn_ver $MODELS_TO_RUN
         report2html ${nrn_ver}.json
         if [[ -d "${DROP_DIR_V1}" ]]; then
           python -m pip uninstall --yes neuron-nightly==${nrn_ver}
@@ -139,7 +138,7 @@ jobs:
           python -m pip install $NEURON_V2
         fi
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        runmodels --virtual --workdir=$nrn_ver $MODELS_TO_RUN
+        xvfb-run runmodels --virtual --workdir=$nrn_ver $MODELS_TO_RUN
         report2html ${nrn_ver}.json
         if [[ -d "${DROP_DIR_V2}" ]]; then
           python -m pip uninstall --yes neuron-nightly==${nrn_ver}
