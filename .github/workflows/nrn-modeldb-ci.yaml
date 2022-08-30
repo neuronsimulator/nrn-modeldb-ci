@@ -89,7 +89,7 @@ jobs:
         set
         # Set up Xvfb
         sudo apt-get install xvfb
-        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1600x1200x24 &  # run in bg
+        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1600x1200x24 -noreset -nolock -shmem &  # run in bg
         # Install python dependencies
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
