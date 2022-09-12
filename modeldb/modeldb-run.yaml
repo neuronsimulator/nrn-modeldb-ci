@@ -1102,6 +1102,11 @@
     - verify_graph_()
     script:
     - sed -i'.bak' -e 's/tstop = 550/tstop = 100/' HAM_SR1.ses
+136803:
+    run:
+    - run()
+    - verify_graph_()
+    model_dir: mod_files
 # python models
 189922:
     python: true
