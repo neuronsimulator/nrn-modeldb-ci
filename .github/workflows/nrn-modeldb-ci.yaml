@@ -80,7 +80,14 @@ jobs:
     - name: Set models to run for PR
       run: |
         # Select a few models to run CI for PRs 
-        echo 'MODELS_TO_RUN=279 3264 22203 144549 105507 194897' >> $GITHUB_ENV
+        #   64195   -> run: null
+        #   22203   -> skip: true
+        #   156120  -> several model directories
+        #   97868   -> failed nrnivmodl
+        #   146030  -> curate_patterns
+        #   244679  -> no entry in modeldb-run.yaml
+        #   rest:   -> currently yielding differences in the pipeline
+        echo 'MODELS_TO_RUN=64195 22203 156120 51781 97868 22203 97756 97917 105507 136803 138379 138382 146030 244679 251881' >> $GITHUB_ENV
       if: github.event_name == 'pull_request'
 
     - name: Install dependencies and project
