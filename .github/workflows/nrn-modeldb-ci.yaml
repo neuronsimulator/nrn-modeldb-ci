@@ -79,7 +79,11 @@ jobs:
 
     - name: Set models to run for PR
       run: |
-        # Select a few models to run CI for PRs 
+        # For PRs we only have a few models for quick sanity checking.
+        # Once the PR is green you need to manually run the ModelDB CI workflow by simply selecting your branch in the UI.
+
+        # The follwing selection aims to target different features (since we haven't worked on unit testing yet -> #38 ).
+        # Select a few models to run CI for PRs:
         #   64195   -> run: null
         #   22203   -> skip: true
         #   156120  -> several model directories
