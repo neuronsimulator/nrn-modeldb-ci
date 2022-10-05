@@ -960,6 +960,8 @@
     - verify_graph_()
     script: # todo -> fix model for NEURON 8.0.0 and remove this script
     - sed -i'.bak' -e 's/return 0;//g' MOPP_Fig_1B_left/ichan2.mod
+136095:
+    github: 'pull/2'
 138321:
     run:
     - run()
