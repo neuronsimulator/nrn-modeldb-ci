@@ -38,7 +38,7 @@ jobs:
       MODELS_TO_RUN: ${{ github.event.inputs.models_to_run || '' }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
         
     - name: check for Azure drop NEURON_V1 -> ${{ github.event.inputs.neuron_v1 }}
       if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.neuron_v1, 'https://dev.azure.com/neuronsimulator/')
@@ -73,7 +73,7 @@ jobs:
         echo "DROP_DIR_V2=`pwd`/DROP_V2" >> $GITHUB_ENV
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -164,7 +164,7 @@ jobs:
       run: |
         diffreports2html ${nrn1_ver}.json ${nrn2_ver}.json
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: ${{ env.nrn1_ver }}-vs-${{ env.nrn2_ver }}
         path: |
