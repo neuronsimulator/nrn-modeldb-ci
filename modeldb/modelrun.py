@@ -43,6 +43,7 @@ class ModelRun(dict):
         self._nrn_run_error = False
         self._no_mosinit_hoc = False
         self._run_time = 0
+        self._run_times = {}
         self._run_py = False
         self._clean = clean
         self._norun = norun
@@ -85,6 +86,7 @@ class ModelRun(dict):
     model_dir = property(lambda self: self.run_info["model_dir"] if "model_dir" in self.run_info else "")
     working_dir = property(lambda self: self._working_dir)
     run_time = property(lambda self: self._run_time)
+    run_times = property(lambda self: self._run_times)
 
     id = property(lambda self: self._model.id)
 
@@ -265,6 +267,11 @@ def run_model(model):
     except Exception:  # noqa
         append_log(model, model.logs, traceback.format_exc())
 
+    # Record how long the preparation took (even if it failed)
+    stop_time = time.perf_counter()
+    model._run_times["nrnivmodl"] = stop_time - start_time
+    start_time = stop_time
+
     # run NEURON
     if "norun" in model:
         append_log(model, model.logs,
@@ -288,8 +295,10 @@ def run_model(model):
             model._nrn_run_error = True
 
     stop_time = time.perf_counter()
+    model._run_times["model"] = stop_time - start_time
 
-    model._run_time = str(stop_time - start_time)
+    # Record the total too (for backwards compatibility)
+    model._run_time = str(sum(model._run_times.values()))
 
     return model
 
@@ -406,7 +415,8 @@ class ModelRunManager(object):
                 self.run_logs[model.id]["no_mosinit_hoc"] = True
             self.run_logs[model.id]["run_info"] = model.run_info
             self.run_logs[model.id]["run_time"] = model.run_time
-            self.logger.debug("Done for: {} in {}".format(str(model.id), model.run_time))
+            self.run_logs[model.id]["run_times"] = model.run_times
+            self.logger.debug("Done for: {} in {}".format(str(model.id), str(model.run_times)))
 
         self._grep_for_errors()
         self._dump_run()
