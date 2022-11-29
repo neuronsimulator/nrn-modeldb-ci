@@ -90,7 +90,7 @@ jobs:
         #   146030  -> curate_patterns
         #   244679  -> no entry in modeldb-run.yaml
         #   rest:   -> currently yielding differences in the pipeline
-        echo 'MODELS_TO_RUN=64195 22203 156120 51781 97868 22203 97756 97917 105507 136803 138379 138382 146030 244679 251881' >> $GITHUB_ENV
+        echo 'MODELS_TO_RUN=116838 136095 138379 140881 141505 144538 146949 150245 64195 22203 156120 51781 97868 22203 97756 97917 105507 136803 138379 138382 146030 244679 251881' >> $GITHUB_ENV
       if: github.event_name == 'pull_request'
 
     - name: Install dependencies and project

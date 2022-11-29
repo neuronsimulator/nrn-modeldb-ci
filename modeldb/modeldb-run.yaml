@@ -828,6 +828,8 @@
     - verify_graph_()
     script:
     - sed -i'.bak' -e 's/^showdemo=1/showdemo=0/g' mosinit.hoc
+    - sed -i'.bak' -r 's/_p=.*->_prop->param;//g;s/return .*->_prop->param;/return NULL;/g' intf_.mod
+    
 116956:
     run:
     - run()
@@ -971,12 +973,16 @@
     - tstop=mytstop
     - finish_run()
     - verify_graph_()
+    script:
+    - sed -i'.bak' -r 's/_p=.*->_prop->param;//g;s/return .*->_prop->param;/return NULL;/g' intf6_.mod
 139656:
     comment: //do not run
     run: null
 140881:
     comment: //do not run Lytton model takes too long to run and complex to edit
     run: null
+    script:
+    - sed -i'.bak' -r 's/_p=.*->_prop->param;//g;s/return .*->_prop->param;/return NULL;/g' intf6_.mod
 141063:
     comment: //do not run Problem is that Vbox.dialog() steals the focus (complex
         to fix)
@@ -988,6 +994,8 @@
 141505:
     comment: //do not run Specialized installation environment
     run: null
+    script:
+    - sed -i'.bak' -r 's/_p=.*->_prop->param;//g;s/return .*->_prop->param;/return NULL;/g' intf6_.mod
 144385:
   model_dir: mod
 144523:
@@ -1030,6 +1038,8 @@
     - init()
     - run()
     - verify_graph_()
+    script:
+    - sed -i'.bak' -r 's/_p=.*->_prop->param;//g;s/return .*->_prop->param;/return NULL;/g' intf6_.mod
 150284:
     comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
     run: null
@@ -1115,5 +1125,22 @@
     script:
     - 2to3 -w .
     - sed -i'.bak' -e 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
-
-
+136095:
+    run:
+    - run()
+    - verify_graph_()
+    script:
+    - sed -i'.bak' -r 's/_p=.*->_prop->param;//g;s/return .*->_prop->param;/return NULL;/g' intf_.mod
+    - sed -i'.bak' -e 's/int i,/int idx,/g' misc.h
+144538:
+    run:
+    - run()
+    - verify_graph_()
+    script:
+    - sed -i'.bak' -r 's/_p=.*->_prop->param;//g;s/return .*->_prop->param;/return NULL;/g' intf6_.mod
+146949:
+    run:
+    - run()
+    - verify_graph_()
+    script:
+    - sed -i'.bak' -r 's/_p=.*->_prop->param;//g;s/return .*->_prop->param;/return NULL;/g' intf6.mod
