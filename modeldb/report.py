@@ -25,6 +25,7 @@ def curate_run_data(run_data, model=None):
         "^special:": "%neuron-executable%:",
         "(Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d+ \d+:\d+:\d+ [A-Z]+ \d+": "%date_command%",
         "total run time [0-9\.]+": "total run time %run_time%",
+        "(^.*distutils.*$)": "",
     }
 
     for model_specific_substitution in mdb.run_instr.get(model, {}).get("curate_patterns", []):
@@ -37,7 +38,9 @@ def curate_run_data(run_data, model=None):
             if number_of_subs:
                 logging.debug("{} matched {} time(s)".format(regex_key, number_of_subs))
                 logging.debug("{} -> {}".format(line, new_line))
-            updated_data.append(new_line)
+            # if we are replacing a full line with an empty string, don't add it to the curated data
+            if new_line:
+                updated_data.append(new_line)
         curated_data = updated_data
 
     return curated_data
