@@ -83,14 +83,3 @@ def diff_reports(report1_json, report2_json):
     return diff_dict, gout_dict
 
 
-if __name__ == "__main__":
-    d1, d2 = diff_reports('802.json', 'nightly.json')
-    with open("output.html", 'w') as outhdl:
-        for k, v in d1.items():
-            outhdl.write(str(k))
-            outhdl.write('<pre>{}</pre>'.format(str(v)))
-    with open("output-gout.html", 'w') as outhdl:
-        for k, v in d2.items():
-            outhdl.write(str(k))
-            outhdl.write('<pre>{}</pre>'.format(str(v)))
-
