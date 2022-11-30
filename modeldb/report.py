@@ -10,6 +10,7 @@ from pygments import highlight
 from pygments.lexers import DiffLexer
 from pygments.formatters import HtmlFormatter
 
+
 mdb = ModelDB()
 
 def curate_run_data(run_data, model=None):
@@ -24,6 +25,7 @@ def curate_run_data(run_data, model=None):
         "^special:": "%neuron-executable%:",
         "(Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d+ \d+:\d+:\d+ [A-Z]+ \d+": "%date_command%",
         "total run time [0-9\.]+": "total run time %run_time%",
+        "(^.*distutils.*$)": "",
     }
 
     for model_specific_substitution in mdb.run_instr.get(model, {}).get("curate_patterns", []):
@@ -36,7 +38,9 @@ def curate_run_data(run_data, model=None):
             if number_of_subs:
                 logging.debug("{} matched {} time(s)".format(regex_key, number_of_subs))
                 logging.debug("{} -> {}".format(line, new_line))
-            updated_data.append(new_line)
+            # if we are replacing a full line with an empty string, don't add it to the curated data
+            if new_line:
+                updated_data.append(new_line)
         curated_data = updated_data
 
     return curated_data
@@ -56,14 +60,14 @@ def diff_reports(report1_json, report2_json):
         for k in data_a.keys():
             if int(k) == 0:
                 continue  # skip info key
+
             curated_a = curate_run_data(data_a[k]["nrn_run"], model=int(k))
             curated_b = curate_run_data(data_b[k]["nrn_run"], model=int(k))
             if curated_a != curated_b:
-                diff_dict[k] = hd.make_table(curated_a, curated_b,
-                                             fromdesc=data_a[k]["run_info"]["start_dir"],
-                                             todesc=data_b[k]["run_info"]["start_dir"],
-                                             context=True).replace("\n", " ")
-
+                ud = difflib.unified_diff(curated_a, curated_b,  fromfile=data_a[k]["run_info"]["start_dir"],
+                                             tofile=data_b[k]["run_info"]["start_dir"])
+                diff_dict[k] = highlight('\n'.join(ud), DiffLexer(), HtmlFormatter(linenos=True, cssclass="colorful", full=True))
+                
             # List of keys that make gout comparison pointless
             skip_gout_keys = {"do_not_run", "moderr", "nrn_run_err"}
             if skip_gout_keys.isdisjoint(data_a[k]) and skip_gout_keys.isdisjoint(data_b[k]):
@@ -78,15 +82,4 @@ def diff_reports(report1_json, report2_json):
 
     return diff_dict, gout_dict
 
-
-if __name__ == "__main__":
-    d1, d2 = diff_reports('802.json', 'nightly.json')
-    with open("output.html", 'w') as outhdl:
-        for k, v in d1.items():
-            outhdl.write(str(k))
-            outhdl.write('<pre>{}</pre>'.format(str(v)))
-    with open("output-gout.html", 'w') as outhdl:
-        for k, v in d2.items():
-            outhdl.write(str(k))
-            outhdl.write('<pre>{}</pre>'.format(str(v)))
 
