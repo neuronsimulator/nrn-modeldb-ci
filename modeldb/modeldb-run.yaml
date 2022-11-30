@@ -675,6 +675,10 @@
     - run()
     - verify_graph_()
 106891:
+    script:
+    - sed -i'.bak' 's#_prop->param\[\([0-9]*\)\]#_prop->param(\1)#g' jitcon.mod
+    - sed -i'.bak' 's#static[ ]*double[ ]*\*[ ]*lop#static void lop#g' jitcon.mod
+    - sed -i'.bak' 's#[ ]*return pmt->_prop->param;##g' jitcon.mod
     run:
     - tstop=10
     - runeg()
