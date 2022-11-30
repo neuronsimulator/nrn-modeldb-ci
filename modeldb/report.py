@@ -10,6 +10,7 @@ from pygments import highlight
 from pygments.lexers import DiffLexer
 from pygments.formatters import HtmlFormatter
 
+
 mdb = ModelDB()
 
 def curate_run_data(run_data, model=None):
@@ -56,14 +57,14 @@ def diff_reports(report1_json, report2_json):
         for k in data_a.keys():
             if int(k) == 0:
                 continue  # skip info key
+
             curated_a = curate_run_data(data_a[k]["nrn_run"], model=int(k))
             curated_b = curate_run_data(data_b[k]["nrn_run"], model=int(k))
             if curated_a != curated_b:
-                diff_dict[k] = hd.make_table(curated_a, curated_b,
-                                             fromdesc=data_a[k]["run_info"]["start_dir"],
-                                             todesc=data_b[k]["run_info"]["start_dir"],
-                                             context=True).replace("\n", " ")
-
+                ud = difflib.unified_diff(curated_a, curated_b,  fromfile=data_a[k]["run_info"]["start_dir"],
+                                             tofile=data_b[k]["run_info"]["start_dir"])
+                diff_dict[k] = highlight('\n'.join(ud), DiffLexer(), HtmlFormatter(linenos=True, cssclass="colorful", full=True))
+                
             # List of keys that make gout comparison pointless
             skip_gout_keys = {"do_not_run", "moderr", "nrn_run_err"}
             if skip_gout_keys.isdisjoint(data_a[k]) and skip_gout_keys.isdisjoint(data_b[k]):
