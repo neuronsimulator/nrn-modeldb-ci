@@ -8,6 +8,29 @@ on:
   schedule:
     # Run at 2am every day
     - cron:  '0 2 * * *'
+  workflow_call:
+   inputs:
+      neuron_v1:
+        description: Last official release (neuron) / NEURON pinned version / Azure drop (artifacts) url
+        default: 'neuron'
+        required: true
+        type: string
+      neuron_v2:
+        description: Last nightly release (neuron-nightly) / NEURON pinned version / Azure drop (artifacts) url
+        default: 'neuron-nightly'
+        required: true
+        type: string
+      models_to_run:
+        description: 'Empty for all models, space separated accession numbers for specific models'
+        default: ''
+        required: false
+        type: string
+      repo:
+        default: 'alexsavulescu/nrn-modeldb-ci'
+        type: string
+        required: false
+      
+        
   workflow_dispatch:
     inputs:
       neuron_v1:
@@ -28,19 +51,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        python-version: ["3.9"]
     env:
       DISPLAY: ${{ ':0' }}
-      NEURON_V1: ${{ github.event.inputs.neuron_v1 || 'neuron' }}
-      NEURON_V2: ${{ github.event.inputs.neuron_v2 || 'neuron-nightly' }}
-      MODELS_TO_RUN: ${{ github.event.inputs.models_to_run || '' }}
+      NEURON_V1: ${{ github.event.inputs.neuron_v1 || inputs.neuron_v1 || 'neuron' }}
+      NEURON_V2: ${{ github.event.inputs.neuron_v2 || inputs.neuron_v2 || 'neuron-nightly' }}
+      MODELS_TO_RUN: ${{ github.event.inputs.models_to_run || inputs.neuron_v2 || '' }}
 
     steps:
-    - uses: actions/checkout@v3
         
-    - name: check for Azure drop NEURON_V1 -> ${{ github.event.inputs.neuron_v1 }}
-      if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.neuron_v1, 'https://dev.azure.com/neuronsimulator/')
+    - uses: actions/checkout@v3
+      with:
+        repository: ${{ inputs.repo || github.repository }}
+        
+    - name: check for Azure drop NEURON_V1 -> ${{ env.NEURON_V1 }}
+      if: startsWith(env.NEURON_V1, 'https://dev.azure.com/neuronsimulator/')
       run: |
         # check URI
         curl -sfSI -X GET '${{ github.event.inputs.neuron_v1 }}'
@@ -55,11 +79,11 @@ jobs:
         # Set drop dir in the env
         echo "DROP_DIR_V1=`pwd`/DROP_V1" >> $GITHUB_ENV
     
-    - name: check for Azure drop NEURON_V2 -> ${{ github.event.inputs.neuron_v2 }}
-      if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.neuron_v2, 'https://dev.azure.com/neuronsimulator/')
+    - name: check for Azure drop NEURON_V2 -> ${{ env.NEURON_V2 }}
+      if: startsWith(env.NEURON_V2, 'https://dev.azure.com/neuronsimulator/')
       run: |
         # check URI
-        curl -sfSI -X GET '${{ github.event.inputs.neuron_v2 }}'
+        curl -sfSI -X GET '${{ env.NEURON_V2 }}'
 
         # Download Azure drop and unzip
         AZURE_DROP_URL="$NEURON_V2"
@@ -71,11 +95,9 @@ jobs:
         # Set drop dir in the env
         echo "DROP_DIR_V2=`pwd`/DROP_V2" >> $GITHUB_ENV
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+    - uses: actions/setup-python@v4
       with:
-        python-version: ${{ matrix.python-version }}
-
+        python-version: 3.9
     - name: Set models to run for PR
       run: |
         # For PRs we only have a few models for quick sanity checking.
