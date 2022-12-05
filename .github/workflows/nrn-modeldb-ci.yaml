@@ -55,7 +55,7 @@ jobs:
       DISPLAY: ${{ ':0' }}
       NEURON_V1: ${{ github.event.inputs.neuron_v1 || inputs.neuron_v1 || 'neuron' }}
       NEURON_V2: ${{ github.event.inputs.neuron_v2 || inputs.neuron_v2 || 'neuron-nightly' }}
-      MODELS_TO_RUN: ${{ github.event.inputs.models_to_run || inputs.neuron_v2 || '' }}
+      MODELS_TO_RUN: ${{ github.event.inputs.models_to_run || inputs.models_to_run || '' }}
 
     steps:
         
