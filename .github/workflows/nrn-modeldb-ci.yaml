@@ -26,7 +26,7 @@ on:
         required: false
         type: string
       repo:
-        default: 'alexsavulescu/nrn-modeldb-ci'
+        default: 'neuronsimulator/nrn-modeldb-ci'
         type: string
         required: false
       
