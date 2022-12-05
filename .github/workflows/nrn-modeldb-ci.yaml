@@ -67,7 +67,7 @@ jobs:
       if: startsWith(env.NEURON_V1, 'https://dev.azure.com/neuronsimulator/')
       run: |
         # check URI
-        curl -sfSI -X GET '${{ github.event.inputs.neuron_v1 }}'
+        curl -sfSI -X GET '${{ env.NEURON_V1 }}'
         
         # Download Azure drop and unzip
         AZURE_DROP_URL="$NEURON_V1"
