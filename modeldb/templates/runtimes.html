@@ -1,0 +1,120 @@
+
+<!doctype html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <style type="text/css">
+        table.diff {font-family:Courier; border:medium;}
+        .diff_header {background-color:#e0e0e0}
+        td.diff_header {text-align:right}
+        .diff_next {background-color:#c0c0c0}
+        .diff_add {background-color:#aaffaa}
+        .diff_chg {background-color:#ffff77}
+        .diff_sub {background-color:#ffaaaa}
+    </style>
+</head>
+<body>
+    <details open="true">
+        <summary>{{ title }} : Run Info</summary>
+        <div id="run_info"></div>
+    </details>
+
+    <br/>
+<label for="fSearch">Search entire report</label>
+<input type="text" id="fSearch" name="fSearch">
+<div id="example-table"></div>
+
+<script src="https:////ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link href="https://unpkg.com/tabulator-tables@5.4.2/dist/css/tabulator.min.css" rel="stylesheet">
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.4.2/dist/js/tabulator.min.js"></script>
+
+        <script>
+            $(document).ready ( function() {
+                            // report = JSON.parse(JSON.stringify(report));
+                            var report_data = [];
+                            runtime_dict = {{ runtime_dict }}
+                            v1 = "{{ v1 }}"
+                            v2 = "{{ v2 }}"
+
+                            function htmlDecode(input) {
+                              return input
+                                    .replace(/\\/g, "")
+                                    .replace(/^"(.*)"$/, '$1');
+                            }
+                            stats = {{ stats }}
+                            document.getElementById("run_info").innerHTML=htmlDecode(JSON.stringify(stats["stats"]));
+
+                            for(var i in runtime_dict){
+                                for (var key in runtime_dict[i]) {
+                                    if (key == "total") {
+                                        continue
+                                    }
+                                    run_dict = {}
+
+                                    run_dict["type"] = key
+                                    run_dict["v1"] = runtime_dict[i][key]["v1"];
+                                    run_dict["v2"] = runtime_dict[i][key]["v2"];
+                                    run_dict["speedup"] = runtime_dict[i][key]["speedup"];
+                                    run_dict["id"]=i
+                                    report_data.push(run_dict)
+                                }
+                            }
+                            const input = document.getElementById("fSearch");
+                            input.addEventListener("keyup", function() {
+                                table.setFilter(matchAny, { value: input.value });
+                                if (input.value == " ") {
+                                    table.clearFilter()
+                                }
+                            });
+                            function matchAny(data, filterParams) {
+                                var match = false;
+                                const regex = RegExp(filterParams.value, 'i');
+
+                                for (var key in data) {
+                                    if (regex.test(data[key]) == true) {
+                                        match = true;
+                                    }
+                                }
+                                return match;
+                            }
+                            
+                            var table = new Tabulator("#example-table", {
+                                data:report_data,               //load row data from array
+                                height:"100%",
+                                layout:"fitDataFill",               //fit columns to width of table
+                                addRowPos:"top",                //when adding a new row, add it to the top of the table
+                                history:true,                   //allow undo and redo actions on the table
+                                pagination:"local",             //paginate the data
+                                paginationSize:100,              //allow 7 rows per page of data
+                                paginationCounter:"rows",       //display count of paginated rows in footer
+                                movableColumns:true,            //allow column order to be changed
+                                resizableRows:true,             //allow row order to be changed
+                                initialSort:[                   //set the initial sort order of the data
+                                    {column:"speedup", dir:"asc",
+                                       },
+                                ],
+                                columns:[                 //define the table columns
+                                    {title:"Acc. No.", field:"id"},
+                                    {title:"runtime type", field:"type",
+                                        headerFilterPlaceholder: " select runtime type (nrnivmodl, model) ...",
+                                        headerFilter: 'select',
+                                        headerFilterFunc:"=",
+                                        headerFilterParams: {multiselect:false, values: ["nrnivmodl", "model"]},
+                                        //size to fit the headerFilterPlaceholder
+                                        width: 320,
+                                    },
+                                    {title:v1+" (seconds)", field:"v1", formatter:"money", formatterParams:{precision:2}, sorter:"number"},
+                                    {title:v2+" (seconds)", field:"v2", formatter:"money", formatterParams:{precision:2}, sorter:"number"},
+                                    {title:"speedup (%)", field:"speedup", formatter:"money", formatterParams:{precision:2}, sorter:"number"},
+                                    {title: "hidden", field: "hidden", visible: false},
+                                ],
+                                groupBy:"id",
+                                sortBy:"speedup",
+
+                            });
+
+                        }
+            )
+    </script>
+    </body>
+</html>
