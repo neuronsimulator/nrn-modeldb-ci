@@ -33,6 +33,8 @@
                             // report = JSON.parse(JSON.stringify(report));
                             var report_data = [];
                             runtime_dict = {{ runtime_dict }}
+                            v1 = "{{ v1 }}"
+                            v2 = "{{ v2 }}"
 
                             function htmlDecode(input) {
                               return input
@@ -44,6 +46,9 @@
 
                             for(var i in runtime_dict){
                                 for (var key in runtime_dict[i]) {
+                                    if (key == "total") {
+                                        continue
+                                    }
                                     run_dict = {}
 
                                     run_dict["type"] = key
@@ -91,20 +96,20 @@
                                 columns:[                 //define the table columns
                                     {title:"Acc. No.", field:"id"},
                                     {title:"runtime type", field:"type",
-                                        headerFilterPlaceholder: " select runtime type (total, nrnivmodl, model) ...",
+                                        headerFilterPlaceholder: " select runtime type (nrnivmodl, model) ...",
                                         headerFilter: 'select',
-                                        headerFilterFunc:"in",
-                                        headerFilterParams: {multiselect:true, values: ["total", "nrnivmodl", "model"]},
-                                        // size to fit the headerFilterPlaceholder
+                                        headerFilterFunc:"=",
+                                        headerFilterParams: {multiselect:false, values: ["nrnivmodl", "model"]},
+                                        //size to fit the headerFilterPlaceholder
                                         width: 320,
                                     },
-                                    {title:"v1 (seconds)", field:"v1", formatter:"money", formatterParams:{precision:2}, sorter:"number"},
-                                    {title:"v2 (seconds)", field:"v2", formatter:"money", formatterParams:{precision:2}, sorter:"number"},
+                                    {title:v1+" (seconds)", field:"v1", formatter:"money", formatterParams:{precision:2}, sorter:"number"},
+                                    {title:v2+" (seconds)", field:"v2", formatter:"money", formatterParams:{precision:2}, sorter:"number"},
                                     {title:"speedup (%)", field:"speedup", formatter:"money", formatterParams:{precision:2}, sorter:"number"},
                                     {title: "hidden", field: "hidden", visible: false},
                                 ],
                                 groupBy:"id",
-                                
+                                sortBy:"speedup",
 
                             });
 

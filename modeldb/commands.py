@@ -221,7 +221,7 @@ def diffreports2html(args=None):
     report_filename = os.path.join(Path(json_report1).resolve().parent, report_title + '.html')
     runtime_report_title = 'Runtimes ' + report_title
     runtime_report_filename = os.path.join(Path(json_report1).resolve().parent, "runtimes-" + report_title + '.html')
-    diff_dict, gout_dict,runtime_dict = diff_reports(json_report1, json_report2)
+    diff_dict, gout_dict,runtime_dict, v1, v2 = diff_reports(json_report1, json_report2)
 
     print('Writing {} ...'.format(report_filename))
     with open(report_filename, 'w') as fh:
@@ -236,6 +236,8 @@ def diffreports2html(args=None):
         fh.write(runtime_template.render(
             title="{}".format(runtime_report_title),
             runtime_dict=runtime_dict,
-            stats={"stats":diff_dict['0']}),
+            stats={"stats":diff_dict['0']},
+            v1=v1,
+            v2=v2),
     )
     print('Done.')
