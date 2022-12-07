@@ -49,6 +49,7 @@ def curate_run_data(run_data, model=None):
 def diff_reports(report1_json, report2_json):
     diff_dict = {}
     gout_dict = {}
+    runtime_dict = {}
 
     with open(report1_json, 'r+') as f, open(report2_json, 'r+') as f2:
         data_a = json.load(f)
@@ -68,18 +69,33 @@ def diff_reports(report1_json, report2_json):
                                              tofile=data_b[k]["run_info"]["start_dir"])
                 diff_dict[k] = highlight('\n'.join(ud), DiffLexer(), HtmlFormatter(linenos=True, cssclass="colorful", full=True))
                 
-            # List of keys that make gout comparison pointless
-            skip_gout_keys = {"do_not_run", "moderr", "nrn_run_err"}
-            if skip_gout_keys.isdisjoint(data_a[k]) and skip_gout_keys.isdisjoint(data_b[k]):
+            def _speedup(a, b):
+                dict = {}
+                dict["v1"] = a
+                dict["v2"] = b
+                # compute slowdown/speedup relative to runtime_b (negative means slowdown)
+                dict["speedup"] = (float(b) - float(a)) / float(b) * 100
+                return dict
+
+            # List of keys that make gout comparison and speedup comparison pointless
+            skip_keys = {"do_not_run", "moderr", "nrn_run_err"}
+            if skip_keys.isdisjoint(data_a[k]) and skip_keys.isdisjoint(data_b[k]):
+                # compare runtimes and compute slowdown or speedup
+                runtime_dict[k] = {}
+                runtime_dict[k]["total"] = _speedup(data_a[k]["run_time"], data_b[k]["run_time"])
+                for runkey in ("model", "nrnivmodl"):
+                    if runkey in data_a[k]["run_times"] and runkey in data_b[k]["run_times"]:
+                        runtime_dict[k][runkey] = _speedup(data_a[k]["run_times"][runkey], data_b[k]["run_times"][runkey])
+                
+                # compare gout
                 gout_a_file = os.path.join(data_a[k]["run_info"]["start_dir"], "gout")
                 gout_b_file = os.path.join(data_b[k]["run_info"]["start_dir"], "gout")
-
                 # gout may be missing in one of the paths. `diff -N` treats non-existent files as empty.
                 if os.path.isfile(gout_a_file) or os.path.isfile(gout_b_file):
                     diff_out = subprocess.getoutput("diff -uN {} {} | head -n 30".format(gout_a_file, gout_b_file))
                     if diff_out:
                         gout_dict[k] = highlight(diff_out, DiffLexer(), HtmlFormatter(linenos=True, cssclass="colorful", full=True))
 
-    return diff_dict, gout_dict
+    return diff_dict, gout_dict, runtime_dict
 
 

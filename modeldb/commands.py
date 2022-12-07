@@ -214,11 +214,14 @@ def diffreports2html(args=None):
     file_loader = FileSystemLoader(os.path.join(Path(__file__).parent.resolve(), 'templates'))
     env = Environment(loader=file_loader)
     template = env.get_template('diffreport.html')
+    runtime_template = env.get_template('runtimes.html')
 
     report_title = '{}-vs-{}'.format(os.path.splitext(json_report1)[0],
                                      os.path.splitext(json_report2)[0])
     report_filename = os.path.join(Path(json_report1).resolve().parent, report_title + '.html')
-    diff_dict, gout_dict = diff_reports(json_report1, json_report2)
+    runtime_report_title = 'Runtimes ' + report_title
+    runtime_report_filename = os.path.join(Path(json_report1).resolve().parent, "runtimes-" + report_title + '.html')
+    diff_dict, gout_dict,runtime_dict = diff_reports(json_report1, json_report2)
 
     print('Writing {} ...'.format(report_filename))
     with open(report_filename, 'w') as fh:
@@ -227,4 +230,12 @@ def diffreports2html(args=None):
             diff_dict=diff_dict,
             gout_dict=gout_dict),
         )
+    print('Done.')
+    print('Writing {} ...'.format(runtime_report_filename))
+    with open(runtime_report_filename, 'w') as fh:
+        fh.write(runtime_template.render(
+            title="{}".format(runtime_report_title),
+            runtime_dict=runtime_dict,
+            stats={"stats":diff_dict['0']}),
+    )
     print('Done.')
