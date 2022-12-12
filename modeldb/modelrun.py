@@ -116,12 +116,14 @@ def run_neuron_cmds(model, cmds):
         cmds,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
-        universal_newlines=True,
         cwd=model.run_info["start_dir"],
     )
     out, _ = sp.communicate()
-
-    model.nrn_run.extend(curate_log_string(model, out).split('\n'))
+    try:
+        out = out.decode("utf-8")
+    except UnicodeDecodeError:
+        raise Exception("Could not decode output:" + repr(out))
+    model.nrn_run.extend(curate_log_string(model, out).splitlines())
     if sp.returncode > 1:
         model._nrn_run_error = True
 
