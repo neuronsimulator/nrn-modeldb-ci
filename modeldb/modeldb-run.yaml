@@ -202,6 +202,8 @@
     run:
     - runc()
     - verify_graph_()
+7399:
+    github: 'pull/3'
 7659:
     run:
     - runp()
@@ -224,6 +226,8 @@
     - use_mcell_ran4(1)
     - rund()
     - verify_graph_()
+12631:
+    github: 'pull/4'
 17663:
     run:
     - restart("re1_cc")
@@ -390,6 +394,7 @@
     #   which is unhelpful in a CI context
     -  sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' testnet.hoc
 52034:
+    github: 'pull/2'
     run:
     - run_short()
     - verify_graph_()
@@ -660,6 +665,7 @@
       repl: 'SetupTime: %setup_time%'
     # There is a different (clashing) model under pardentategyrus, don't test
     # that one at all for now
+    github: 'pull/4'
     model_dir: nrntraub/mod
     run:
     - traub_launch()
@@ -708,6 +714,7 @@
     - run()
     - verify_graph_()
 106891:
+    github: 'pull/4'
     run:
     - tstop=10
     - runeg()
@@ -758,6 +765,7 @@
     - run()
     - verify_graph_()
 113446:
+    github: 'pull/1'
     run:
     - tstop=500
     - tstop_changed()
@@ -859,6 +867,7 @@
     - run()
     - verify_graph_()
 116838:
+    github: 'pull/2'
     run:
     - tstop=10
     - run()
@@ -1000,6 +1009,7 @@
     script: # todo -> fix model for NEURON 8.0.0 and remove this script
     - sed -i'.bak' -e 's/return 0;//g' MOPP_Fig_1B_left/ichan2.mod
 136095:
+    github: 'pull/3'
     run:
     - run()
     - verify_graph_()
@@ -1012,6 +1022,7 @@
     curate_patterns:
       - pattern: 't=100\.00;(\d+)\([0-9.\-e]+\)'
         repl: 't=100.00;\1(%some_kind_of_clock%)'
+    github: 'pull/2'
     run:
     - mytstop=0.1e3
     - tstop=mytstop
@@ -1026,6 +1037,7 @@
     model_dir: 'mod.files'
 140881:
     comment: //do not run Lytton model takes too long to run and complex to edit
+    github: 'pull/2'
     run: null
 141063:
     comment: //do not run Problem is that Vbox.dialog() steals the focus (complex
@@ -1037,6 +1049,7 @@
     run: null
 141505:
     comment: //do not run Specialized installation environment
+    github: 'pull/2'
     run: null
 143604:
     model_dir: mod
@@ -1058,6 +1071,7 @@
     curate_patterns:
     - pattern: 't=([0-9\.]+);(\d+)\([0-9.\-e]+\)'
       repl: 't=\1;\2(%some_kind_of_clock%)'
+    github: 'pull/2'
     run:
     - run()
     - verify_graph_()
@@ -1083,6 +1097,7 @@
     curate_patterns:
     - pattern: 't=([0-9\.]+);(\d+)\([0-9.\-e]+\)'
       repl: 't=\1;\2(%some_kind_of_clock%)'
+    github: 'pull/2'
     run:
     # main.hoc already calls run()
     - verify_graph_()
@@ -1104,6 +1119,7 @@
 150239:
     model_dir: nrn/mod
 150245:
+    github: 'pull/2'
     curate_patterns:
       - pattern: 't=100\.00;122\([0-9]+\.[0-9]+\)'
         repl: 't=100.00;122(%some_kind_of_clock%)'
@@ -1178,6 +1194,7 @@
 237594:
     model_dir: mechanism
 244262:
+    github: 'pull/2'
     script:
     - if [[ ! -f Iintra.dat ]]; then unzip Iintra.dat.zip; fi
     - ls -l Iintra.dat
@@ -1207,6 +1224,7 @@
     - sed -i'.bak' '1s/^/{load_file("stdgui.hoc")}\n/' hoc_tools/plots.hoc
 267067:
     # This model ID seems to have two ~different models inside it. Arbitrarily choose one.
+    github: 'pull/4'
     model_dir: 'Na12 Analysis/mechanisms'
     run:
     - run()
@@ -1219,6 +1237,7 @@
     comment: Tries to open bac6.ses, which does not exist
     run: null
 267384:
+    github: 'pull/2'
     model_dir: 'BBP_TTPC_EXAMPLE'
     script:
     # 12 is the largest value (runModel-template.hoc); this is a guess
