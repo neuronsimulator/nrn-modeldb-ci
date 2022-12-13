@@ -34,6 +34,13 @@ proc verify_graph_() {local i, j, k
 			verify_yvec_.printf(verify_file_)
 		}
 	}
+	verify_file_.printf("=== end of graph dump ===\n")
+	verify_file_.close()
+	// Motivated by model 146949, which outputs various text files of spikes and so on
+	strdef extra_txt_pattern_
+	// head prints a header including the filename; arbitrary limit of 5000 in case of bad models
+	sprint(extra_txt_pattern_, "cd %s && head -n 5000 runsim-*.txt >> gout", verify_dir_)
+	system(extra_txt_pattern_)
 }
 """
 
