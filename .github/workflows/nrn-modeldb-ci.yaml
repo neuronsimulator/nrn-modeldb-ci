@@ -8,6 +8,29 @@ on:
   schedule:
     # Run at 2am every day
     - cron:  '0 2 * * *'
+  workflow_call:
+   inputs:
+      neuron_v1:
+        description: Last official release (neuron) / NEURON pinned version / Azure drop (artifacts) url
+        default: 'neuron'
+        required: true
+        type: string
+      neuron_v2:
+        description: Last nightly release (neuron-nightly) / NEURON pinned version / Azure drop (artifacts) url
+        default: 'neuron-nightly'
+        required: true
+        type: string
+      models_to_run:
+        description: 'Empty for all models, space separated accession numbers for specific models'
+        default: ''
+        required: false
+        type: string
+      repo:
+        default: 'neuronsimulator/nrn-modeldb-ci'
+        type: string
+        required: false
+      
+        
   workflow_dispatch:
     inputs:
       neuron_v1:
@@ -26,25 +49,25 @@ on:
 jobs:
   nrn-modeldb-ci:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     strategy:
       fail-fast: false
-      matrix:
-        python-version: ["3.9"]
     env:
       DISPLAY: ${{ ':0' }}
-      NEURON_V1: ${{ github.event.inputs.neuron_v1 || 'neuron' }}
-      NEURON_V2: ${{ github.event.inputs.neuron_v2 || 'neuron-nightly' }}
-      MODELS_TO_RUN: ${{ github.event.inputs.models_to_run || '' }}
+      NEURON_V1: ${{ github.event.inputs.neuron_v1 || inputs.neuron_v1 || 'neuron' }}
+      NEURON_V2: ${{ github.event.inputs.neuron_v2 || inputs.neuron_v2 || 'neuron-nightly' }}
+      MODELS_TO_RUN: ${{ github.event.inputs.models_to_run || inputs.models_to_run || '' }}
 
     steps:
-    - uses: actions/checkout@v2
         
-    - name: check for Azure drop NEURON_V1 -> ${{ github.event.inputs.neuron_v1 }}
-      if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.neuron_v1, 'https://dev.azure.com/neuronsimulator/')
+    - uses: actions/checkout@v3
+      with:
+        repository: ${{ inputs.repo || github.repository }}
+        
+    - name: check for Azure drop NEURON_V1 -> ${{ env.NEURON_V1 }}
+      if: startsWith(env.NEURON_V1, 'https://dev.azure.com/neuronsimulator/')
       run: |
         # check URI
-        curl -sfSI -X GET '${{ github.event.inputs.neuron_v1 }}'
+        curl -sfSI -X GET '${{ env.NEURON_V1 }}'
         
         # Download Azure drop and unzip
         AZURE_DROP_URL="$NEURON_V1"
@@ -56,11 +79,11 @@ jobs:
         # Set drop dir in the env
         echo "DROP_DIR_V1=`pwd`/DROP_V1" >> $GITHUB_ENV
     
-    - name: check for Azure drop NEURON_V2 -> ${{ github.event.inputs.neuron_v2 }}
-      if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.neuron_v2, 'https://dev.azure.com/neuronsimulator/')
+    - name: check for Azure drop NEURON_V2 -> ${{ env.NEURON_V2 }}
+      if: startsWith(env.NEURON_V2, 'https://dev.azure.com/neuronsimulator/')
       run: |
         # check URI
-        curl -sfSI -X GET '${{ github.event.inputs.neuron_v2 }}'
+        curl -sfSI -X GET '${{ env.NEURON_V2 }}'
 
         # Download Azure drop and unzip
         AZURE_DROP_URL="$NEURON_V2"
@@ -72,17 +95,28 @@ jobs:
         # Set drop dir in the env
         echo "DROP_DIR_V2=`pwd`/DROP_V2" >> $GITHUB_ENV
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+    - uses: actions/setup-python@v4
       with:
-        python-version: ${{ matrix.python-version }}
-
+        python-version: 3.9
+        
     - name: Set models to run for PR
       run: |
-        # Select a few models to run CI for PRs 
+        # For PRs we only have a few models for quick sanity checking.
+        # Once the PR is green you need to manually run the ModelDB CI workflow by simply selecting your branch in the UI.
+
+        # The follwing selection aims to target different features (since we haven't worked on unit testing yet -> #38 ).
+        # Select a few models to run CI for PRs:
+        #   64195   -> run: null
+        #   22203   -> skip: true
+        #   156120  -> several model directories
+        #   97868   -> failed nrnivmodl
+        #   146030  -> curate_patterns
+        #   244679  -> no entry in modeldb-run.yaml
+        #   rest:   -> currently yielding differences in the pipeline
+        #echo 'MODELS_TO_RUN=64195 22203 156120 51781 97868 22203 97756 97917 105507 136803 138379 138382 146030 244679 251881' >> $GITHUB_ENV
         #TODO - temporary run added python models
         echo 'MODELS_TO_RUN=156039 194897 226422 186768 189922 195615 139421 144586 244412 39948 195569 249404 206400 144511 229276 151282 264834 151685' >> $GITHUB_ENV
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && inputs.repo == ''
 
     - name: Install dependencies and project
       id: install-deps
@@ -90,7 +124,7 @@ jobs:
         set
         # Set up Xvfb
         sudo apt-get install xvfb
-        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1600x1200x24 &  # run in bg
+        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1600x1200x24 -noreset -nolock -shmem &  # run in bg
         # Install python dependencies
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
@@ -155,7 +189,7 @@ jobs:
       run: |
         diffreports2html ${nrn1_ver}.json ${nrn2_ver}.json
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: ${{ env.nrn1_ver }}-vs-${{ env.nrn2_ver }}
         path: |

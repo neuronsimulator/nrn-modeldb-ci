@@ -465,10 +465,7 @@
     - load_file("sample.hoc")
     - verify_graph_()
     script:
-    - sed 's,tstop *=,tstop = 100//,
-    - /whichAP/,$d
-    - ''' sample.hoc > temp.tmp'
-    - mv temp.tmp sample.hoc
+    -  sed -i'.bak' -e 's/tstop *=/tstop = 100\/\//g;/whichAP/,$d' sample.hoc
 76879:
     run:
     - tstop=20
@@ -503,10 +500,7 @@
 83590:
     run: []
     script:
-    - sed 's/mustart  = -0.400/mustart  = 0.800/
-    - ' s/sigmastart  = 0.064/sigmastart  = 0.128/'
-    - ''' mylibs/TFparams.hoc > temp.tmp'
-    - mv temp.tmp  mylibs/TFparams.hoc
+    - sed -i'.bak' -e 's/mustart  = -0.400/mustart  = 0.800/g;s/sigmastart  = 0.064/sigmastart  = 0.128/g' mylibs/TFparams.hoc
 84589:
     run:
     - //ignore sim in subdirectory
@@ -673,9 +667,7 @@
     - load_file("batch_.hoc")
     - verify_graph_()
     script:
-    - sed 's/batch_flag=0/batch_flag=1/
-    - s/tstop = 1e3/tstop = 20/' batch_.hoc > temp.tmp
-    - mv temp.tmp batch_.hoc
+    - sed -i'.bak' -e 's/batch_flag=0/batch_flag=1/g;s/tstop = 1e3/tstop = 20/g' batch_.hoc
 106551:
     run:
     - use_mcell_ran4(1)
@@ -823,8 +815,7 @@
     - //load_file("init.hoc")
     - //verify_graph_()
     script:
-    - sed 's/tstop = 100/tstop = 20/' init.hoc > temp.tmp
-    - mv temp.tmp init.hoc
+    - sed -i'.bak' -e 's/tstop = 100/tstop = 20/g' init.hoc
 116835:
     run:
     - tstop=10
@@ -836,8 +827,7 @@
     - run()
     - verify_graph_()
     script:
-    - sed 's/^showdemo=1/showdemo=0/' mosinit.hoc > temp.tmp
-    - mv temp.tmp mosinit.hoc
+    - sed -i'.bak' -e 's/^showdemo=1/showdemo=0/g' mosinit.hoc
 116956:
     run:
     - run()
@@ -962,16 +952,14 @@
     - run()
     - verify_graph_()
     script:
-    - sed 's/tstop = 6500/tstop = 100/' session.ses > temp.tmp
-    - mv temp.tmp session.ses
+    - sed -i'.bak' -e 's/tstop = 6500/tstop = 100/g' session.ses
 124291:
     run:
     - stim.amp = 0.1
     - runa()
     - verify_graph_()
     script: # todo -> fix model for NEURON 8.0.0 and remove this script
-    - sed 's/return 0;//' MOPP_Fig_1B_left/ichan2.mod > temp.tmp
-    - mv temp.tmp MOPP_Fig_1B_left/ichan2.mod
+    - sed -i'.bak' -e 's/return 0;//g' MOPP_Fig_1B_left/ichan2.mod
 138321:
     run:
     - run()
@@ -1076,21 +1064,21 @@
     - run()
     - verify_graph_()
     script:
-    - sed -i 's/tstop = /tstop = 50\/\//' Fig8_tuft_NMDA_spike.hoc
-    - sed -i 's/simul_iter=/simul_iter=2 \/\//' Fig8_tuft_NMDA_spike.hoc
+    - sed -i'.bak' -e 's/tstop = /tstop = 50\/\//' Fig8_tuft_NMDA_spike.hoc
+    - sed -i'.bak' -e 's/simul_iter=/simul_iter=2 \/\//' Fig8_tuft_NMDA_spike.hoc
     comment: usual simulation time is ~ 10 minutes (tstop = 120 and simul_iter=10)
 206267:
     run:
     - run()
     - verify_graph_()
     script:
-    - sed -i 's/tstop=/tstop=100 \/\//' Start.hoc
+    - sed -i'.bak' -e 's/tstop=/tstop=100 \/\//' Start.hoc
 157157:
     run:
     - run()
     - verify_graph_()
     script:
-    - sed -i 's/tstop = 5000/tstop = 250 \/\//g' PC.ses
+    - sed -i'.bak' -e 's/tstop = 5000/tstop = 250 \/\//g' PC.ses
 244848:
     run: null
     comment: not straightforward to cut down simulation time, takes too long
@@ -1105,15 +1093,20 @@
     - run()
     - verify_graph_()
     script:
-    - sed -i 's/500/5/g' BPF.hoc
-    - sed -i 's/2\([0|1]\)000/2\1/g' BPF.hoc
+    - sed -i'.bak' -e 's/500/5/g' BPF.hoc
+    - sed -i'.bak' -e 's/2\([0|1]\)000/2\1/g' BPF.hoc
     comment: diving some numbers with 100 halvened the sim time
 151126:
     run:
     - run()
     - verify_graph_()
     script:
-    - sed -i 's/tstop = 550/tstop = 100/' HAM_SR1.ses
+    - sed -i'.bak' -e 's/tstop = 550/tstop = 100/' HAM_SR1.ses
+136803:
+    run:
+    - run()
+    - verify_graph_()
+    model_dir: mod_files
 # python models
 # find * -name mosinit.py
 156039:

@@ -36,6 +36,7 @@ def runmodels(args=None):
         --virtual               Run in headless mode. You need a back-end like Xvfb.
         --clean                 Auto-clean model working directory before running (useful for consecutive runs and failsafe)
         --norun                 Compile and link only (nrnivmodl).
+        --inplace               Skip model preparation logic, simply run NEURON.
 
     Examples
         runmodels --workdir=/path/to/workdir                        # run all models
@@ -48,22 +49,29 @@ def runmodels(args=None):
     virtual = options.pop("--virtual", False)
     clean = options.pop("--clean", False)
     norun = options.pop("--norun", False)
+    inplace = options.pop("--inplace", False)
 
     if os.path.abspath(working_dir) == ROOT_DIR:
         print("Cannot run models directly into nrn-modeldb-ci ROOT_DIR -> {}".format(ROOT_DIR))
         sys.exit(1)
 
-    if not clean and is_dir_non_empty(working_dir):
-        print("WARNING: WorkingDirectory {} exists and is non empty.".format(working_dir))
-        print("\tre-run with --clean if you wish to overwrite model runs!")
+    if clean and inplace:
+        print("ERROR: --clean and --inplace are mutually exclusive")
         sys.exit(1)
 
-    mrm = ModelRunManager(working_dir, gout=gout, clean=clean, norun=norun)
+    if not (clean or inplace) and is_dir_non_empty(working_dir):
+        print("ERROR: WorkingDirectory {} exists and is non empty.".format(working_dir))
+        print("\t re-run with one of these options:\n"
+              "\t\t--clean \t-> if you wish to OVERWRITE model runs (delete content from --workdir and re-build from cache)\n"
+              "\t\t--inplace \t-> if you wish to re-run the same model (content in --workdir is kept)\n")
+        sys.exit(1)
+
+    mrm = ModelRunManager(working_dir, gout=gout, clean=clean, norun=norun, inplace=inplace)
     model_list = model_ids if model_ids else None
 
     if virtual:
         from pyvirtualdisplay import Display
-        with Display() as _:
+        with Display(manage_global_env=False) as _:
             mrm.run_models(model_list)
     else:
         mrm.run_models(model_list)
@@ -206,11 +214,14 @@ def diffreports2html(args=None):
     file_loader = FileSystemLoader(os.path.join(Path(__file__).parent.resolve(), 'templates'))
     env = Environment(loader=file_loader)
     template = env.get_template('diffreport.html')
+    runtime_template = env.get_template('runtimes.html')
 
     report_title = '{}-vs-{}'.format(os.path.splitext(json_report1)[0],
                                      os.path.splitext(json_report2)[0])
     report_filename = os.path.join(Path(json_report1).resolve().parent, report_title + '.html')
-    diff_dict, gout_dict = diff_reports(json_report1, json_report2)
+    runtime_report_title = 'Runtimes ' + report_title
+    runtime_report_filename = os.path.join(Path(json_report1).resolve().parent, "runtimes-" + report_title + '.html')
+    diff_dict, gout_dict,runtime_dict, v1, v2 = diff_reports(json_report1, json_report2)
 
     print('Writing {} ...'.format(report_filename))
     with open(report_filename, 'w') as fh:
@@ -219,4 +230,14 @@ def diffreports2html(args=None):
             diff_dict=diff_dict,
             gout_dict=gout_dict),
         )
+    print('Done.')
+    print('Writing {} ...'.format(runtime_report_filename))
+    with open(runtime_report_filename, 'w') as fh:
+        fh.write(runtime_template.render(
+            title="{}".format(runtime_report_title),
+            runtime_dict=runtime_dict,
+            stats={"stats":diff_dict['0']},
+            v1=v1,
+            v2=v2),
+    )
     print('Done.')
