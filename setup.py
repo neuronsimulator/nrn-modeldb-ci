@@ -16,8 +16,6 @@ install_requires = [
     'ipython',
     'matplotlib',
     'scipy',
-    '2to3',
-    'reindent',
     'h5py'
 ]
 
