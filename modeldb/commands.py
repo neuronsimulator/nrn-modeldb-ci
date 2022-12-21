@@ -178,7 +178,7 @@ def report2html(args=None):
     env = Environment(loader=file_loader)
     template = env.get_template('report.html')
 
-    report_filename = os.path.join(os.path.splitext(json_report)[0] + '.html')
+    report_filename = os.path.join(os.path.splitext(os.path.basename(json_report))[0] + '.html')
     print('Writing {} ...'.format(report_filename))
     with open(report_filename, 'w') as fh, open(json_report, 'r+') as jr:
         fh.write(template.render(
@@ -216,8 +216,9 @@ def diffreports2html(args=None):
     template = env.get_template('diffreport.html')
     runtime_template = env.get_template('runtimes.html')
 
-    report_title = '{}-vs-{}'.format(os.path.splitext(json_report1)[0],
-                                     os.path.splitext(json_report2)[0])
+
+    report_title = '{}-vs-{}'.format( os.path.splitext(os.path.basename(json_report1))[0],
+                                      os.path.splitext(os.path.basename(json_report2))[0] )
     report_filename = os.path.join(Path(json_report1).resolve().parent, report_title + '.html')
     runtime_report_title = 'Runtimes ' + report_title
     runtime_report_filename = os.path.join(Path(json_report1).resolve().parent, "runtimes-" + report_title + '.html')
