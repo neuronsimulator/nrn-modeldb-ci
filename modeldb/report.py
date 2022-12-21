@@ -1,9 +1,9 @@
-import numpy as np
 import json
 import re
 import difflib
 import logging
 import os
+import shlex
 import subprocess
 from .modeldb import ModelDB
 from pygments import highlight
@@ -12,6 +12,7 @@ from pygments.formatters import HtmlFormatter
 
 
 mdb = ModelDB()
+
 
 def curate_run_data(run_data, model=None):
     curated_data = run_data
@@ -33,8 +34,9 @@ def curate_run_data(run_data, model=None):
 
     for regex_key, regex_value in regex_dict.items():
         updated_data = []
+        pattern = re.compile(regex_key)
         for line in curated_data:
-            new_line, number_of_subs = re.subn(regex_key, regex_value, line)
+            new_line, number_of_subs = pattern.subn(regex_value, line)
             if number_of_subs:
                 logging.debug("{} matched {} time(s)".format(regex_key, number_of_subs))
                 logging.debug("{} -> {}".format(line, new_line))
@@ -94,10 +96,12 @@ def diff_reports(report1_json, report2_json):
                 gout_b_file = os.path.join(data_b[k]["run_info"]["start_dir"], "gout")
                 # gout may be missing in one of the paths. `diff -N` treats non-existent files as empty.
                 if os.path.isfile(gout_a_file) or os.path.isfile(gout_b_file):
-                    diff_out = subprocess.getoutput("diff -uN {} {} | head -n 30".format(gout_a_file, gout_b_file))
+                    diff_out = subprocess.getoutput(
+                        "diff -uN {} {} | head -n 30".format(
+                            shlex.quote(gout_a_file), shlex.quote(gout_b_file)
+                        )
+                    )
                     if diff_out:
                         gout_dict[k] = highlight(diff_out, DiffLexer(), HtmlFormatter(linenos=True, cssclass="colorful", full=True))
 
     return diff_dict, gout_dict, runtime_dict, v1, v2
-
-

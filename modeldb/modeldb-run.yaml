@@ -630,6 +630,9 @@
     - run()
     - verify_graph_()
 97868:
+    curate_patterns:
+    - pattern: '^dyld[\d+]: symbol not found in flat namespace'
+      repl: 'dyld[%pid%]: symbol not found in flat namespace'
     comment: //do not run
     run: null
 97874:
@@ -663,11 +666,15 @@
     - run()
     - verify_graph_()
 105507:
+    curate_patterns:
+    - pattern: '^([0-9.\-e]+) kilocycles$'
+      repl: '%some_count% kilocycles'
     run:
     - load_file("batch_.hoc")
     - verify_graph_()
     script:
-    - sed -i'.bak' -e 's/batch_flag=0/batch_flag=1/g;s/tstop = 1e3/tstop = 20/g' batch_.hoc
+    # 424242: this is just avoiding a timing-related number being printed
+    - sed -i'.bak' -e 's/batch_flag=0/batch_flag=1/g;s/tstop = 1e3/tstop = 20/g;s#return tti/1e3#return 424242#g' batch_.hoc
 106551:
     run:
     - use_mcell_ran4(1)
@@ -1024,12 +1031,23 @@
     curate_patterns:
       - pattern: 'Setup time for simulation: [0-9]+\.[0-9]+  seconds'
         repl: 'Setup time for simulation: %setup_time% seconds'
-      - pattern: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: \d+/\d+/\d+,\d+:\d+:\d+ [AP]{1}M:\d+'
+      - pattern: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: .*'
         repl: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: %current_date%'
       - pattern: 'Finished simulation in [0-9\.]+ seconds'
         repl: 'Finished simulation in %simulation_time% seconds'
-      - pattern: 'Current time: \d+/\d+/\d+,\d+:\d+:\d+ [AP]{1}M:\d+'
+      - pattern: 'Current time: .*'
         repl: 'Current time: %current_time%'
+146949:
+    curate_patterns:
+    - pattern: 't=([0-9\.]+);(\d+)\([0-9.\-e]+\)'
+      repl: 't=\1;\2(%some_kind_of_clock%)'
+    run:
+    # main.hoc already calls run()
+    - verify_graph_()
+    script:
+    - ln -s main.hoc mosinit.hoc
+    # without this the script calls quit() before we run verify_graph_()
+    - sed -i'.bak' -r 's#^quit()#// quit() removed by nrn-modeldb-ci#g' main.hoc
 147461:
     comment: //do not run Minimum time would be 1/2 hr default time is about 8.3 hours
     run: null
@@ -1119,6 +1137,9 @@
     script:
     - sed -i'.bak' -e 's/tstop = 550/tstop = 100/' HAM_SR1.ses
 136803:
+    curate_patterns:
+    - pattern: '^(setup|run|finish)time\s+=\s+([0-9.]+)$'
+      repl: '\1time = %masked%'
     run:
     - run()
     - verify_graph_()
