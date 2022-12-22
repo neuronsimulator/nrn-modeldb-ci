@@ -1,9 +1,9 @@
-import numpy as np
 import json
 import re
 import difflib
 import logging
 import os
+import shlex
 import subprocess
 from .modeldb import ModelDB
 from pygments import highlight
@@ -13,9 +13,10 @@ from pygments.formatters import HtmlFormatter
 
 mdb = ModelDB()
 
+
 def curate_run_data(run_data, model=None):
     curated_data = run_data
-
+    
     regex_dict = {
         # /../nrniv: Assignment to modern physical constant FARADAY	<-> ./x86_64/special: Assignment to modern physical constant FARADAY
         "^/.*?/nrniv:": "%neuron-executable%:",
@@ -23,18 +24,20 @@ def curate_run_data(run_data, model=None):
         # nrniv: unable to open font "*helvetica-medium-r-normal*--14*", using "fixed" <-> special: unableto open font "*helvetica-medium-r-normal*--14*", using "fixed"
         "^nrniv:": "%neuron-executable%:",
         "^special:": "%neuron-executable%:",
-        "(Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d+ \d+:\d+:\d+ [A-Z]+ \d+": "%date_command%",
+        "(Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d+\s+\d+:\d+:\d+ [A-Z\s]+ \d+": "%date_command%",
         "total run time [0-9\.]+": "total run time %run_time%",
         "(^.*distutils.*$)": "",
+        "/.*?/lib/python.*/site-packages/" : "%python-site-packages%",
     }
-
+    
     for model_specific_substitution in mdb.run_instr.get(model, {}).get("curate_patterns", []):
         regex_dict[model_specific_substitution["pattern"]] = model_specific_substitution["repl"]
 
     for regex_key, regex_value in regex_dict.items():
         updated_data = []
+        pattern = re.compile(regex_key)
         for line in curated_data:
-            new_line, number_of_subs = re.subn(regex_key, regex_value, line)
+            new_line, number_of_subs = pattern.subn(regex_value, line)
             if number_of_subs:
                 logging.debug("{} matched {} time(s)".format(regex_key, number_of_subs))
                 logging.debug("{} -> {}".format(line, new_line))
@@ -63,12 +66,17 @@ def diff_reports(report1_json, report2_json):
         for k in data_a.keys():
             if int(k) == 0:
                 continue  # skip info key
-
+            if k not in data_b:
+                ud_empty = difflib.unified_diff(data_a[k]["nrn_run"], ["Accession number {} not found in report2".format(k)])
+                diff_dict[k] = highlight('\n'.join(ud_empty), DiffLexer(), HtmlFormatter(linenos=True, cssclass="colorful", full=True))
+                continue            
             curated_a = curate_run_data(data_a[k]["nrn_run"], model=int(k))
             curated_b = curate_run_data(data_b[k]["nrn_run"], model=int(k))
+            start_dir_a = data_a[k]["run_info"]["start_dir"] if "run_info" in data_a[k] and "start_dir" in data_a[k]["run_info"] else "unknown"
+            start_dir_b = data_b[k]["run_info"]["start_dir"] if "run_info" in data_b[k] and "start_dir" in data_b[k]["run_info"] else "unknown"
             if curated_a != curated_b:
-                ud = difflib.unified_diff(curated_a, curated_b,  fromfile=data_a[k]["run_info"]["start_dir"],
-                                             tofile=data_b[k]["run_info"]["start_dir"])
+                ud = difflib.unified_diff(curated_a, curated_b,  fromfile=start_dir_a,
+                                             tofile=start_dir_b)
                 diff_dict[k] = highlight('\n'.join(ud), DiffLexer(), HtmlFormatter(linenos=True, cssclass="colorful", full=True))
                 
             def _speedup(a, b):
@@ -94,10 +102,12 @@ def diff_reports(report1_json, report2_json):
                 gout_b_file = os.path.join(data_b[k]["run_info"]["start_dir"], "gout")
                 # gout may be missing in one of the paths. `diff -N` treats non-existent files as empty.
                 if os.path.isfile(gout_a_file) or os.path.isfile(gout_b_file):
-                    diff_out = subprocess.getoutput("diff -uN {} {} | head -n 30".format(gout_a_file, gout_b_file))
+                    diff_out = subprocess.getoutput(
+                        "diff -uN {} {} | head -n 30".format(
+                            shlex.quote(gout_a_file), shlex.quote(gout_b_file)
+                        )
+                    )
                     if diff_out:
                         gout_dict[k] = highlight(diff_out, DiffLexer(), HtmlFormatter(linenos=True, cssclass="colorful", full=True))
 
     return diff_dict, gout_dict, runtime_dict, v1, v2
-
-
