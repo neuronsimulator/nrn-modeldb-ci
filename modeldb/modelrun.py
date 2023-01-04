@@ -4,7 +4,6 @@ import subprocess
 import platform
 import sys
 from .progressbar import ProgressBar
-from .data import Model
 from . import modeldb
 from .config import *
 from .hocscripts import *
@@ -35,7 +34,7 @@ def is_dir_non_empty(directory):
 class ModelRun(dict):
     def __init__(self, model, working_dir, clean=False, norun=False, inplace=False):
         super().__init__()
-        self._model = model
+        super().update(model)
         self._working_dir = os.path.abspath(working_dir)
         self._logs = []
         self._gout = []
@@ -88,7 +87,7 @@ class ModelRun(dict):
     run_time = property(lambda self: self._run_time)
     run_times = property(lambda self: self._run_times)
 
-    id = property(lambda self: self._model.id)
+    id = property(lambda self: self["id"])
 
 
 def curate_log_string(model, logstr):

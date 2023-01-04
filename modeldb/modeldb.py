@@ -7,7 +7,6 @@ import requests
 import time
 from .progressbar import ProgressBar
 import yaml
-from .data import Model
 from .config import *
 import traceback
 from pprint import pformat
@@ -15,67 +14,29 @@ from pprint import pformat
 def download_model(arg_tuple):
     model_id, model_run_info = arg_tuple
     try:
-        model_json = requests.get(MDB_MODEL_DOWNLOAD_URL.format(model_id=model_id)).json()
-        model = Model(
-            *(
-                model_json[key]
-                for key in ("object_id", "object_name", "object_created", "object_ver_date")
-            )
-        )
-        url = None
-        for att in model_json["object_attribute_values"]:
-            if att["attribute_id"] == 23:
-                url = att["value"]
-                break
-        # print(model.id)
         model_zip_uri = os.path.join(
-            MODELS_ZIP_DIR, "{model_id}.zip".format(model_id=model.id)
+            MODELS_ZIP_DIR, "{model_id}.zip".format(model_id=model_id))
+
+        suffix = model_run_info["github"] if "github" in model_run_info else "master"
+        github_url = "https://github.com/ModelDBRepository/{model_id}/archive/refs/heads/{suffix}.zip".format(
+            model_id=model_id, suffix=suffix
         )
-        with open(model_zip_uri, "wb+") as zipfile:
-            zipfile.write(base64.standard_b64decode(url["file_content"]))
-
-        if "github" in model_run_info:
-            # This means we should try to replace the version of the model that
-            # we downloaded from the ModelDB API just above with a version from
-            # GitHub
-            github = model_run_info["github"]
-            organisation = "ModelDBRepository"
-            suffix = "" # default branch
-            if github == "default":
-                pass
-            elif github.startswith("pull/"):
-                pr_number = int(github[5:])
-                suffix = "/pull/{}/head".format(pr_number)
-            elif github.startswith('/'):
-                # /org implies that we use the default branch from org/model_id
-                organisation = github[1:]
-            else:
-                raise Exception("Invalid value for github key: {}".format(github))
-            github_url = "https://api.github.com/repos/{organisation}/{model_id}/zipball{suffix}".format(
-                model_id=model_id, organisation=organisation, suffix=suffix
-            )
-            # Replace the local file `model_zip_uri` with the zip file we
-            # downloaded from `github_url`
-            num_attempts = 3
-            status_codes = []
-            for _ in range(num_attempts):
-                github_response = requests.get(github_url)
-                status_codes.append(github_response.status_code)
-                if github_response.status_code == requests.codes.ok:
-                    break
-                time.sleep(5)
-            else:
-                raise Exception(
-                    "Failed to download {} with status codes {}".format(
-                        github_url, status_codes
-                    )
-                )
-            with open(model_zip_uri, "wb+") as zipfile:
-                zipfile.write(github_response.content)
+      
+        # download github_url to model_zip_uri
+        logging.info("Downloading model {} from {}".format(model_id, github_url))
+        response = requests.get(github_url, stream=True)
+        if response.status_code != 200:
+            raise Exception("Failed to download model: {}".format(response.text))
+        with open(model_zip_uri, "wb") as f:
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk:
+                    f.write(chunk)
+                    f.flush()
+        logging.info("Downloaded model {} to {}".format(model_id, model_zip_uri))
     except Exception as e:  #  noqa
-        model = e
+        github_url = e
 
-    return model_id, model
+    return model_id, github_url
 
 
 class ModelDB(object):
@@ -110,11 +71,15 @@ class ModelDB(object):
             [(model_id, self._run_instr.get(model_id, {})) for model_id in models],
         )
         download_err = {}
-        for model_id, model in ProgressBar.iter(processed_models, len(models)):
-            if not isinstance(model, Exception):
-                self._metadata[model_id] = model
+        for model_id, model_url in ProgressBar.iter(processed_models, len(models)):
+            
+            if not isinstance(model_url, Exception):
+                model_meta = {}
+                model_meta["id"] = model_id
+                model_meta["url"] = model_url   
+                self._metadata[model_id] = model_meta
             else:
-                download_err[model_id] = model
+                download_err[model_id] = model_url
 
         if download_err:
             logging.error("Error downloading models:")
