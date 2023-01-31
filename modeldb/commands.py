@@ -71,7 +71,7 @@ def runmodels(args=None):
 
     if virtual:
         from pyvirtualdisplay import Display
-        with Display(manage_global_env=False) as _:
+        with Display(manage_global_env=True, visible=False) as _:
             mrm.run_models(model_list)
     else:
         mrm.run_models(model_list)
