@@ -380,6 +380,12 @@
     run:
     - load_file("testnet.hoc")
     - verify_graph_()
+    script:
+    # there are two problems with the code in this model:
+    # - it tries to access /proc/uptime, which is not portable
+    # - if that works (i.e. on Linux) it runs with a different seed every time,
+    #   which is unhelpful in a CI context
+    -  sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' testnet.hoc
 52034:
     run:
     - run_short()
@@ -625,13 +631,16 @@
     run:
     - xopen("show_start.hoc")
     - verify_graph_()
+    script:
+    # avoid printing out times
+    - sed -i'.bak' -e 's/^startsw()$/not_used=startsw()/g' ga_setup.hoc
 97860:
     run:
     - run()
     - verify_graph_()
 97868:
     curate_patterns:
-    - pattern: '^dyld[\d+]: symbol not found in flat namespace'
+    - pattern: '^dyld\[\d+\]: symbol not found in flat namespace'
       repl: 'dyld[%pid%]: symbol not found in flat namespace'
     comment: //do not run
     run: null
@@ -640,9 +649,16 @@
     run:
     - verify_graph_()
 97917:
+    # There is a different (clashing) model under pardentategyrus, don't test
+    # that one at all for now
+    model_dir: nrntraub/mod
     run:
     - traub_launch()
     - verify_graph_()
+    # Stop mosinit from running nrnivmodl on the fly; use the special produced
+    # by nrn-modeldb-ci from the model_dir set above
+    script:
+    - sed -i'.bak' -e 's/mkdll_("nrntraub", "mod", s.s)) {/1) {\n\t\tchdir("nrntraub")/g' mosinit.hoc
 98005:
     run:
     - run()
@@ -1086,6 +1102,14 @@
 223962:
     skip: true
     comment: takes too long, need to see how to reduce time
+229276:
+    model_dir: mechanisms
+    script:
+    - cp template.hoc template.hoc.iconv.bak
+    - cp createsimulation.hoc createsimulation.hoc.iconv.bak
+    - iconv -f LATIN1 -t UTF-8 template.hoc.iconv.bak > template.hoc
+    - iconv -f LATIN1 -t UTF-8 createsimulation.hoc.iconv.bak > createsimulation.hoc
+    - sed -i'.bak' -e 's#^tstop=\([0-9a-z+]*\)#tstop=((\1)/500)#g' createsimulation.hoc
 244262:
     script:
     - if [[ ! -f Iintra.dat ]]; then unzip Iintra.dat.zip; fi
@@ -1101,6 +1125,18 @@
     - sed -i'.bak' -e 's/tstop = /tstop = 50\/\//' Fig8_tuft_NMDA_spike.hoc
     - sed -i'.bak' -e 's/simul_iter=/simul_iter=2 \/\//' Fig8_tuft_NMDA_spike.hoc
     comment: usual simulation time is ~ 10 minutes (tstop = 120 and simul_iter=10)
+267067:
+    # This model ID seems to have two ~different models inside it. Arbitrarily choose one.
+    model_dir: 'Na12 Analysis/mechanisms'
+    run:
+    - run()
+    - verify_graph_()
+    script:
+    - (cd "Na12 Analysis" && mv mosinit.hoc mosinit.hoc.bak && ln -s runModel.hoc mosinit.hoc)
+    - sed -i'.bak' -e 's#\./mosinit\.hoc#./mosinit.hoc.bak#g' 'Na12 Analysis/runModel.hoc'
+    - sed -i'.bak' -e 's#^tstop=30000#tstop=100#g' 'Na12 Analysis/constants.hoc'
+267384:
+    model_dir: 'BBP_TTPC_EXAMPLE'
 206267:
     run:
     - run()
