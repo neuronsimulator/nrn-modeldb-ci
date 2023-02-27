@@ -99,9 +99,12 @@ def append_log(model, model_sink, text):
     model_sink.extend(curate_log_string(model, text).split('\n'))
 
 
-def run_commands(model, cmds, work_dir=None):
+def run_commands(model, cmds, env={}, work_dir=None):
+    full_env = os.environ
+    full_env.update(env)
     out, _ = subprocess.Popen(
             cmds,
+            env=full_env,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
@@ -134,7 +137,21 @@ def clean_model_dir(model):
 
 
 def compile_mods(model, mods):
-    run_commands(model, ["nrnivmodl"] + mods, work_dir=model.run_info["start_dir"])
+    # Unfortunately nrnivmodl doesn't have an option to steer how much build
+    # parallellism it tries to do, it just hardcodes `make -j 4`. Because we
+    # parallelise over models, at a higher level, we want to remove this
+    # internal parallelism from nrnivmodl. In the CI we install NEURON using
+    # pip from precompiled wheels, and the real nrnivmodl is hidden behind
+    # an extra layer of wrappers. This makes it inconvenient to change the
+    # hardcoded value. Instead, we try to achieve the same effect using Make's
+    # environment variables. --max-load 0.0 should ban >1 job being launched if
+    # the system load is larger than zero.
+    run_commands(
+        model,
+        ["nrnivmodl"] + mods,
+        env={"MAKEFLAGS": " --max-load 0.0"},
+        work_dir=model.run_info["start_dir"],
+    )
 
 
 def build_driver_hoc(model):
