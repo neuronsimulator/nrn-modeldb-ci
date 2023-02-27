@@ -649,6 +649,9 @@
     run:
     - verify_graph_()
 97917:
+    curate_patterns:
+    - pattern: 'SetupTime: [0-9.\-e]+'
+      repl: 'SetupTime: %setup_time%'
     # There is a different (clashing) model under pardentategyrus, don't test
     # that one at all for now
     model_dir: nrntraub/mod
