@@ -1188,5 +1188,5 @@
     script:
     - 2to3 -w .
     - sed -i'.bak' -e 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
-
-
+251881:
+    model_dir: mechanisms
