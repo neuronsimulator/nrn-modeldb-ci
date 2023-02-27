@@ -633,7 +633,7 @@
     - verify_graph_()
     script:
     # avoid printing out times
-    - sed -i'.bak' -e 's/^startsw()$/not_used=startsw()/g' ga_setup.hoc
+    - sed -i'.bak' -e 's/^startsw()$/{startsw()}/g' ga_setup.hoc
 97860:
     run:
     - run()
