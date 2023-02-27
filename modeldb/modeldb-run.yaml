@@ -639,11 +639,8 @@
     - run()
     - verify_graph_()
 97868:
-    curate_patterns:
-    - pattern: '^dyld\[\d+\]: symbol not found in flat namespace'
-      repl: 'dyld[%pid%]: symbol not found in flat namespace'
-    comment: //do not run
-    run: null
+    comment: 'Depends on MySQL, do not run'
+    skip: true
 97874:
     model_dir: modeldb
     run:
