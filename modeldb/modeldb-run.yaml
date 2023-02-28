@@ -380,6 +380,12 @@
     run:
     - load_file("testnet.hoc")
     - verify_graph_()
+    script:
+    # there are two problems with the code in this model:
+    # - it tries to access /proc/uptime, which is not portable
+    # - if that works (i.e. on Linux) it runs with a different seed every time,
+    #   which is unhelpful in a CI context
+    -  sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' testnet.hoc
 52034:
     run:
     - run_short()
@@ -625,21 +631,34 @@
     run:
     - xopen("show_start.hoc")
     - verify_graph_()
+    script:
+    # avoid printing out times
+    - sed -i'.bak' -e 's/^startsw()$/{startsw()}/g' ga_setup.hoc
 97860:
     run:
     - run()
     - verify_graph_()
 97868:
-    comment: //do not run
-    run: null
+    comment: 'Depends on MySQL, do not run'
+    skip: true
 97874:
     model_dir: modeldb
     run:
     - verify_graph_()
 97917:
+    curate_patterns:
+    - pattern: 'SetupTime: [0-9.\-e]+'
+      repl: 'SetupTime: %setup_time%'
+    # There is a different (clashing) model under pardentategyrus, don't test
+    # that one at all for now
+    model_dir: nrntraub/mod
     run:
     - traub_launch()
     - verify_graph_()
+    # Stop mosinit from running nrnivmodl on the fly; use the special produced
+    # by nrn-modeldb-ci from the model_dir set above
+    script:
+    - sed -i'.bak' -e 's/mkdll_("nrntraub", "mod", s.s)) {/1) {\n\t\tchdir("nrntraub")/g' mosinit.hoc
 98005:
     run:
     - run()
@@ -663,11 +682,15 @@
     - run()
     - verify_graph_()
 105507:
+    curate_patterns:
+    - pattern: '^([0-9.\-e]+) kilocycles$'
+      repl: '%some_count% kilocycles'
     run:
     - load_file("batch_.hoc")
     - verify_graph_()
     script:
-    - sed -i'.bak' -e 's/batch_flag=0/batch_flag=1/g;s/tstop = 1e3/tstop = 20/g' batch_.hoc
+    # 424242: this is just avoiding a timing-related number being printed
+    - sed -i'.bak' -e 's/batch_flag=0/batch_flag=1/g;s/tstop = 1e3/tstop = 20/g;s#return tti/1e3#return 424242#g' batch_.hoc
 106551:
     run:
     - use_mcell_ran4(1)
@@ -960,12 +983,19 @@
     - verify_graph_()
     script: # todo -> fix model for NEURON 8.0.0 and remove this script
     - sed -i'.bak' -e 's/return 0;//g' MOPP_Fig_1B_left/ichan2.mod
+136095:
+    run:
+    - run()
+    - verify_graph_()
 138321:
     run:
     - run()
     - verify_graph_()
     model_dir: OneDimension/Neuron
 138379:
+    curate_patterns:
+      - pattern: 't=100\.00;(\d+)\([0-9.\-e]+\)'
+        repl: 't=100.00;\1(%some_kind_of_clock%)'
     run:
     - mytstop=0.1e3
     - tstop=mytstop
@@ -1000,6 +1030,15 @@
     - init()
     - run()
     - verify_graph_()
+144538:
+    curate_patterns:
+    - pattern: 't=([0-9\.]+);(\d+)\([0-9.\-e]+\)'
+      repl: 't=\1;\2(%some_kind_of_clock%)'
+    run:
+    - run()
+    - verify_graph_()
+    script:
+    - sed -i'.bak' -r 's/(tstop=mytstop=htmax= \(LearnDur \+ ZipDur \+ BaseDur\*2\) \*) 1e3/\1 2e1/g' params.hoc
 145836:
     run:
     - ParmFitnessGui[0].run()
@@ -1008,12 +1047,23 @@
     curate_patterns:
       - pattern: 'Setup time for simulation: [0-9]+\.[0-9]+  seconds'
         repl: 'Setup time for simulation: %setup_time% seconds'
-      - pattern: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: \d+/\d+/\d+,\d+:\d+:\d+ [AP]{1}M:\d+'
+      - pattern: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: .*'
         repl: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: %current_date%'
       - pattern: 'Finished simulation in [0-9\.]+ seconds'
         repl: 'Finished simulation in %simulation_time% seconds'
-      - pattern: 'Current time: \d+/\d+/\d+,\d+:\d+:\d+ [AP]{1}M:\d+'
+      - pattern: 'Current time: .*'
         repl: 'Current time: %current_time%'
+146949:
+    curate_patterns:
+    - pattern: 't=([0-9\.]+);(\d+)\([0-9.\-e]+\)'
+      repl: 't=\1;\2(%some_kind_of_clock%)'
+    run:
+    # main.hoc already calls run()
+    - verify_graph_()
+    script:
+    - ln -s main.hoc mosinit.hoc
+    # without this the script calls quit() before we run verify_graph_()
+    - sed -i'.bak' -r 's#^quit()#// quit() removed by nrn-modeldb-ci#g' main.hoc
 147461:
     comment: //do not run Minimum time would be 1/2 hr default time is about 8.3 hours
     run: null
@@ -1052,6 +1102,14 @@
 223962:
     skip: true
     comment: takes too long, need to see how to reduce time
+229276:
+    model_dir: mechanisms
+    script:
+    - cp template.hoc template.hoc.iconv.bak
+    - cp createsimulation.hoc createsimulation.hoc.iconv.bak
+    - iconv -f LATIN1 -t UTF-8 template.hoc.iconv.bak > template.hoc
+    - iconv -f LATIN1 -t UTF-8 createsimulation.hoc.iconv.bak > createsimulation.hoc
+    - sed -i'.bak' -e 's#^tstop=\([0-9a-z+]*\)#tstop=((\1)/500)#g' createsimulation.hoc
 244262:
     script:
     - if [[ ! -f Iintra.dat ]]; then unzip Iintra.dat.zip; fi
@@ -1067,6 +1125,18 @@
     - sed -i'.bak' -e 's/tstop = /tstop = 50\/\//' Fig8_tuft_NMDA_spike.hoc
     - sed -i'.bak' -e 's/simul_iter=/simul_iter=2 \/\//' Fig8_tuft_NMDA_spike.hoc
     comment: usual simulation time is ~ 10 minutes (tstop = 120 and simul_iter=10)
+267067:
+    # This model ID seems to have two ~different models inside it. Arbitrarily choose one.
+    model_dir: 'Na12 Analysis/mechanisms'
+    run:
+    - run()
+    - verify_graph_()
+    script:
+    - (cd "Na12 Analysis" && mv mosinit.hoc mosinit.hoc.bak && ln -s runModel.hoc mosinit.hoc)
+    - sed -i'.bak' -e 's#\./mosinit\.hoc#./mosinit.hoc.bak#g' 'Na12 Analysis/runModel.hoc'
+    - sed -i'.bak' -e 's#^tstop=30000#tstop=100#g' 'Na12 Analysis/constants.hoc'
+267384:
+    model_dir: 'BBP_TTPC_EXAMPLE'
 206267:
     run:
     - run()
@@ -1103,6 +1173,9 @@
     script:
     - sed -i'.bak' -e 's/tstop = 550/tstop = 100/' HAM_SR1.ses
 136803:
+    curate_patterns:
+    - pattern: '^(setup|run|finish)time\s+=\s+([0-9.]+)$'
+      repl: '\1time = %masked%'
     run:
     - run()
     - verify_graph_()
@@ -1217,3 +1290,6 @@
     script:
     - sed -i 's/from mpi4py/#from mpi4py/g' run.py
     - sed -i "s/nrn.tstop =/nrn.tstop = 50#/g" run.py
+    - sed -i'.bak' -e 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
+251881:
+    model_dir: mechanisms

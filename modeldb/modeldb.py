@@ -39,15 +39,20 @@ def download_model(arg_tuple):
             # we downloaded from the ModelDB API just above with a version from
             # GitHub
             github = model_run_info["github"]
+            organisation = "ModelDBRepository"
+            suffix = "" # default branch
             if github == "default":
-                suffix = ""
+                pass
             elif github.startswith("pull/"):
                 pr_number = int(github[5:])
                 suffix = "/pull/{}/head".format(pr_number)
+            elif github.startswith('/'):
+                # /org implies that we use the default branch from org/model_id
+                organisation = github[1:]
             else:
                 raise Exception("Invalid value for github key: {}".format(github))
-            github_url = "https://api.github.com/repos/ModelDBRepository/{model_id}/zipball{suffix}".format(
-                model_id=model_id, suffix=suffix
+            github_url = "https://api.github.com/repos/{organisation}/{model_id}/zipball{suffix}".format(
+                model_id=model_id, organisation=organisation, suffix=suffix
             )
             # Replace the local file `model_zip_uri` with the zip file we
             # downloaded from `github_url`
