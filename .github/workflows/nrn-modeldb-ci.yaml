@@ -98,6 +98,7 @@ jobs:
     - uses: actions/setup-python@v4
       with:
         python-version: 3.9
+        
     - name: Set models to run for PR
       run: |
         # For PRs we only have a few models for quick sanity checking.
@@ -112,7 +113,9 @@ jobs:
         #   146030  -> curate_patterns
         #   244679  -> no entry in modeldb-run.yaml
         #   rest:   -> currently yielding differences in the pipeline
-        echo 'MODELS_TO_RUN=64195 22203 156120 51781 97868 22203 97756 97917 105507 136803 138379 138382 146030 244679 251881' >> $GITHUB_ENV
+        #echo 'MODELS_TO_RUN=64195 22203 156120 51781 97868 22203 97756 97917 105507 136803 138379 138382 146030 244679 251881' >> $GITHUB_ENV
+        #TODO - temporary run added python models
+        echo 'MODELS_TO_RUN=156039 194897 226422 186768 189922 195615 139421 144586 244412 39948 195569 249404 206400 144511 229276 151282 264834 151685' >> $GITHUB_ENV
       if: github.event_name == 'pull_request' && inputs.repo == ''
 
     - name: Install dependencies and project
@@ -141,7 +144,7 @@ jobs:
     - name: Get ModelDB models
       if: steps.cache-models.outputs.cache-hit != 'true'
       run: getmodels
-
+    
     - name: Run Models with NEURON V1 -> ${{ env.NEURON_V1 }}
       run: |
         # Install NEURON V1

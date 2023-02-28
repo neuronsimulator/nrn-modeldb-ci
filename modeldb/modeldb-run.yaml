@@ -1181,12 +1181,115 @@
     - verify_graph_()
     model_dir: mod_files
 # python models
+# find * -name mosinit.py
+156039:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - sed -i 's/h.tstop = 2500/h.tstop = 1500/g' mosinit.py # reduce sim time
+194897:
+    python: true
+    run:
+    - import os; os.system("python main.py"); quit();
+    script:
+    #reduce sim time (need to reduce more)
+    - sed -i "s/s.trainTime =/s.trainTime = 50#/g" network.py
+    - sed -i "s/testTime =/testTime = 50#/g" shared.py
+    - sed -i "s/tstop=mytstop=htmax=/tstop=mytstop=htmax= 50\/\//g" msarm.hoc
+226422:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - sed -i 's/pyplot.show()/pyplot.show(block=False);pyplot.pause(1);pyplot.close();quit()/' MAT_Neuron_StepCurrent.py
+186768:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - sed -i 's/tstop =/tstop = 100#/g' mosinit.py
 189922:
     python: true
     run:
     - import os; os.system("python mosinit.py"); quit();
     script:
-    - 2to3 -w .
+    - sed -i 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
+195615:
+    python: true
+    run:
+    - import os; os.system("python sim.py PTcell.cfg"); quit();
+    script:
+    - sed -i "s/baset = /baset = 2900.0#/g;s/tstop = 3000.0/tstop = 1000.0/g" PTcell.cfg # reduce sim time
+139421:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - sed -i -e 's/tstop = /tstop = 10#/g' mosinit.py
+144586:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - sed -i 's/nq = anet.randruns(/nq = anet.randruns(1000)#/g' mosinit.py
+244412:
+    python: true
+    model_dir: mod_files
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+39948:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+195569:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - sed -i 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close()/g' fig2a_show.py
+249404:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+206400:
+    python: true
+    run:
+    - import os; os.system("python mosinit.py"); quit();
+    script:
+    - sed -i 's/pyl.show()/pyl.show(block=False);pyl.pause(1);pyl.close()/g' model.py
+# find * -name run.py
+144511:
+    python: true
+    run:
+    - import os; os.system("python run.py"); quit();
+229276:
+    model_dir: mechanisms
+    script:
+    - sed -i -e 's/tstop=/tstop=100\/\//g' createsimulation.hoc
+151282:
+    python: true
+    model_dir: .
+    run:
+    - import os; os.system("python sim.py 1 1 100"); quit();
+    script:
+    - sed -i 's/show()/show(block=False);pause(1);close()/g' sim.py
+264834:
+    python: true
+    model_dir: mechanisms
+    run:
+    - import os; os.system("python run.py --plot trace"); quit();
+    script:
+    # reduce sim time
+    - sed -i 's/,180)/,10)/g;s/,500)/,10)/g' run.py
+151685:
+    python: true
+    model_dir: mod
+    run:
+    - import os; os.system("python run.py param/gamma_L5weak_L2weak.param"); quit();
+    script:
+    - sed -i 's/from mpi4py/#from mpi4py/g' run.py
+    - sed -i "s/nrn.tstop =/nrn.tstop = 50#/g" run.py
     - sed -i'.bak' -e 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
 251881:
     model_dir: mechanisms

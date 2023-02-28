@@ -16,7 +16,7 @@ install_requires = [
     'ipython',
     'matplotlib',
     'scipy',
-    '2to3',
+    'h5py'
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:
