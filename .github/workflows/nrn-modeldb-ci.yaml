@@ -208,7 +208,7 @@ jobs:
     - name: diffreports2html ${{ env.nrn1_ver }}.json <-> ${{ env.nrn2_ver }}.json
       if: env.NEURON_V1 != env.NEURON_V2
       run: |
-        diffreports2html ${nrn1_ver}-nogout.json ${nrn2_ver}-nogout.json
+        diffreports2html ${nrn1_ver}.json ${nrn2_ver}.json
 
     - uses: actions/upload-artifact@v3
       if: ${{ always() }}
