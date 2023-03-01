@@ -116,7 +116,7 @@ jobs:
 
         # parse PR description for models to run
        
-        parse_models=$(gh pr view $PR_URL --json body -q '.body | capture("(MODELSz_TO_RUN=)(?<models>\\d+( \\d+)*)")')
+        parse_models=$(gh pr view $PR_URL --json body -q '.body | capture("(MODELS_TO_RUN=)(?<models>\\d+( \\d+)*)")')
         if [ ! -z "$parse_models" ]; then
           echo "MODELS_TO_RUN=$(echo $parse_models | jq -r .models)" >> $GITHUB_ENV
         fi
