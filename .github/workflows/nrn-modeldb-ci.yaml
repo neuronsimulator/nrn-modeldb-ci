@@ -113,6 +113,17 @@ jobs:
         #   244679  -> no entry in modeldb-run.yaml
         #   rest:   -> currently yielding differences in the pipeline
         echo 'MODELS_TO_RUN=64195 22203 156120 51781 97868 22203 97756 97917 105507 136803 138379 138382 146030 244679 251881' >> $GITHUB_ENV
+
+        # parse PR description for models to run
+        if [ -n "$GITHUB_EVENT_PATH" ]; then
+          MODELS_TO_RUN=$(cat $GITHUB_EVENT_PATH | jq -r '.pull_request.body' | grep -oP '(?<=MODELS_TO_RUN=)\d+( \d+)*')
+          if [ -n "$MODELS_TO_RUN" ]; then
+            echo "MODELS_TO_RUN=$MODELS_TO_RUN"
+            echo "MODELS_TO_RUN=$MODELS_TO_RUN" >> $GITHUB_ENV
+          fi
+        fi
+
+
       if: github.event_name == 'pull_request' && inputs.repo == ''
 
     - name: Install dependencies and project
