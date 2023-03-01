@@ -1163,9 +1163,8 @@
     - run()
     - verify_graph_()
     script:
-    - sed -i'.bak' -e 's/500/5/g' BPF.hoc
-    - sed -i'.bak' -e 's/2\([0|1]\)000/2\1/g' BPF.hoc
-    comment: diving some numbers with 100 halvened the sim time
+    - sed -i'.bak' -e 's/500/5/g;s/2\([0|1]\)000/2\1/g;s/for(k=1; k<=50; k+=1/for(k=50; k<=50; k+=1/g' BPF.hoc
+    comment: diving some numbers with 100 halvened the sim time, 1 iteration instead of 50
 151126:
     run:
     - run()
@@ -1180,6 +1179,9 @@
     - run()
     - verify_graph_()
     model_dir: mod_files
+143719:
+    script:
+    - sed -i'.bak' -e 's/in=0/in=15/g' experiment/Simulation.hoc
 # python models
 189922:
     python: true
