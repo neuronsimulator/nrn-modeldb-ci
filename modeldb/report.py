@@ -106,7 +106,7 @@ def diff_reports(report1_json, report2_json):
                 # gout may be missing in one of the paths. `diff -N` treats non-existent files as empty.
                 if os.path.isfile(gout_a_file) or os.path.isfile(gout_b_file):
                     diff_out = subprocess.getoutput(
-                        "diff -uN {} {} | head -n 30".format(
+                        "diff -uN --speed-large-files {} {} | head -n 30".format(
                             shlex.quote(gout_a_file), shlex.quote(gout_b_file)
                         )
                     )
