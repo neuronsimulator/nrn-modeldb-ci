@@ -115,9 +115,10 @@ jobs:
         echo 'MODELS_TO_RUN=64195 22203 156120 51781 97868 22203 97756 97917 105507 136803 138379 138382 146030 244679 251881' >> $GITHUB_ENV
 
         # parse PR description for models to run
-        MODELS_TO_RUN=$(gh pr view $PR_URL --json body | grep -qoP '(?<=MODELS_TO_RUN=)\d+( \d+)*')
-        if [ ! -z "$MODELS_TO_RUN" ]; then
-          echo "MODELS_TO_RUN=$MODELS_TO_RUN" >> $GITHUB_ENV
+       
+        parse_models=$(gh pr view $PR_URL --json body -q '.body | capture("(MODELSz_TO_RUN=)(?<models>\\d+( \\d+)*)")')
+        if [ ! -z "$parse_models" ]; then
+          echo "MODELS_TO_RUN=$(echo $parse_models | jq -r .models)" >> $GITHUB_ENV
         fi
       
       if: github.event_name == 'pull_request' && inputs.repo == ''
