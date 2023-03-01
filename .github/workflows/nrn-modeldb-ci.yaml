@@ -162,7 +162,7 @@ jobs:
           python -m pip install $NEURON_V1
         fi
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        runmodels --workdir=$nrn_ver $MODELS_TO_RUN
+        runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
         report2html ${nrn_ver}.json
         if [[ -d "${DROP_DIR_V1}" ]]; then
           python -m pip uninstall --yes neuron-nightly==${nrn_ver}
@@ -182,7 +182,7 @@ jobs:
           python -m pip install $NEURON_V2
         fi
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        runmodels --workdir=$nrn_ver $MODELS_TO_RUN
+        runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
         report2html ${nrn_ver}.json
         if [[ -d "${DROP_DIR_V2}" ]]; then
           python -m pip uninstall --yes neuron-nightly==${nrn_ver}
@@ -194,11 +194,16 @@ jobs:
     - name: diffreports2html ${{ env.nrn1_ver }}.json <-> ${{ env.nrn2_ver }}.json
       if: env.NEURON_V1 != env.NEURON_V2
       run: |
+        # JSON files containing gout can be large. Do this first, so the
+        # compressed JSON is uploaded even if there's a diff. Pass --keep so
+        # that diffreports2html can use the uncompressed files.
+        xz --keep ${nrn1_ver}.json ${nrn2_ver}.json
         diffreports2html ${nrn1_ver}.json ${nrn2_ver}.json
 
     - uses: actions/upload-artifact@v3
+      if: ${{ always() }}
       with:
         name: ${{ env.nrn1_ver }}-vs-${{ env.nrn2_ver }}
         path: |
-          ./*.json
+          ./*.json.xz
           ./*.html
