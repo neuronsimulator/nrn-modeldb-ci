@@ -162,11 +162,12 @@ jobs:
           python -m pip install $NEURON_V1
         fi
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
+        ps uxf # debug
         runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
         # Filter out the gout data before generating HTML reports. The HTML
         # diff uses the original gout files on disk anyway. Compress the large
         # JSON file including gout data for inclusion in the artifacts
-        jq --stream 'fromstream(inputs | select(.[0][1] != "gout"))' ${nrn_ver}.json > ${nrn_ver}-nogout.json
+        jq -r 'del(.[].gout)' ${nrn_ver}.json > ${nrn_ver}-nogout.json
         xz ${nrn_ver}.json
         report2html ${nrn_ver}-nogout.json
         if [[ -d "${DROP_DIR_V1}" ]]; then
@@ -187,11 +188,12 @@ jobs:
           python -m pip install $NEURON_V2
         fi
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
+        ps uxf # debug
         runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
         # Filter out the gout data before generating HTML reports. The HTML
         # diff uses the original gout files on disk anyway. Compress the large
         # JSON file including gout data for inclusion in the artifacts
-        jq --stream 'fromstream(inputs | select(.[0][1] != "gout"))' ${nrn_ver}.json > ${nrn_ver}-nogout.json
+        jq -r 'del(.[].gout)' ${nrn_ver}.json > ${nrn_ver}-nogout.json
         xz ${nrn_ver}.json
         report2html ${nrn_ver}-nogout.json
         if [[ -d "${DROP_DIR_V2}" ]]; then
