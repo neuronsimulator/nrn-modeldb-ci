@@ -61,8 +61,11 @@ def diff_reports(report1_json, report2_json):
         hd = difflib.HtmlDiff()
         v1 = data_a["0"]["NEURON version"]
         v2 = data_b["0"]["NEURON version"]
-        diff_dict["0"] = hd.make_table(json.dumps(data_a["0"], indent='\t').split('\n'),
-                                             json.dumps(data_b["0"], indent='\t').split('\n')).replace("\n", "")
+        diff_dict["0"] = hd.make_table(
+            json.dumps(data_a["0"], indent="\t").split("\n"),
+            json.dumps(data_b["0"], indent="\t").split("\n"),
+        ).replace("\n", "")
+        stats_dict = {v1: data_a["0"]["Stats"], v2: data_b["0"]["Stats"]}
         for k in data_a.keys():
             if int(k) == 0:
                 continue  # skip info key
@@ -103,11 +106,11 @@ def diff_reports(report1_json, report2_json):
                 # gout may be missing in one of the paths. `diff -N` treats non-existent files as empty.
                 if os.path.isfile(gout_a_file) or os.path.isfile(gout_b_file):
                     diff_out = subprocess.getoutput(
-                        "diff -uN {} {} | head -n 30".format(
+                        "diff -uN --speed-large-files {} {} | head -n 30".format(
                             shlex.quote(gout_a_file), shlex.quote(gout_b_file)
                         )
                     )
                     if diff_out:
                         gout_dict[k] = highlight(diff_out, DiffLexer(), HtmlFormatter(linenos=True, cssclass="colorful", full=True))
 
-    return diff_dict, gout_dict, runtime_dict, v1, v2
+    return diff_dict, gout_dict, runtime_dict, stats_dict, v1, v2
