@@ -567,7 +567,6 @@
     comment: tricky to set-up due to mosinit.hoc autodiscovery
     skip: true
 83344:
-    github: 'pull/1'
     model_dir: mod
 84655:
     run:
@@ -902,7 +901,6 @@
     - Graph[0].exec_menu("View = plot")
     - verify_graph_()
 118631:
-    github: 'pull/1'
     model_dir: mechanisms
     run:
     - use_mcell_ran4(1)
@@ -1085,7 +1083,6 @@
     curate_patterns:
     - pattern: 't=([0-9\.]+);(\d+)\([0-9.\-e]+\)'
       repl: 't=\1;\2(%some_kind_of_clock%)'
-    github: 'pull/3'
     run:
     # main.hoc already calls run()
     - verify_graph_()
@@ -1110,7 +1107,6 @@
     curate_patterns:
       - pattern: 't=100\.00;122\([0-9]+\.[0-9]+\)'
         repl: 't=100.00;122(%some_kind_of_clock%)'
-    github: 'pull/3'
     run:
     - tstop=100
     - init()
@@ -1210,7 +1206,6 @@
     - sed -i'.bak' '1s/^/{load_file("stdlib.hoc")}\n/' hoc_tools/nav_states.hoc
     - sed -i'.bak' '1s/^/{load_file("stdgui.hoc")}\n/' hoc_tools/plots.hoc
 267067:
-    github: 'pull/3'
     # This model ID seems to have two ~different models inside it. Arbitrarily choose one.
     model_dir: 'Na12 Analysis/mechanisms'
     run:
