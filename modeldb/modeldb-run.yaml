@@ -344,13 +344,26 @@
     - cat mosinit.hoc >> temp
     - mv temp  mosinit.hoc
 33975:
+    # The "interesting" feature of this model is that it produces an error message, roughly:
+    #   We were unable to associate a PlayRecord item with a RANGE variable
+    # whose format changed after 8.2.2, and which went away in the data structure PR #2027.
+    # The error going away caused an (empty) gout file to be written, which also caused a diff.
+    # To avoid false positives, we regex away the error + traceback, and never produce a gout.
     curate_patterns:
     - pattern: 'hoc_run1: caught exception: hoc_execerror: We were unable to associate a PlayRecord item with a RANGE variable'
+      repl: ''
+    - pattern: '%neuron-executable%: We were unable to associate a PlayRecord item with a RANGE variable'
+      repl: ''
+    - pattern: ' in %model_dir%/driver.hoc near line 44'
+      repl: ''
+    - pattern: '^\s+(finitialize|init|run|stdinit)\((|-65)\)'
+      repl: ''
+    - pattern: '^\s+\^'
       repl: ''
     run:
     - ringperf()
     - run()
-    - verify_graph_()
+    # - verify_graph_()
 37856:
     run:
     - runiv()
