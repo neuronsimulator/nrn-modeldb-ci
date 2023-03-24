@@ -572,6 +572,7 @@
     comment: tricky to set-up due to mosinit.hoc autodiscovery
     skip: true
 83344:
+    github: 'pull/2'
     model_dir: mod
 84655:
     run:
