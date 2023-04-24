@@ -75,6 +75,7 @@ jobs:
         wget --tries=4 -LO DROP_V1.zip ${AZURE_DROP_URL}
         unzip DROP_V1.zip
         mv drop DROP_V1
+        ls DROP_V1/
         
         # Set drop dir in the env
         echo "DROP_DIR_V1=`pwd`/DROP_V1" >> $GITHUB_ENV
@@ -91,6 +92,7 @@ jobs:
         wget --tries=4 -LO DROP_V2.zip ${AZURE_DROP_URL}
         unzip DROP_V2.zip
         mv drop DROP_V2
+        ls DROP_V2/
 
         # Set drop dir in the env
         echo "DROP_DIR_V2=`pwd`/DROP_V2" >> $GITHUB_ENV
