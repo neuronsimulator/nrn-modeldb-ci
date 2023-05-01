@@ -147,7 +147,7 @@ jobs:
         path: |
           cache
           modeldb/modeldb-meta.yaml
-        key: models-${{steps.install-deps.outputs.date}}-fudge
+        key: models-${{steps.install-deps.outputs.date}}
 
     - name: Get ModelDB models
       if: steps.cache-models.outputs.cache-hit != 'true'
