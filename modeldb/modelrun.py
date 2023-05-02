@@ -208,16 +208,18 @@ def prepare_model(model):
             os.path.join(MODELS_ZIP_DIR, str(model.id) + ".zip"), "r"
     ) as zip_ref:
         model_dir = os.path.join(
-            model.working_dir, os.path.dirname(zip_ref.infolist()[0].filename)
+            model.working_dir,
+            str(model.id),
+            os.path.dirname(zip_ref.infolist()[0].filename),
         )
-        model_run_info_file = os.path.join(model_dir, str(model.id) + '.yaml')
+        model_run_info_file = os.path.join(model_dir, str(model.id) + ".yaml")
         if model._inplace and os.path.isfile(model_run_info_file):
             with open(model_run_info_file) as run_info_file:
                 model["run_info"] = yaml.load(run_info_file, yaml.Loader)
         else:
             if model._clean and is_dir_non_empty(model_dir):
                 shutil.rmtree(model_dir)
-            zip_ref.extractall(model.working_dir)
+            zip_ref.extractall(os.path.join(model.working_dir, str(model.id)))
 
             # set model_dir
             model.run_info["model_dir"] = model_dir

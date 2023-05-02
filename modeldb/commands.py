@@ -222,7 +222,7 @@ def diffreports2html(args=None):
     report_filename = os.path.join(Path(json_report1).resolve().parent, report_title + '.html')
     runtime_report_title = 'Runtimes ' + report_title
     runtime_report_filename = os.path.join(Path(json_report1).resolve().parent, "runtimes-" + report_title + '.html')
-    diff_dict, gout_dict,runtime_dict, v1, v2 = diff_reports(json_report1, json_report2)
+    diff_dict, gout_dict, runtime_dict, stats_dict, v1, v2 = diff_reports(json_report1, json_report2)
 
     print('Writing {} ...'.format(report_filename))
     with open(report_filename, 'w') as fh:
@@ -242,3 +242,53 @@ def diffreports2html(args=None):
             v2=v2),
     )
     print('Done.')
+    # Return a useful status code
+    code = 0
+    if len(diff_dict) > 1:
+        assert "0" in diff_dict  # summary info; not a real diff
+        print("FAILURE: stdout diffs in {}".format(set(diff_dict.keys()) - {"0"}))
+        code = 1
+    if len(gout_dict) > 1:
+        assert "0" in gout_dict  # summary info; not a real diff
+        print("FAILURE: gout diffs in {}".format(set(diff_dict.keys()) - {"0"}))
+        code = 1
+    total_failures = sum(
+        version_stats["Failed models"]["Count"] for version_stats in stats_dict.values()
+    )
+    if total_failures > 0:
+        print(
+            "FAILURE: there were {} failed model builds across {} versions of NEURON".format(
+                total_failures, len(stats_dict)
+            )
+        )
+        code = 1
+    total_runtime_failures = sum(
+        version_stats["Failed runs"]["Count"] for version_stats in stats_dict.values()
+    )
+    if total_runtime_failures > 0:
+        print(
+            "FAILURE: there were {} failed model runs across {} versions of NEURON".format(
+                total_runtime_failures, len(stats_dict)
+            )
+        )
+        code = 1
+    # These are not expected to be different between the two NEURON versions tested
+    assert (
+        len(
+            {
+                version_stats["Skipped runs"]["Count"]
+                for version_stats in stats_dict.values()
+            }
+        )
+        == 1
+    )
+    assert (
+        len(
+            {
+                version_stats["Total nof models run"]
+                for version_stats in stats_dict.values()
+            }
+        )
+        == 1
+    )
+    return code

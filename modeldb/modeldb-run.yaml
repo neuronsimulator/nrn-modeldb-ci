@@ -340,10 +340,26 @@
     - cat mosinit.hoc >> temp
     - mv temp  mosinit.hoc
 33975:
+    # The "interesting" feature of this model is that it produces an error message, roughly:
+    #   We were unable to associate a PlayRecord item with a RANGE variable
+    # whose format changed after 8.2.2, and which went away in the data structure PR #2027.
+    # The error going away caused an (empty) gout file to be written, which also caused a diff.
+    # To avoid false positives, we regex away the error + traceback, and never produce a gout.
+    curate_patterns:
+    - pattern: 'hoc_run1: caught exception: hoc_execerror: We were unable to associate a PlayRecord item with a RANGE variable'
+      repl: ''
+    - pattern: '%neuron-executable%: We were unable to associate a PlayRecord item with a RANGE variable'
+      repl: ''
+    - pattern: ' in %model_dir%/driver.hoc near line 44'
+      repl: ''
+    - pattern: '^\s+(finitialize|init|run|stdinit)\((|-65)\)'
+      repl: ''
+    - pattern: '^\s+\^'
+      repl: ''
     run:
     - ringperf()
     - run()
-    - verify_graph_()
+    # - verify_graph_()
 37856:
     run:
     - runiv()
@@ -504,10 +520,12 @@
     - run()
     - verify_graph_()
 83590:
+    model_dir: mechanisms
     run: []
     script:
     - sed -i'.bak' -e 's/mustart  = -0.400/mustart  = 0.800/g;s/sigmastart  = 0.064/sigmastart  = 0.128/g' mylibs/TFparams.hoc
 84589:
+    model_dir: mod
     run:
     - //ignore sim in subdirectory
     - // have not been able to run yet
@@ -561,6 +579,8 @@
 260971:
     comment: tricky to set-up due to mosinit.hoc autodiscovery
     skip: true
+83344:
+    model_dir: mod
 84655:
     run:
     - run()
@@ -605,6 +625,7 @@
     - restart("shortRun")
     - verify_graph_()
 94321:
+    model_dir: mechanisms
     run:
     - tstop=10
     - init()
@@ -635,6 +656,7 @@
     # avoid printing out times
     - sed -i'.bak' -e 's/^startsw()$/{startsw()}/g' ga_setup.hoc
 97860:
+    model_dir: mod
     run:
     - run()
     - verify_graph_()
@@ -676,21 +698,19 @@
     - fig9A1()
     - verify_graph_()
 105385:
+    model_dir: mod
     run:
     - loadfig9()
     - tstop=100
     - run()
     - verify_graph_()
 105507:
-    curate_patterns:
-    - pattern: '^([0-9.\-e]+) kilocycles$'
-      repl: '%some_count% kilocycles'
     run:
     - load_file("batch_.hoc")
     - verify_graph_()
     script:
     # 424242: this is just avoiding a timing-related number being printed
-    - sed -i'.bak' -e 's/batch_flag=0/batch_flag=1/g;s/tstop = 1e3/tstop = 20/g;s#return tti/1e3#return 424242#g' batch_.hoc
+    - sed -i'.bak' -e 's/batch_flag=0/batch_flag=1/g;s/tstop = 1e3/tstop = 20/g;s#return tti/1e3#return 424242#g;s#print tti/.*#print "%some_time%"#g' batch_.hoc
 106551:
     run:
     - use_mcell_ran4(1)
@@ -703,12 +723,14 @@
     - runeg()
     - verify_graph_()
 108458:
+    model_dir: mod
     run:
     - AP3_toq = 1
     - set_stim()
     - run()
     - verify_graph_()
 108459:
+    model_dir: mod
     run:
     - run()
     - verify_graph_()
@@ -781,6 +803,8 @@
     - tstop_changed()
     - run()
     - verify_graph_()
+114359:
+    model_dir: mod
 114394:
     run:
     - run()
@@ -865,6 +889,7 @@
     - run()
     - verify_graph_()
 117207:
+    model_dir: Model
     run:
     - restart("AckerAnticBasalBackprop")
     - RunAll()
@@ -886,6 +911,7 @@
     - Graph[0].exec_menu("View = plot")
     - verify_graph_()
 118631:
+    model_dir: mechanisms
     run:
     - use_mcell_ran4(1)
     - graph_and_run()
@@ -1004,6 +1030,10 @@
 139656:
     comment: //do not run
     run: null
+140471:
+    model_dir: mods
+140828:
+    model_dir: 'mod.files'
 140881:
     comment: //do not run Lytton model takes too long to run and complex to edit
     run: null
@@ -1018,8 +1048,12 @@
 141505:
     comment: //do not run Specialized installation environment
     run: null
+143604:
+    model_dir: mod
 144385:
-  model_dir: mod
+    model_dir: mod
+144482:
+    model_dir: mechanism/mechanism_cell1
 144523:
     run:
     - objref test_graph_
@@ -1043,6 +1077,8 @@
     run:
     - ParmFitnessGui[0].run()
     - verify_graph_()
+146026:
+    model_dir: channels
 146030:
     curate_patterns:
       - pattern: 'Setup time for simulation: [0-9]+\.[0-9]+  seconds'
@@ -1069,8 +1105,14 @@
     run: null
 149739:
     run:
-    - demo_run()
     - verify_graph_()
+    script:
+    - mkdir Connection SP
+    - mv OB.hoc OB.hoc.iconv.bak
+    - iconv -f LATIN1 -t UTF-8 OB.hoc.iconv.bak > OB.hoc
+    - sed -i'.bak' 's#tstop   = 3000#tstop   = 10#g' OB.hoc
+150239:
+    model_dir: nrn/mod
 150245:
     curate_patterns:
       - pattern: 't=100\.00;122\([0-9]+\.[0-9]+\)'
@@ -1083,48 +1125,96 @@
 150284:
     comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
     run: null
+151443:
+    model_dir: channels
 167772:
     comment: //do not run Tried "initDialog.unmap(1)" - didnt work.  Need to change
         archive
     run: null
+168310:
+    model_dir: experiment
+168314:
+    script:
+    # fixup for case-sensitive filesystems
+    - sed -i'.bak' 's#path = "./inputs/"#path = "./Inputs/"#g' ReadExperiments.hoc
+    - sed -i'.bak' 's#load_file("protocol.hoc")#load_file("Protocol.hoc")#g' Hipp.hoc
+184054:
+    model_dir: fullMorphCaLTP8
+    script:
+    - sed -i'.bak' 's#tstop = 250#tstop = 25#g' fullMorphCaLTP8/doTBSStimCC.hoc
+187473:
+    model_dir: mods
 187604:
   curate_patterns:
     - pattern: 'TIME HOST 0: [0-9\.]+ seconds \(set up\)'
       repl: 'TIME HOST 0: %elapsed_time% seconds (set up)'
     - pattern: 'TIME HOST 0: [0-9\.]+ seconds \(created cells\)'
       repl: 'TIME HOST 0: %elapsed_time% seconds (created cells)'
+187615:
+    comment: Tries to open bac6.ses, which does not exist
+    run: null
+189347:
+    script:
+    # we launch with special so don't try and dlopen mechanisms too
+    - sed -i'.bak' 's#nrn_load_dll#// nrn_load_dll#g' main.hoc
+195666:
+    model_dir: mod_files
 206244:
     run:
     - chdir("mechanism")
     - xopen("mosinit.hoc")
     - unix_spike_atten_hof()
     - verify_graph_()
+222359:
+    script:
+    # Fix for case-sensitive filesystems
+    - mv Voltage.ses voltage.ses
 223962:
     skip: true
     comment: takes too long, need to see how to reduce time
 229276:
     model_dir: mechanisms
     script:
+    - mkdir hoc_recordings
     - cp template.hoc template.hoc.iconv.bak
     - cp createsimulation.hoc createsimulation.hoc.iconv.bak
     - iconv -f LATIN1 -t UTF-8 template.hoc.iconv.bak > template.hoc
     - iconv -f LATIN1 -t UTF-8 createsimulation.hoc.iconv.bak > createsimulation.hoc
     - sed -i'.bak' -e 's#^tstop=\([0-9a-z+]*\)#tstop=((\1)/500)#g' createsimulation.hoc
+    - sed -i'.bak' 's#\(cell.synapses.update_synapses(synapse_plot)\)#// \1#g' init_super.hoc
+232097:
+    script:
+    - mkdir connection input
+237594:
+    model_dir: mechanism
 244262:
     script:
     - if [[ ! -f Iintra.dat ]]; then unzip Iintra.dat.zip; fi
     - ls -l Iintra.dat
+249463:
+    comment: Tries to open bac6.ses, which does not exist
+    run: null
+254217:
+    model_dir: _mod
+256024:
+    model_dir: mods
 149174:
     skip: true
     comment: testing in Python + hardcoded NEURON
 258867:
-    run:
-    - run()
-    - verify_graph_()
+    run: null
     script:
     - sed -i'.bak' -e 's/tstop = /tstop = 50\/\//' Fig8_tuft_NMDA_spike.hoc
     - sed -i'.bak' -e 's/simul_iter=/simul_iter=2 \/\//' Fig8_tuft_NMDA_spike.hoc
-    comment: usual simulation time is ~ 10 minutes (tstop = 120 and simul_iter=10)
+    comment: 'Usual simulation time is ~ 10 minutes (tstop = 120 and simul_iter=10), skipped because it tries to load C:/Daten/Modeling/Alpha5_NMDA_single_comp/shared/ATF.hoc'
+260178:
+    model_dir: _mod
+260967:
+    model_dir: lib
+266818:
+    script:
+    - sed -i'.bak' '1s/^/{load_file("stdlib.hoc")}\n/' hoc_tools/nav_states.hoc
+    - sed -i'.bak' '1s/^/{load_file("stdgui.hoc")}\n/' hoc_tools/plots.hoc
 267067:
     # This model ID seems to have two ~different models inside it. Arbitrarily choose one.
     model_dir: 'Na12 Analysis/mechanisms'
@@ -1135,8 +1225,18 @@
     - (cd "Na12 Analysis" && mv mosinit.hoc mosinit.hoc.bak && ln -s runModel.hoc mosinit.hoc)
     - sed -i'.bak' -e 's#\./mosinit\.hoc#./mosinit.hoc.bak#g' 'Na12 Analysis/runModel.hoc'
     - sed -i'.bak' -e 's#^tstop=30000#tstop=100#g' 'Na12 Analysis/constants.hoc'
+267293:
+    comment: Tries to open bac6.ses, which does not exist
+    run: null
 267384:
     model_dir: 'BBP_TTPC_EXAMPLE'
+    script:
+    # 12 is the largest value (runModel-template.hoc); this is a guess
+    - sed -i'.bak' 's#load_file("nrngui.hoc")#objref transvec\ntransvec = new Vector(12)\nload_file("nrngui.hoc")#' BBP_TTPC_EXAMPLE/mosinit.hoc
+267594:
+    comment: 'Seems to be missing files: parinit.hoc, .mod file for h_ca, ...?'
+    model_dir: mods
+    run: null
 206267:
     run:
     - run()
@@ -1163,9 +1263,8 @@
     - run()
     - verify_graph_()
     script:
-    - sed -i'.bak' -e 's/500/5/g' BPF.hoc
-    - sed -i'.bak' -e 's/2\([0|1]\)000/2\1/g' BPF.hoc
-    comment: diving some numbers with 100 halvened the sim time
+    - sed -i'.bak' -e 's/500/5/g;s/2\([0|1]\)000/2\1/g;s/for(k=1; k<=50; k+=1/for(k=50; k<=50; k+=1/g' BPF.hoc
+    comment: diving some numbers with 100 halvened the sim time, 1 iteration instead of 50
 151126:
     run:
     - run()
@@ -1180,6 +1279,9 @@
     - run()
     - verify_graph_()
     model_dir: mod_files
+143719:
+    script:
+    - sed -i'.bak' -e 's/in=0/in=15/g' experiment/Simulation.hoc
 # python models
 189922:
     python: true

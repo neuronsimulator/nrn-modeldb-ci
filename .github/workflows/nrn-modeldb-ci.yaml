@@ -113,7 +113,18 @@ jobs:
         #   244679  -> no entry in modeldb-run.yaml
         #   rest:   -> currently yielding differences in the pipeline
         echo 'MODELS_TO_RUN=64195 22203 156120 51781 97868 22203 97756 97917 105507 136803 138379 138382 146030 244679 251881' >> $GITHUB_ENV
+
+        # parse PR description for models to run
+       
+        parse_models=$(gh pr view $PR_URL --json body -q '.body | capture("(MODELS_TO_RUN=)(?<models>\\d+( \\d+)*)")')
+        if [ ! -z "$parse_models" ]; then
+          echo "MODELS_TO_RUN=$(echo $parse_models | jq -r .models)" >> $GITHUB_ENV
+        fi
+      
       if: github.event_name == 'pull_request' && inputs.repo == ''
+      env:
+        PR_URL: ${{ github.event.pull_request.html_url }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Install dependencies and project
       id: install-deps
@@ -151,7 +162,14 @@ jobs:
           python -m pip install $NEURON_V1
         fi
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        runmodels --virtual --workdir=$nrn_ver $MODELS_TO_RUN
+        ps uxf # debug
+        runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
+        # Filter out the gout data before generating HTML reports. The HTML
+        # diff uses the original gout files on disk anyway. Compress the large
+        # JSON file including gout data for inclusion in the artifacts
+        mv ${nrn_ver}.json ${nrn_ver}-full.json
+        jq -r 'del(.[].gout)' ${nrn_ver}-full.json > ${nrn_ver}.json
+        xz ${nrn_ver}-full.json
         report2html ${nrn_ver}.json
         if [[ -d "${DROP_DIR_V1}" ]]; then
           python -m pip uninstall --yes neuron-nightly==${nrn_ver}
@@ -171,7 +189,14 @@ jobs:
           python -m pip install $NEURON_V2
         fi
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        runmodels --virtual --workdir=$nrn_ver $MODELS_TO_RUN
+        ps uxf # debug
+        runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
+        # Filter out the gout data before generating HTML reports. The HTML
+        # diff uses the original gout files on disk anyway. Compress the large
+        # JSON file including gout data for inclusion in the artifacts
+        mv ${nrn_ver}.json ${nrn_ver}-full.json
+        jq -r 'del(.[].gout)' ${nrn_ver}-full.json > ${nrn_ver}.json
+        xz ${nrn_ver}-full.json
         report2html ${nrn_ver}.json
         if [[ -d "${DROP_DIR_V2}" ]]; then
           python -m pip uninstall --yes neuron-nightly==${nrn_ver}
@@ -186,8 +211,9 @@ jobs:
         diffreports2html ${nrn1_ver}.json ${nrn2_ver}.json
 
     - uses: actions/upload-artifact@v3
+      if: ${{ always() }}
       with:
         name: ${{ env.nrn1_ver }}-vs-${{ env.nrn2_ver }}
         path: |
-          ./*.json
+          ./*.json.xz
           ./*.html
