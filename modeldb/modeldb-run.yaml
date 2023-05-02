@@ -340,13 +340,26 @@
     - cat mosinit.hoc >> temp
     - mv temp  mosinit.hoc
 33975:
+    # The "interesting" feature of this model is that it produces an error message, roughly:
+    #   We were unable to associate a PlayRecord item with a RANGE variable
+    # whose format changed after 8.2.2, and which went away in the data structure PR #2027.
+    # The error going away caused an (empty) gout file to be written, which also caused a diff.
+    # To avoid false positives, we regex away the error + traceback, and never produce a gout.
     curate_patterns:
     - pattern: 'hoc_run1: caught exception: hoc_execerror: We were unable to associate a PlayRecord item with a RANGE variable'
+      repl: ''
+    - pattern: '%neuron-executable%: We were unable to associate a PlayRecord item with a RANGE variable'
+      repl: ''
+    - pattern: ' in %model_dir%/driver.hoc near line 44'
+      repl: ''
+    - pattern: '^\s+(finitialize|init|run|stdinit)\((|-65)\)'
+      repl: ''
+    - pattern: '^\s+\^'
       repl: ''
     run:
     - ringperf()
     - run()
-    - verify_graph_()
+    # - verify_graph_()
 37856:
     run:
     - runiv()
@@ -692,15 +705,12 @@
     - run()
     - verify_graph_()
 105507:
-    curate_patterns:
-    - pattern: '^([0-9.\-e]+) kilocycles$'
-      repl: '%some_count% kilocycles'
     run:
     - load_file("batch_.hoc")
     - verify_graph_()
     script:
     # 424242: this is just avoiding a timing-related number being printed
-    - sed -i'.bak' -e 's/batch_flag=0/batch_flag=1/g;s/tstop = 1e3/tstop = 20/g;s#return tti/1e3#return 424242#g' batch_.hoc
+    - sed -i'.bak' -e 's/batch_flag=0/batch_flag=1/g;s/tstop = 1e3/tstop = 20/g;s#return tti/1e3#return 424242#g;s#print tti/.*#print "%some_time%"#g' batch_.hoc
 106551:
     run:
     - use_mcell_ran4(1)
