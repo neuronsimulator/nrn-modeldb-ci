@@ -1229,7 +1229,6 @@
     comment: Tries to open bac6.ses, which does not exist
     run: null
 267384:
-    github: 'pull/2'
     model_dir: 'BBP_TTPC_EXAMPLE'
     script:
     # 12 is the largest value (runModel-template.hoc); this is a guess
