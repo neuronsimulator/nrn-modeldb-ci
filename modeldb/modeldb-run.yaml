@@ -350,7 +350,7 @@
       repl: ''
     - pattern: '%neuron-executable%: We were unable to associate a PlayRecord item with a RANGE variable'
       repl: ''
-    - pattern: ' in %model_dir%/driver.hoc near line 44'
+    - pattern: ' in %model_dir%/driver.hoc near line \d+'
       repl: ''
     - pattern: '^\s+(finitialize|init|run|stdinit)\((|-65)\)'
       repl: ''
