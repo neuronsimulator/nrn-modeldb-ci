@@ -1228,6 +1228,8 @@
 267293:
     comment: Tries to open bac6.ses, which does not exist
     run: null
+267355:
+    github: 'pull/1'
 267384:
     model_dir: 'BBP_TTPC_EXAMPLE'
     script:
