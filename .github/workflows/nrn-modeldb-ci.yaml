@@ -56,6 +56,7 @@ jobs:
       NEURON_V1: ${{ github.event.inputs.neuron_v1 || inputs.neuron_v1 || 'neuron' }}
       NEURON_V2: ${{ github.event.inputs.neuron_v2 || inputs.neuron_v2 || 'neuron-nightly' }}
       MODELS_TO_RUN: ${{ github.event.inputs.models_to_run || inputs.models_to_run || '' }}
+      GH_TOKEN: ${{ github.token }}
 
     steps:
         
@@ -130,6 +131,8 @@ jobs:
       id: install-deps
       run: |
         set
+        # Install GH cli
+        sudo apt-get install gh
         # Set up Xvfb
         sudo apt-get install xvfb
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1600x1200x24 -noreset -nolock -shmem &  # run in bg

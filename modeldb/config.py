@@ -2,10 +2,6 @@
 
 import os
 
-MDB_NEURON_MODELS_URL = (
-    "http://modeldb.science/api/v1/models?modeling_application=NEURON"
-)
-
 ROOT_DIR = os.path.abspath(__file__ + "/../../")
 
 MODELS_ZIP_DIR = "%s/cache" % ROOT_DIR

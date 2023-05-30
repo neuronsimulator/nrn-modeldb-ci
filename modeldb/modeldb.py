@@ -11,6 +11,7 @@ from .config import *
 import traceback
 from pprint import pformat
 
+
 def download_model(arg_tuple):
     model_id, model_run_info = arg_tuple
     try:
@@ -60,11 +61,23 @@ class ModelDB(object):
         except Exception as e:
             raise e
 
+    def _gh_cli_get_neuron_simulator_repositories(self):
+        import subprocess
+
+        # Run the gh command to fetch the repository list and capture the output
+        command = ['gh', 'repo', 'list', 'modeldbrepository', '--topic', 'neuron-simulator', '--json', 'name', '-L', '2000']
+        output = subprocess.check_output(command, text=True)
+
+        # Parse the json output to get the repository names
+        import json
+        repositories = json.loads(output)
+        return [int(repository['name']) for repository in repositories]
+        
     def _download_models(self, model_list=None):
         if not os.path.isdir(MODELS_ZIP_DIR):
             logging.info("Creating cache directory: {}".format(MODELS_ZIP_DIR))
             os.mkdir(MODELS_ZIP_DIR)
-        models = requests.get(MDB_NEURON_MODELS_URL).json() if model_list is None else model_list
+        models = self._gh_cli_get_neuron_simulator_repositories() if model_list is None else model_list
         pool = multiprocessing.Pool()
         processed_models = pool.imap_unordered(
             download_model,

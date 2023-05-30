@@ -142,7 +142,7 @@ def modeldb_config(args=None):
 
     Examples
         modeldb-config
-        modeldb-config --item=MDB_NEURON_MODELS_URL
+        modeldb-config --item=MODELS_ZIP_DIR
     """
     options = docopt(modeldb_config.__doc__, args)
     item = options.pop("--item", None)
