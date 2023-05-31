@@ -315,6 +315,9 @@
     - xopen("mosinit.hoc")
     - unix_spike_atten_hof()
     - verify_graph_()
+    script:
+    # Model tries to abort on mac, but let's try and run it anyway
+    - sed -i'.bak' -e 's#if (unix_mac_pc() ==1 || unix_mac_pc() ==3 ) {#if (1) { // assume works on mac/linux/windows#g' mechanism/mosinit.hoc
 20756:
     run:
     - 'pyr3_ = new pyr3( 21 ) '
