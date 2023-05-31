@@ -1237,6 +1237,8 @@
     comment: 'Seems to be missing files: parinit.hoc, .mod file for h_ca, ...?'
     model_dir: mods
     run: null
+267691:
+    model_dir: mechanisms
 206267:
     run:
     - run()
