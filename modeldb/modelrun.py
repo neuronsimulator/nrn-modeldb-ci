@@ -127,7 +127,7 @@ def run_neuron_cmds(model, cmds):
     except UnicodeDecodeError:
         raise Exception("Could not decode output:" + repr(out))
     model.nrn_run.extend(curate_log_string(model, out).splitlines())
-    if sp.returncode > 1:
+    if sp.returncode != 0:
         model._nrn_run_error = True
 
 
