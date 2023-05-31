@@ -1142,6 +1142,7 @@
 150284:
     comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
     run: null
+# 150551: segfault with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
 151443:
     model_dir: channels
 167772:
@@ -1242,6 +1243,7 @@
     - (cd "Na12 Analysis" && mv mosinit.hoc mosinit.hoc.bak && ln -s runModel.hoc mosinit.hoc)
     - sed -i'.bak' -e 's#\./mosinit\.hoc#./mosinit.hoc.bak#g' 'Na12 Analysis/runModel.hoc'
     - sed -i'.bak' -e 's#^tstop=30000#tstop=100#g' 'Na12 Analysis/constants.hoc'
+# 267140: segfaults with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
 267293:
     comment: Tries to open bac6.ses, which does not exist
     run: null
@@ -1278,6 +1280,7 @@
 #    - sed 's/tstop=/tstop=20\/\//g' Fig_13.hoc > temp.tmp
 #    - mv temp.tmp Fig_13.hoc
 244922:
+    # segfaults with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
     run:
     - run()
     - verify_graph_()
