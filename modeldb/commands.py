@@ -249,8 +249,7 @@ def diffreports2html(args=None):
         print("FAILURE: stdout diffs in {}".format(set(diff_dict.keys()) - {"0"}))
         code = 1
     if len(gout_dict) > 1:
-        assert "0" in gout_dict  # summary info; not a real diff
-        print("FAILURE: gout diffs in {}".format(set(diff_dict.keys()) - {"0"}))
+        print("FAILURE: gout diffs in {}".format(set(gout_dict.keys())))
         code = 1
     total_failures = sum(
         version_stats["Failed models"]["Count"] for version_stats in stats_dict.values()
