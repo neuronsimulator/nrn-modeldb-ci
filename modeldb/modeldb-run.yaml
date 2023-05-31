@@ -1113,6 +1113,13 @@
 147461:
     comment: //do not run Minimum time would be 1/2 hr default time is about 8.3 hours
     run: null
+148253:
+    script:
+    # there are two problems with the code in this model:
+    # - it tries to access /proc/uptime, which is not portable
+    # - if that works (i.e. on Linux) it runs with a different seed every time,
+    #   which is unhelpful in a CI context
+    -  sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' init_ClmIPSCs_GC.hoc
 149739:
     run:
     - verify_graph_()
