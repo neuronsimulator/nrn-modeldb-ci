@@ -176,7 +176,8 @@ def build_quit_hoc(model):
 def select_mosinit(model):
     # look for `mosinit.hoc`. It could also be produced by `init` script above
     mosfiles = glob.glob(model.model_dir + "/**/mosinit.hoc", recursive=True)
-    mosfiles.sort()
+    # prefer less-nested directories, then sort alphabetically
+    mosfiles.sort(key=lambda x: (x.count(os.sep), x))
     if len(mosfiles):
         model.run_info["start_dir"] = os.path.dirname(os.path.join(model.model_dir, mosfiles[0]))
         model.run_info["init"] = mosfiles[0]
