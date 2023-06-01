@@ -1259,7 +1259,16 @@
     model_dir: mods
     run: null
 267691:
+    # output is two data files Vm_6_1.dat Vm_axon_6_1.dat, which should be compared...
+    github: "pull/1"
     model_dir: mechanisms
+    script:
+    # based on mosinit.ps1 file in the repository
+    - ln -s init_icms.hoc mosinit.hoc
+    # reduce the cell count from 448 to 1 (this sed command works for cell_id = 6 below)
+    - sed -i'.bak' -e 's#4.4800000e+02#1.0000000e+00#g' cell_cnt.dat
+    # it seems the scripts expect cell_id to be passed on the commandline when special is run
+    - sed -i'.bak' -e 's#// cell_id = 6#cell_id = 6#' init_icms.hoc
 206267:
     run:
     - run()
