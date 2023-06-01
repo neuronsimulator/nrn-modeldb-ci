@@ -359,6 +359,8 @@
       repl: ''
     - pattern: '^\s+\^'
       repl: ''
+    # this should be removed once the latest release and development branch include nrn#2027
+    ignore_exit_code: true
     run:
     - ringperf()
     - run()
