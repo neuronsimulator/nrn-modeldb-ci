@@ -1018,7 +1018,7 @@
     # - it tries to access /proc/uptime, which is not portable
     # - if that works (i.e. on Linux) it runs with a different seed every time,
     #   which is unhelpful in a CI context
-    -  sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' 50knet.hoc
+    -  sed -i'.bak' -e 's#ropen("/proc/uptime")#// ropen("/proc/uptime")#g;s#rseed = fscan()#rseed=424242#g' 50knet.hoc
 136095:
     run:
     - run()
