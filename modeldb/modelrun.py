@@ -304,6 +304,8 @@ def run_model(model):
             nrn_exe = "./{}/special".format(platform.machine()) if mods is not None and len(mods) else "nrniv"
             # '-nogui' creates segfault
             model_run_cmds = [nrn_exe, '-nobanner']
+            if "hoc_stack_size" in model:
+                model_run_cmds += ["-NSTACK", str(int(model["hoc_stack_size"]))]
             if model.run_py:
                 model_run_cmds.append('-python')
             model_run_cmds += [model.run_info["init"], model.run_info["driver"]]
