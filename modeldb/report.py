@@ -105,12 +105,48 @@ def diff_reports(report1_json, report2_json):
                 gout_b_file = os.path.join(data_b[k]["run_info"]["start_dir"], "gout")
                 # gout may be missing in one of the paths. `diff -N` treats non-existent files as empty.
                 if os.path.isfile(gout_a_file) or os.path.isfile(gout_b_file):
-                    diff_out = subprocess.getoutput(
-                        "diff -uN --speed-large-files {} {} | head -n 30".format(
-                            shlex.quote(gout_a_file), shlex.quote(gout_b_file)
-                        )
+                    # https://stackoverflow.com/questions/1180606/using-subprocess-popen-for-process-with-large-output
+                    diff_cmd = [
+                        "diff",
+                        "-uN",
+                        "--speed-large-files",
+                        gout_a_file,
+                        gout_b_file,
+                    ]
+                    child = subprocess.Popen(
+                        diff_cmd,
+                        bufsize=1,  # line buffered
+                        stdout=subprocess.PIPE,  # we read from stdout below
+                        shell=False,
+                        text=True,
                     )
+                    # sometimes when the results are wildly different then diff can ~hang
+                    timeout = 2  # seconds
+                    try:
+                        (diff_out, _) = child.communicate(timeout=timeout)
+                        diff_out = diff_out.splitlines()
+                        # maximum 30 lines to keep the summary diff page responsive
+                        if len(diff_out) > 30:
+                            diff_out = "\n".join(
+                                diff_out[:30]
+                                + [
+                                    "... {} lines suppressed ...".format(
+                                        len(diff_out) - 30
+                                    )
+                                ]
+                            )
+                    except subprocess.TimeoutExpired:
+                        child.kill()
+                        diff_out = (
+                            "{} did not complete in {} seconds, killing it".format(
+                                diff_cmd, timeout
+                            )
+                        )
                     if diff_out:
-                        gout_dict[k] = highlight(diff_out, DiffLexer(), HtmlFormatter(linenos=True, cssclass="colorful", full=True))
+                        gout_dict[k] = highlight(
+                            diff_out,
+                            DiffLexer(),
+                            HtmlFormatter(linenos=True, cssclass="colorful", full=True),
+                        )
 
     return diff_dict, gout_dict, runtime_dict, stats_dict, v1, v2
