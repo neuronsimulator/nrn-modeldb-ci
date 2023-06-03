@@ -1260,7 +1260,6 @@
     run: null
 267691:
     # output is two data files Vm_6_1.dat Vm_axon_6_1.dat, which should be compared...
-    github: "pull/1"
     hoc_stack_size: 2000 # default of 1000 is apparently not enough
     model_dir: mechanisms
     script:
