@@ -835,6 +835,7 @@
     - makeplusplus()
     - verify_graph_()
 116094:
+    model_dir: LongDendrite
     run:
     - load_file("mosinit.hoc")
     - run_experiment("fig2ace")
@@ -989,6 +990,7 @@
     - run()
     - verify_graph_()
 123897:
+    model_dir: mechanism
     run:
     - xopen("experiment/Pyramidal_Main.hoc")
     - freePlay()
@@ -1189,6 +1191,8 @@
     script:
     # Fix for case-sensitive filesystems
     - mv Voltage.ses voltage.ses
+223649:
+    model_dir: 1_Hemond/Segregated
 223962:
     skip: true
     comment: takes too long, need to see how to reduce time
@@ -1207,6 +1211,11 @@
     - mkdir connection input
 237594:
     model_dir: mechanism
+241160:
+    model_dir: mechanism
+    script:
+    - mkdir -p membraneVoltages/shape-plot
+    - sed -i'.bak' 's#tstop[[:space:]]*=[[:space:]]*1050#tstop = 10#g' experiment/Pyramidal_Main.hoc
 244262:
     script:
     - if [[ ! -f Iintra.dat ]]; then unzip Iintra.dat.zip; fi
