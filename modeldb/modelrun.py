@@ -126,7 +126,7 @@ def run_neuron_cmds(model, cmds):
     except UnicodeDecodeError:
         raise Exception("Could not decode output:" + repr(out))
     model.nrn_run.extend(curate_log_string(model, out).splitlines())
-    if sp.returncode > 1:
+    if sp.returncode != 0 and not model.get("ignore_exit_code", False):
         model._nrn_run_error = True
 
 
@@ -175,7 +175,8 @@ def build_quit_hoc(model):
 def select_mosinit(model):
     # look for `mosinit.hoc`. It could also be produced by `init` script above
     mosfiles = glob.glob(model.model_dir + "/**/mosinit.hoc", recursive=True)
-    mosfiles.sort()
+    # prefer less-nested directories, then sort alphabetically
+    mosfiles.sort(key=lambda x: (x.count(os.sep), x))
     if len(mosfiles):
         model.run_info["start_dir"] = os.path.dirname(os.path.join(model.model_dir, mosfiles[0]))
         model.run_info["init"] = mosfiles[0]
@@ -302,6 +303,8 @@ def run_model(model):
             nrn_exe = "./{}/special".format(platform.machine()) if mods is not None and len(mods) else "nrniv"
             # '-nogui' creates segfault
             model_run_cmds = [nrn_exe, '-nobanner']
+            if "hoc_stack_size" in model:
+                model_run_cmds += ["-NSTACK", str(int(model["hoc_stack_size"]))]
             if model.run_py:
                 model_run_cmds.append('-python')
             model_run_cmds += [model.run_info["init"], model.run_info["driver"]]
@@ -312,7 +315,8 @@ def run_model(model):
                     model._gout = gout.readlines()
         except Exception:  # noqa
             append_log(model, model.nrn_run, traceback.format_exc())
-            model._nrn_run_error = True
+            if not model.get("ignore_exit_code", False):
+                model._nrn_run_error = True
 
     stop_time = time.perf_counter()
     model._run_times["model"] = stop_time - start_time
@@ -431,6 +435,8 @@ class ModelRunManager(object):
                 self.run_logs[model.id]["do_not_run"] = True
             if model.nrn_run_error:
                 self.run_logs[model.id]["nrn_run_err"] = True
+            if model.get("ignore_exit_code", False):
+                self.run_logs[model.id]["ignore_exit_code"] = True
             if model.no_mosinit_hoc:
                 self.run_logs[model.id]["no_mosinit_hoc"] = True
             self.run_logs[model.id]["run_info"] = model.run_info

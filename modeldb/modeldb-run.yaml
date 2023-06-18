@@ -315,6 +315,9 @@
     - xopen("mosinit.hoc")
     - unix_spike_atten_hof()
     - verify_graph_()
+    script:
+    # Model tries to abort on mac, but let's try and run it anyway
+    - sed -i'.bak' -e 's#if (unix_mac_pc() ==1 || unix_mac_pc() ==3 ) {#if (1) { // assume works on mac/linux/windows#g' mechanism/mosinit.hoc
 20756:
     run:
     - 'pyr3_ = new pyr3( 21 ) '
@@ -356,6 +359,8 @@
       repl: ''
     - pattern: '^\s+\^'
       repl: ''
+    # this should be removed once the latest release and development branch include nrn#2027
+    ignore_exit_code: true
     run:
     - ringperf()
     - run()
@@ -830,6 +835,7 @@
     - makeplusplus()
     - verify_graph_()
 116094:
+    model_dir: LongDendrite
     run:
     - load_file("mosinit.hoc")
     - run_experiment("fig2ace")
@@ -984,6 +990,7 @@
     - run()
     - verify_graph_()
 123897:
+    model_dir: mechanism
     run:
     - xopen("experiment/Pyramidal_Main.hoc")
     - freePlay()
@@ -1009,6 +1016,13 @@
     - verify_graph_()
     script: # todo -> fix model for NEURON 8.0.0 and remove this script
     - sed -i'.bak' -e 's/return 0;//g' MOPP_Fig_1B_left/ichan2.mod
+124513:
+    script:
+    # there are two problems with the code in this model:
+    # - it tries to access /proc/uptime, which is not portable
+    # - if that works (i.e. on Linux) it runs with a different seed every time,
+    #   which is unhelpful in a CI context
+    -  sed -i'.bak' -e 's#ropen("/proc/uptime")#// ropen("/proc/uptime")#g;s#rseed = fscan()#rseed=424242#g' 50knet.hoc
 136095:
     run:
     - run()
@@ -1103,6 +1117,13 @@
 147461:
     comment: //do not run Minimum time would be 1/2 hr default time is about 8.3 hours
     run: null
+148253:
+    script:
+    # there are two problems with the code in this model:
+    # - it tries to access /proc/uptime, which is not portable
+    # - if that works (i.e. on Linux) it runs with a different seed every time,
+    #   which is unhelpful in a CI context
+    -  sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' init_ClmIPSCs_GC.hoc
 149739:
     run:
     - verify_graph_()
@@ -1125,6 +1146,7 @@
 150284:
     comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
     run: null
+# 150551: segfault with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
 151443:
     model_dir: channels
 167772:
@@ -1169,6 +1191,8 @@
     script:
     # Fix for case-sensitive filesystems
     - mv Voltage.ses voltage.ses
+223649:
+    model_dir: 1_Hemond/Segregated
 223962:
     skip: true
     comment: takes too long, need to see how to reduce time
@@ -1187,6 +1211,11 @@
     - mkdir connection input
 237594:
     model_dir: mechanism
+241160:
+    model_dir: mechanism
+    script:
+    - mkdir -p membraneVoltages/shape-plot
+    - sed -i'.bak' 's#tstop[[:space:]]*=[[:space:]]*1050#tstop = 10#g' experiment/Pyramidal_Main.hoc
 244262:
     script:
     - if [[ ! -f Iintra.dat ]]; then unzip Iintra.dat.zip; fi
@@ -1225,6 +1254,7 @@
     - (cd "Na12 Analysis" && mv mosinit.hoc mosinit.hoc.bak && ln -s runModel.hoc mosinit.hoc)
     - sed -i'.bak' -e 's#\./mosinit\.hoc#./mosinit.hoc.bak#g' 'Na12 Analysis/runModel.hoc'
     - sed -i'.bak' -e 's#^tstop=30000#tstop=100#g' 'Na12 Analysis/constants.hoc'
+# 267140: segfaults with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
 267293:
     comment: Tries to open bac6.ses, which does not exist
     run: null
@@ -1237,6 +1267,17 @@
     comment: 'Seems to be missing files: parinit.hoc, .mod file for h_ca, ...?'
     model_dir: mods
     run: null
+267691:
+    # output is two data files Vm_6_1.dat Vm_axon_6_1.dat, which should be compared...
+    hoc_stack_size: 2000 # default of 1000 is apparently not enough
+    model_dir: mechanisms
+    script:
+    # based on mosinit.ps1 file in the repository
+    - ln -s init_icms.hoc mosinit.hoc
+    # reduce the cell count from 448 to 1 (this sed command works for cell_id = 6 below)
+    - sed -i'.bak' -e 's#4.4800000e+02#1.0000000e+00#g' cell_cnt.dat
+    # it seems the scripts expect cell_id to be passed on the commandline when special is run
+    - sed -i'.bak' -e 's#// cell_id = 6#cell_id = 6#' init_icms.hoc
 206267:
     run:
     - run()
@@ -1259,6 +1300,7 @@
 #    - sed 's/tstop=/tstop=20\/\//g' Fig_13.hoc > temp.tmp
 #    - mv temp.tmp Fig_13.hoc
 244922:
+    # segfaults with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
     run:
     - run()
     - verify_graph_()
