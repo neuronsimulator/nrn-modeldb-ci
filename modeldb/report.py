@@ -101,8 +101,9 @@ def diff_reports(report1_json, report2_json):
                         runtime_dict[k][runkey] = _speedup(data_a[k]["run_times"][runkey], data_b[k]["run_times"][runkey])
                 
                 # compare gout
-                gout_a_file = os.path.join(data_a[k]["run_info"]["start_dir"], "gout")
-                gout_b_file = os.path.join(data_b[k]["run_info"]["start_dir"], "gout")
+                gout_a_file = os.path.join(start_dir_a, "gout")
+                gout_b_file = os.path.join(start_dir_b, "gout")
+
                 # gout may be missing in one of the paths. `diff -N` treats non-existent files as empty.
                 if os.path.isfile(gout_a_file) or os.path.isfile(gout_b_file):
                     # https://stackoverflow.com/questions/1180606/using-subprocess-popen-for-process-with-large-output
