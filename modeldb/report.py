@@ -135,6 +135,8 @@ def diff_reports(report1_json, report2_json):
                                     )
                                 ]
                             )
+                        else:
+                            diff_out = "\n".join(diff_out)
                     except subprocess.TimeoutExpired:
                         child.kill()
                         diff_out = (
