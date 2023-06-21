@@ -133,6 +133,13 @@ class ModelDB(object):
         }
         # If we were passed a non-None `model_list`, restrict those models now.
         if model_list is not None:
+            missing_ids = set(model_list) - set(metadata.keys())
+            if len(missing_ids):
+                raise Exception(
+                    "Model IDs {} were explicitly requested, but are not known NEURON models.".format(
+                        missing_ids
+                    )
+                )
             metadata = {model_id: metadata[model_id] for model_id in model_list}
         # For each model in `metadata`, check if a cached entry exists and is
         # up to date. If not, download it.

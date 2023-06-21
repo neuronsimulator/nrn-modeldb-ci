@@ -159,7 +159,6 @@ jobs:
           python -m pip install $NEURON_V1
         fi
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        ps uxf # debug
         runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
         # Filter out the gout data before generating HTML reports. The HTML
         # diff uses the original gout files on disk anyway. Compress the large
@@ -186,7 +185,6 @@ jobs:
           python -m pip install $NEURON_V2
         fi
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        ps uxf # debug
         runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
         # Filter out the gout data before generating HTML reports. The HTML
         # diff uses the original gout files on disk anyway. Compress the large
