@@ -2,13 +2,11 @@
 
 import os
 
-# MDB_NEURON_MODELS_URL = "https://senselab.med.yale.edu/_site/webapi/object.json/?cl=19&oid=1882"
 MDB_NEURON_MODELS_URL = (
-    "http://modeldb.science/api/v1/models?modeling_application=NEURON"
+    "http://modeldb.science/api/v1/models/{model_field}?modeling_application=NEURON"
 )
-MDB_MODEL_DOWNLOAD_URL = (
-    "https://senselab.med.yale.edu/_site/webapi/object.json/{model_id}"
-)
+MDB_MODEL_METADATA_URL = "https://modeldb.science/api/v1/models/{model_id}"
+MDB_MODEL_DOWNLOAD_URL = "https://modeldb.science/download/{model_id}"
 
 ROOT_DIR = os.path.abspath(__file__ + "/../../")
 

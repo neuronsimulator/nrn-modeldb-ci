@@ -66,7 +66,8 @@ The following commands are now available:
   | MODELDB_RUN_FILE        | yaml file containing run instructions for models (required for `runmodels`) |
   | MODELDB_METADATA_FILE   | yaml file containing model info for those downloaded with `getmodels`       |
   | MODELS_ZIP_DIR          | location of cache folder for models populated via `getmodels`               |
-  | MDB_NEURON_MODELS_URL   | url used to get list of all NEURON model ids (necessary for `getmodels`)    |
+  | MDB_NEURON_MODELS_URL   | url template used to get NEURON model IDs and last-updated timestamps (needed for `getmodels`) |
+  | MDB_MODEL_METADATA_URL  | url template used to get metadata about a single NEURON model (needed for `getmodels`) |
   | MDB_MODEL_DOWNLOAD_URL  | url template used for model downloading (cf `{model_id}`)                   |
 
 ## Model Run

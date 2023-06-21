@@ -138,20 +138,17 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         #Install project in editable mode
         python -m pip install -e .
-        echo "date=$(date -u "+%Y%m")" >> $GITHUB_OUTPUT
     
     - name: Cache ModelDB models
-      id: cache-models
       uses: actions/cache@v3
       with:
         path: |
           cache
           modeldb/modeldb-meta.yaml
-        key: models-${{steps.install-deps.outputs.date}}
+        key: dynamic-models
 
     - name: Get ModelDB models
-      if: steps.cache-models.outputs.cache-hit != 'true'
-      run: getmodels
+      run: getmodels $MODELS_TO_RUN
 
     - name: Run Models with NEURON V1 -> ${{ env.NEURON_V1 }}
       run: |
@@ -162,7 +159,6 @@ jobs:
           python -m pip install $NEURON_V1
         fi
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        ps uxf # debug
         runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
         # Filter out the gout data before generating HTML reports. The HTML
         # diff uses the original gout files on disk anyway. Compress the large
@@ -189,7 +185,6 @@ jobs:
           python -m pip install $NEURON_V2
         fi
         nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        ps uxf # debug
         runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
         # Filter out the gout data before generating HTML reports. The HTML
         # diff uses the original gout files on disk anyway. Compress the large
