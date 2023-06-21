@@ -6,7 +6,7 @@ MDB_NEURON_MODELS_URL = (
     "http://modeldb.science/api/v1/models/{model_field}?modeling_application=NEURON"
 )
 MDB_MODEL_METADATA_URL = "https://modeldb.science/api/v1/models/{model_id}"
-MDB_MODEL_DOWNLOAD_URL = "https://modeldb.science/eavBinDown?o={model_id}"
+MDB_MODEL_DOWNLOAD_URL = "https://modeldb.science/download/{model_id}"
 
 ROOT_DIR = os.path.abspath(__file__ + "/../../")
 
