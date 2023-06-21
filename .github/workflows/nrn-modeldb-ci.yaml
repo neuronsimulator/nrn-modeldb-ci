@@ -145,7 +145,7 @@ jobs:
         path: |
           cache
           modeldb/modeldb-meta.yaml
-        key: models
+        key: dynamic-models
 
     - name: Get ModelDB models
       run: getmodels $MODELS_TO_RUN
