@@ -138,20 +138,17 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         #Install project in editable mode
         python -m pip install -e .
-        echo "date=$(date -u "+%Y%m")" >> $GITHUB_OUTPUT
     
     - name: Cache ModelDB models
-      id: cache-models
       uses: actions/cache@v3
       with:
         path: |
           cache
           modeldb/modeldb-meta.yaml
-        key: models-${{steps.install-deps.outputs.date}}
+        key: models
 
     - name: Get ModelDB models
-      if: steps.cache-models.outputs.cache-hit != 'true'
-      run: getmodels
+      run: getmodels $MODELS_TO_RUN
 
     - name: Run Models with NEURON V1 -> ${{ env.NEURON_V1 }}
       run: |
