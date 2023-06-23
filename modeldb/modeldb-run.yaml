@@ -206,6 +206,11 @@
     run:
     - runp()
     - verify_graph_()
+7907:
+    comment: ".mod files do not compile"
+    # Based on readme, other choices are available
+    model_dir: "batch_back/back/mod/kvz_naz"
+    skip: true
 8115:
     run:
     - use_mcell_ran4(1)
@@ -430,6 +435,7 @@
     run:
     - //takes a long time
 53876:
+    model_dir: "."
     run:
     - restart("fig2c")
     - verify_graph_()
@@ -541,6 +547,7 @@
     - // load_file("hoc/src/file_util.hoc")
     - // load_file("hoc/src/main.hoc")
 84612:
+    model_dir: "."
     run:
     - restart_("fig4b1")
     - tstop=1000
@@ -945,6 +952,8 @@
     - runi()
     - verify_graph_()
 120692:
+    # dynamic/ subdir also exists, semi-arbitrarily preferring less-nested dirs
+    model_dir: "."
     run:
     - load("fig7.hoc")
     - verify_graph_()
@@ -1024,6 +1033,12 @@
     # - if that works (i.e. on Linux) it runs with a different seed every time,
     #   which is unhelpful in a CI context
     -  sed -i'.bak' -e 's#ropen("/proc/uptime")#// ropen("/proc/uptime")#g;s#rseed = fscan()#rseed=424242#g' 50knet.hoc
+125385:
+    comment: ".mod files do not compile"
+    skip: true
+129067:
+    # Arbitrary choice, Welday_et_al_Fig9C also exists.
+    model_dir: "Welday_et_al_Fig9AB"
 136095:
     run:
     - run()
@@ -1065,10 +1080,19 @@
     run: null
 143604:
     model_dir: mod
+143633:
+    # they also seem to exist under master/; random choice
+    model_dir: "modfiles"
+144007:
+    # Arbitrary choice, jnphysiol2012 also exists
+    model_dir: "jneurosci2012"
 144385:
     model_dir: mod
 144482:
     model_dir: mechanism/mechanism_cell1
+144490:
+    # readme says to use the top-level directory
+    model_dir: "."
 144523:
     run:
     - objref test_graph_
@@ -1088,6 +1112,9 @@
     - verify_graph_()
     script:
     - sed -i'.bak' -r 's/(tstop=mytstop=htmax= \(LearnDur \+ ZipDur \+ BaseDur\*2\) \*) 1e3/\1 2e1/g' params.hoc
+144579:
+    comment: ".mod files do not compile"
+    skip: true
 145836:
     run:
     - ParmFitnessGui[0].run()
@@ -1115,6 +1142,12 @@
     - ln -s main.hoc mosinit.hoc
     # without this the script calls quit() before we run verify_graph_()
     - sed -i'.bak' -r 's#^quit()#// quit() removed by nrn-modeldb-ci#g' main.hoc
+147141:
+    comment: ".mod files do not compile"
+    skip: true
+147460:
+    # Arbitrary choice, Interneuron/NEURON_code also exists.
+    model_dir: "Pyramidal/NEURON_code"
 147461:
     comment: //do not run Minimum time would be 1/2 hr default time is about 8.3 hours
     run: null
@@ -1146,13 +1179,32 @@
     - verify_graph_()
 150284:
     comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
+    # there is also a .mod file under biochemical_circuits/
+    model_dir: "mod"
     run: null
 # 150551: segfault with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
 151443:
     model_dir: channels
+152197:
+    # Semi-arbitrarily ignoring back/ subdirectory that also contains MOD files
+    model_dir: "."
+154096:
+    comment: ".mod files do not compile"
+    skip: true
+155705:
+    # There are two sibling dirs to "all_mods", and all_mods/nmdaR.mod and
+    # synapse/nmdaR.mod are not the same.
+    model_dir: "Two_netsPaper/mods/all_mods"
+155735:
+    comment: ".mod files do not compile"
+    model_dir: "mod-files/misc;mod-files/KR;mod-files/DSB"
+    skip: true
 167772:
     comment: //do not run Tried "initDialog.unmap(1)" - didnt work.  Need to change
         archive
+    # Various other directories containing .mod files exist under the
+    # SchmidtHieber/ path, arbitrarily choosing this one.
+    model_dir: "HH/Neuron"
     run: null
 168310:
     model_dir: experiment
@@ -1161,10 +1213,36 @@
     # fixup for case-sensitive filesystems
     - sed -i'.bak' 's#path = "./inputs/"#path = "./Inputs/"#g' ReadExperiments.hoc
     - sed -i'.bak' 's#load_file("protocol.hoc")#load_file("Protocol.hoc")#g' Hipp.hoc
+168858:
+    # Ignore x86_64/ directories committed to the repository, and ignore
+    # HHmodel/Scripts/NeuronMechanisms/ subdirectory
+    model_dir: "."
+182134:
+    comment: ".mod files do not compile"
+    skip: true
+183014:
+    comment: ".mod files do not compile"
+    skip: true
+183300:
+    # Arbitrarily ignoring .mod files under early_theta_version/
+    model_dir: "."
+183718:
+    comment: ".mod files do not compile"
+    # Arbitrarily ignoring .mod files under resonator/
+    model_dir: "integrator"
+    skip: true
 184054:
     model_dir: fullMorphCaLTP8
     script:
     - sed -i'.bak' 's#tstop = 250#tstop = 25#g' fullMorphCaLTP8/doTBSStimCC.hoc
+184314:
+    # x86_64/ directory is included in the GitHub repository; should be removed
+    model_dir: "."
+184497:
+    comment: ".mod files do not compile"
+    # readme says to use both
+    model_dir: "model;optmz"
+    skip: true
 187473:
     model_dir: mods
 187604:
@@ -1174,9 +1252,16 @@
     - pattern: 'TIME HOST 0: [0-9\.]+ seconds \(created cells\)'
       repl: 'TIME HOST 0: %elapsed_time% seconds (created cells)'
 187615:
-    comment: Tries to open bac6.ses, which does not exist
+    comment: "Tries to open bac6.ses, which doesn't exist"
+    # hay/ also exists, but doesn't have a mosinit.hoc
+    model_dir: "almog"
     run: null
+189186:
+    # guessed from mosinit.hoc, there are other options
+    model_dir: "01_Soma-dendritic_recordings/01_Control/140311-C1/syncytium/num10"
 189347:
+    # hay/ subdirectory also has .mod files, but mosinit.hoc is under almog/
+    model_dir: "almog"
     script:
     # we launch with special so don't try and dlopen mechanisms too
     - sed -i'.bak' 's#nrn_load_dll#// nrn_load_dll#g' main.hoc
@@ -1207,27 +1292,162 @@
     - iconv -f LATIN1 -t UTF-8 createsimulation.hoc.iconv.bak > createsimulation.hoc
     - sed -i'.bak' -e 's#^tstop=\([0-9a-z+]*\)#tstop=((\1)/500)#g' createsimulation.hoc
     - sed -i'.bak' 's#\(cell.synapses.update_synapses(synapse_plot)\)#// \1#g' init_super.hoc
+230861:
+    comment: ".mod files do not compile"
+    skip: true
+232023:
+    # README suggests all should be included
+    model_dir: "mechanisms/Event_stream;mechanisms/Golgi_CL;mechanisms/Granule_CL;mechanisms/Presynaptic_spike_generator;mechanisms/Synapses;mechanisms/gap"
 232097:
     script:
     - mkdir connection input
+232876:
+    # Arbitrarily choose this over influence_ih_iT/ and high_conductance_state/
+    model_dir: "current_clamp"
+236310:
+    # Ignore Elec/kir.mod arbitrarily
+    model_dir: "Syn"
+237469:
+    comment: ".mod files do not compile"
+    # readme hints this is the preferred one
+    model_dir: "approxhaynet"
+    skip: true
 237594:
     model_dir: mechanism
+237595:
+    # x86_64 directory is checked into the repository
+    model_dir: "Multicompartmental_Biophysical_models/mechanism"
+239177:
+    # Arbitrarily chosen over PIR-Inetwork/
+    model_dir: "PIR-EInetwork"
+240960:
+    # SimpleModel sounds better than FullModel/ for a CI check
+    model_dir: "SimpleModel"
 241160:
     model_dir: mechanism
     script:
     - mkdir -p membraneVoltages/shape-plot
     - sed -i'.bak' 's#tstop[[:space:]]*=[[:space:]]*1050#tstop = 10#g' experiment/Pyramidal_Main.hoc
+243508:
+    # arbitrarily ignoring clusterCaSim/hpc/model/, neuronSims/ExtraMechanism/
+    # and neuronSims/ExtraMechanism/fink2000/
+    model_dir: "neuronSims"
 244262:
     script:
     - if [[ ! -f Iintra.dat ]]; then unzip Iintra.dat.zip; fi
     - ls -l Iintra.dat
 249463:
-    comment: Tries to open bac6.ses, which does not exist
+    comment: "Tries to open bac6.ses, which does not exist"
+    # .mod files exist under hay/ too, but almog/ has mosinit.hoc
+    model_dir: "almog"
     run: null
+249705:
+    # have to disambiguate because x86_64/ is checked into the model repo
+    model_dir: "mod"
+253369:
+    # Chosen alphabetically, all of the following also have .mod files:
+    # Isolated_Dendrite_gPas__Fig1/
+    # Isolated_Dendrite_pGABA _HCO3__Fig5u7/
+    # Isolated_Dendrite_pH__Fig8/
+    # Isolated_Dendrite_tauGABA__Fig4/
+    # Isolated_Dendrite_tauNKCC1__Fig9/
+    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-VDpas__Fig2g/
+    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-_tauNKCC1__Fig9/
+    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-gGABA__Fig3/
+    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-gPas__Fig2/
+    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-pGABA_tauHCO3__Fig6u7/
+    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-tauGABA__Fig4/
+    # Real_Cell_Cl_HCO3_1GDP_Var-Cl_var-pH__Fig8/
+    # Real_Cell_Dynamic_Cl_HCO3_1GDP/
+    model_dir: "Isolated_Dendrite_gGABA__Fig3"
 254217:
     model_dir: _mod
 256024:
     model_dir: mods
+257028:
+    # sounds smaller/faster than CCTC_model_scaleup/modfiles/
+    model_dir: "CCTC_model/modfiles"
+260015:
+    # .mod files also exist under analysis/UMAP_analysis_code/*/, but this
+    # sounds like a better bet
+    model_dir: "sim/mod"
+262373:
+    # ignore orig/ subdir fairly arbitrarily
+    model_dir: "."
+263988:
+    # there are 3 other dataset_XX... directories, and each one also has .mod
+    # files more deeply nested under it...
+    model_dir: "dataset_01__fields/code"
+265523:
+    comment: ".mod files do not compile"
+    # arbitrarily ignoring: SWR/SDprox2/, Theta/SDprox1/, Theta/SDprox2/,
+    # Theta_DoubledInputs/SDprox1/, Theta_DoubledInputs/SDprox2/,
+    # Theta_NoiseTests/SDprox1/, Theta_NoiseTests/SDprox2/,
+    # Theta_RemovedInputs/SDprox1/ and Theta_RemovedInputs/SDprox2/
+    model_dir: "SWR/SDprox1"
+    skip: true
+265584:
+    # there are 3 other top-level directories with .mod files inside
+    model_dir: "01_GrC_2020_regular/mod_files"
+266732:
+    comment: ".mod files do not compile"
+    # arbitrarily ignoring fig3_5_7/, fig8/ and fig9/
+    model_dir: "fig2_4_6"
+    skip: true
+266775:
+    # there are more .mod files, but the readme says to use these ones
+    model_dir: "mechanisms/single"
+266797:
+    # "mod - new" subdir seems to just contain duplicates
+    model_dir: "."
+266799:
+    comment: ".mod files do not compile"
+    # there are 5 other figure* directories with .mod files in them
+    model_dir: "figure1/mod"
+    skip: true
+266802:
+    # arbitrarily ignoring: Figure_2_synaptic_thresholds/,
+    # Figure_3_200um_on_BigNeuron/, Figure_4_and_5_modified conductances/,
+    # Figure_6_CA3/, Figure_6_DGC/ and Figure_7_variable_gAMPA/
+    model_dir: "Figure_1_single_EPSPs"
+266806:
+    comment: ".mod files do not compile"
+    # there's also a Morphology_2 directory
+    model_dir: "Morphology_1/mod_files"
+    skip: true
+266842:
+    # Scaleup_5x_all/modfiles/ also exists but sounds slower
+    model_dir: "CCTC_model/modfiles"
+266844:
+    # arbitrary choice, "Fig 3/The other spines/Multi-spines model" and
+    # "Fig S8/Single spine model" also contain .mod files
+    model_dir: "Fig 3/XL-sized spines/Multi-spines model"
+266851:
+    # readme seems to prefer this one
+    model_dir: "models/DuraBernal/mod"
+267009:
+    # arbitrary choice, unm_pub/mods also contains .mod files
+    model_dir: "mye_pub/mods"
+267189:
+    comment: ".mod files do not compile"
+    # arbitrary choice, Purkinje/mod_files/ and DCN/mod_files/ also exist
+    model_dir: "Granule/mod_files"
+    skip: true
+267587:
+    comment: ".mod files do not compile"
+    # readme hints this is reasonable
+    model_dir: "L5Circuit/default_circuit/mod"
+    skip: true
+267589:
+    # arbitrary choice, dLGN-network/mods/ and dLGN-network/lmods/ also contain
+    # .mod files
+    model_dir: "TC-fitting/mods"
+267610:
+    # readme hints this is reasonable
+    model_dir: "multi_compartmental/1_0um"
+267621:
+    # arbitrary choice, 1292/mod/ also contains .mod files
+    model_dir: "131/mod"
 149174:
     skip: true
     comment: testing in Python + hardcoded NEURON
@@ -1258,6 +1478,9 @@
 # 267140: segfaults with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
 267293:
     comment: Tries to open bac6.ses, which does not exist
+    # this is the dir with mosinit.hoc in it, other .mod files exist under
+    # modulhcn_hay/
+    model_dir: "modulhcn_almog"
     run: null
 267384:
     model_dir: 'BBP_TTPC_EXAMPLE'
