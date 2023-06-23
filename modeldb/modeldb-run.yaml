@@ -564,7 +564,7 @@
     - run()
     - verify_graph_()
     script:
-    - echo 'VERBATIM\nextern void state_discontinuity(int i, double* pd, double d);\nENDVERBATIM' >> simulationcode/glutamate.mod
+    - printf 'VERBATIM\nextern void state_discontinuity(int i, double* pd, double d);\nENDVERBATIM\n' >> simulationcode/glutamate.mod
     - ln -sf driver.hoc simulationcode/driver.hoc
 186977:
     model_dir: mods/network_sims_MODs
@@ -1340,6 +1340,9 @@
     script:
     - mkdir -p membraneVoltages/shape-plot
     - sed -i'.bak' 's#tstop[[:space:]]*=[[:space:]]*1050#tstop = 10#g' experiment/Pyramidal_Main.hoc
+241169:
+    comment: "uses bad assumptions about ParallelComputeTool.cache"
+    run: null
 243508:
     # arbitrarily ignoring clusterCaSim/hpc/model/, neuronSims/ExtraMechanism/
     # and neuronSims/ExtraMechanism/fink2000/
