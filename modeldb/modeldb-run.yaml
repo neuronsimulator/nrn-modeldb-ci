@@ -1260,8 +1260,6 @@
     # guessed from mosinit.hoc, there are other options
     model_dir: "01_Soma-dendritic_recordings/01_Control/140311-C1/syncytium/num10"
 189347:
-    # hay/ subdirectory also has .mod files, but mosinit.hoc is under almog/
-    model_dir: "almog"
     script:
     # we launch with special so don't try and dlopen mechanisms too
     - sed -i'.bak' 's#nrn_load_dll#// nrn_load_dll#g' main.hoc
@@ -1320,6 +1318,9 @@
 239177:
     # Arbitrarily chosen over PIR-Inetwork/
     model_dir: "PIR-EInetwork"
+240116:
+    comment: ".mod files do not compile with 8.2.2"
+    skip: true
 240960:
     # SimpleModel sounds better than FullModel/ for a CI check
     model_dir: "SimpleModel"

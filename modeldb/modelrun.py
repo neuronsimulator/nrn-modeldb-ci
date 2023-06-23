@@ -275,18 +275,17 @@ def run_model(model):
         #   semicolon-separated list of directories containing .mod files.
         # - recursively search for directories containing .mod files, if there
         #   is exactly one such directory, use it
+        mods = []
         if "model_dir" in model:
             mod_dirs = model["model_dir"].split(";")
-            mods = sum(
-                (
-                    glob.glob(os.path.join(model.model_dir, mod_dir) + "/*.mod")
-                    for mod_dir in mod_dirs
-                ),
-                start=[],
-            )
+            for mod_dir in mod_dirs:
+                mod_dir = os.path.join(model.model_dir, mod_dir)
+                if not os.path.isdir(mod_dir):
+                    raise Exception("Explicitly specified model_dir {} does not exist".format(mod_dir))
+                mods += glob.glob(mod_dir + "/*.mod")
         else:
             top = model.run_info["start_dir"]
-            mod_dirs, mods = [], []
+            mod_dirs = []
             for root, _, files in os.walk(top):
                 local_mods = [
                     os.path.join(root, name) for name in files if name.endswith(".mod")
