@@ -460,6 +460,7 @@
 64195:
     comment: //do not run problem due to randomness and takes too long due to failure
         to set steps_per_ms consistent with dt
+    model_dir: "."
     run: null
 64228:
     run:
