@@ -1157,7 +1157,9 @@
     # - it tries to access /proc/uptime, which is not portable
     # - if that works (i.e. on Linux) it runs with a different seed every time,
     #   which is unhelpful in a CI context
-    -  sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' init_ClmIPSCs_GC.hoc
+    - mv init_ClmIPSCs_GC.hoc init_ClmIPSCs_GC.hoc.iconv.bak
+    - iconv -f ISO-8859-1 -t UTF-8 init_ClmIPSCs_GC.hoc.iconv.bak > init_ClmIPSCs_GC.hoc
+    - sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' init_ClmIPSCs_GC.hoc
 149739:
     run:
     - verify_graph_()
@@ -1198,6 +1200,9 @@
 155735:
     comment: ".mod files do not compile"
     model_dir: "mod-files/misc;mod-files/KR;mod-files/DSB"
+    skip: true
+155796:
+    comment: ".mod files do not compile"
     skip: true
 167772:
     comment: //do not run Tried "initDialog.unmap(1)" - didnt work.  Need to change
@@ -1290,6 +1295,9 @@
     - iconv -f LATIN1 -t UTF-8 createsimulation.hoc.iconv.bak > createsimulation.hoc
     - sed -i'.bak' -e 's#^tstop=\([0-9a-z+]*\)#tstop=((\1)/500)#g' createsimulation.hoc
     - sed -i'.bak' 's#\(cell.synapses.update_synapses(synapse_plot)\)#// \1#g' init_super.hoc
+229585:
+    comment: ".mod files do not compile"
+    skip: true
 230861:
     comment: ".mod files do not compile"
     skip: true
@@ -1318,6 +1326,9 @@
 239177:
     # Arbitrarily chosen over PIR-Inetwork/
     model_dir: "PIR-EInetwork"
+239421:
+    comment: ".mod files do not compile"
+    skip: true
 240116:
     comment: ".mod files do not compile with 8.2.2"
     skip: true
@@ -1337,6 +1348,9 @@
     script:
     - if [[ ! -f Iintra.dat ]]; then unzip Iintra.dat.zip; fi
     - ls -l Iintra.dat
+246546:
+    comment: ".mod files do not compile"
+    skip: true
 249463:
     comment: "Tries to open bac6.ses, which does not exist"
     # .mod files exist under hay/ too, but almog/ has mosinit.hoc
@@ -1365,6 +1379,9 @@
     model_dir: _mod
 256024:
     model_dir: mods
+256311:
+    comment: ".mod files do not compile"
+    skip: true
 257028:
     # sounds smaller/faster than CCTC_model_scaleup/modfiles/
     model_dir: "CCTC_model/modfiles"
@@ -1372,6 +1389,9 @@
     # .mod files also exist under analysis/UMAP_analysis_code/*/, but this
     # sounds like a better bet
     model_dir: "sim/mod"
+261460:
+    comment: ".mod files do not compile"
+    skip: true
 262373:
     # ignore orig/ subdir fairly arbitrarily
     model_dir: "."
@@ -1426,13 +1446,22 @@
 266851:
     # readme seems to prefer this one
     model_dir: "models/DuraBernal/mod"
+266864:
+    comment: ".mod files do not compile"
+    skip: true
 267009:
     # arbitrary choice, unm_pub/mods also contains .mod files
     model_dir: "mye_pub/mods"
+267146:
+    comment: ".mod files do not compile"
+    skip: true
 267189:
     comment: ".mod files do not compile"
     # arbitrary choice, Purkinje/mod_files/ and DCN/mod_files/ also exist
     model_dir: "Granule/mod_files"
+    skip: true
+267511:
+    comment: ".mod files do not compile"
     skip: true
 267587:
     comment: ".mod files do not compile"
@@ -1443,12 +1472,18 @@
     # arbitrary choice, dLGN-network/mods/ and dLGN-network/lmods/ also contain
     # .mod files
     model_dir: "TC-fitting/mods"
+267595:
+    comment: ".mod files do not compile"
+    skip: true
 267610:
     # readme hints this is reasonable
     model_dir: "multi_compartmental/1_0um"
 267621:
     # arbitrary choice, 1292/mod/ also contains .mod files
     model_dir: "131/mod"
+267646:
+    comment: ".mod files do not compile"
+    skip: true
 149174:
     skip: true
     comment: testing in Python + hardcoded NEURON
