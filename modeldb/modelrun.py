@@ -292,7 +292,7 @@ def run_model(model):
                     os.path.join(root, name) for name in files if name.endswith(".mod")
                 ]
                 if local_mods:
-                    mod_dirs.append(root)
+                    mod_dirs.append(os.path.relpath(root, top))
                     # not += because we never merge multiple .mod dirs automatically
                     mods = local_mods
             if len(mod_dirs) > 1:
