@@ -270,15 +270,45 @@ def run_model(model):
                        )
            )
 
-        # Get mod files. Model can have a custom mod directory or directories, otherwise we search in the start_dir
+        # Get .mod files. There are two options:
+        # - the `model_dir` key in `modeldb-run.yaml` can be a
+        #   semicolon-separated list of directories containing .mod files.
+        # - recursively search for directories containing .mod files, if there
+        #   is exactly one such directory, use it
         if "model_dir" in model:
-            mods = []
-            for moddir in model["model_dir"].split(';'):
-                mod_pattern = os.path.join(model.model_dir, moddir) + "/*.mod"
-                mods.extend(glob.glob(mod_pattern))
+            mod_dirs = model["model_dir"].split(";")
+            mods = sum(
+                (
+                    glob.glob(os.path.join(model.model_dir, mod_dir) + "/*.mod")
+                    for mod_dir in mod_dirs
+                ),
+                start=[],
+            )
         else:
-            mod_pattern = model.run_info["start_dir"] + "/*.mod"
-            mods = glob.glob(mod_pattern)
+            top = model.run_info["start_dir"]
+            mod_dirs, mods = [], []
+            for root, _, files in os.walk(top):
+                local_mods = [
+                    os.path.join(root, name) for name in files if name.endswith(".mod")
+                ]
+                if local_mods:
+                    mod_dirs.append(root)
+                    # not += because we never merge multiple .mod dirs automatically
+                    mods = local_mods
+            if len(mod_dirs) > 1:
+                raise Exception(
+                    "Found multiple possible .mod file directores, please configure the correct subset: {}".format(
+                        mod_dirs
+                    )
+                )
+            elif len(mod_dirs) == 1:
+                append_log(
+                    model,
+                    model.logs,
+                    "Chose subdirectory {} for .mod files".format(mod_dirs[0]),
+                )
+            else:
+                append_log(model, model.logs, "No .mod file directory found")
         # compile mods if available
         if len(mods):
             # in case of reruns
