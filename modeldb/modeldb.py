@@ -145,7 +145,9 @@ class ModelDB(object):
         # up to date. If not, download it.
         models_to_download = []
         for model_id, new_ver_date in metadata.items():
-            if model_id in self._metadata:
+            if model_id in self._metadata and os.path.exists(
+                os.path.join(MODELS_ZIP_DIR, "{model_id}.zip".format(model_id=model_id))
+            ):
                 cached_ver_date = self._metadata[model_id]._ver_date
                 if cached_ver_date == new_ver_date:
                     ModelDB.logger.debug(
