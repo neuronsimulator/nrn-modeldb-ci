@@ -248,7 +248,7 @@ def diffreports2html(args=None):
         assert "0" in diff_dict  # summary info; not a real diff
         print("FAILURE: stdout diffs in {}".format(set(diff_dict.keys()) - {"0"}))
         code = 1
-    if len(gout_dict) > 1:
+    if len(gout_dict):
         print("FAILURE: gout diffs in {}".format(set(gout_dict.keys())))
         code = 1
     total_failures = sum(
