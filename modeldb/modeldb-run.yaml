@@ -1530,6 +1530,9 @@
     comment: 'Seems to be missing files: parinit.hoc, .mod file for h_ca, ...?'
     model_dir: mods
     run: null
+267599:
+    # There is also a subdirectory that seems to have older versions.
+    model_dir: "."
 267691:
     # output is two data files Vm_6_1.dat Vm_axon_6_1.dat, which should be compared...
     hoc_stack_size: 2000 # default of 1000 is apparently not enough
@@ -1597,3 +1600,13 @@
     - sed -i'.bak' -e 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
 251881:
     model_dir: mechanisms
+2014814:
+    # Note there are many other models and HOC versions under this accession ID
+    model_dir: Models/1-Neuromuscular/Python
+    python: true
+    run:
+    - "import matplotlib"
+    - "matplotlib.use('agg')" # headless
+    - "with open('Models/1-Neuromuscular/Python/run.py') as ifile:"
+    - "  exec(ifile.read())"
+    - "quit()"
