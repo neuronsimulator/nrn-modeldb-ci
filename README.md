@@ -10,6 +10,20 @@ pip install -e .
 
 NOTE: You have to install NEURON by yourself (wheel, CMake install).
 
+### Working with a local build of NEURON
+When debugging unexpected failures in the ModelDB CI with a new NEURON change,
+it can be useful to run from the build directory of a local CMake build of NEURON.
+
+To achieve this, create a virtual environment with an editable installation of nrn-modeldb-ci, as above.
+Then, set the following environment variables to point at your CMake build directory for NEURON:
+```bash
+. my_virtual_environment/bin/activate
+export NRNHOME=/path/to/your/nrn/build_dir
+export NEURONHOME=${NRNHOME}/share/nrn
+export PATH=${NRNHOME}/bin:${PATH}
+export PYTHONPATH=${NRNHOME}/lib/python:${PYTHONPATH}
+```
+
 ## Usage
 
 The following commands are now available:
