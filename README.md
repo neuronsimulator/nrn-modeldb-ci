@@ -257,6 +257,51 @@ start_dir: /home/savulesc/Workspace/nrn-modeldb-ci/test3682/synmap
 (venv) savulesc@bbd-cjngk03:~/Workspace/nrn-modeldb-ci$ 
 ```
 
+## New models, model curation and future work
+If an explicit list of model IDs is not passed then `nrn-modeldb-ci` runs all available models from the ModelDB website that are tagged as using the NEURON simulator: https://modeldb.science/modellist/1882.
+
+This implies that new models being added can cause runs of `nrn-modeldb-ci`, as the workflow for adding new models to the database does not currently include a check that `nrn-modeldb-ci` succeeds and gives the same results with the latest release of NEURON and the latest development (`neuron-nightly`).
+
+It is best to pay attention to the automatic notifications from the scheduled nightly run of `nrn-modeldb-ci`, as this maximimises the chance that a broken new model can be fixed while it is still a recent addition in some meaningful sense.
+
+### Sources of truth
+The https://modeldb.science/ website is the authoritative source of models.
+Most models are also present on GitHub under the ModelDBRepository organisation, but new models are not always added there promptly, and there have historically been some differences and inconsistencies [#71](https://github.com/neuronsimulator/nrn-modeldb-ci/issues/71).
+Fixes and updates to the models are made via GitHub pull request, but the first step should be to verify that the GitHub repository is in sync with the website version.
+By default, `getmodels` will fetch from the website.
+This can be steered from `modeldb-run.yaml` using a special `github:` key; the most useful value for this is something like `"pull/42"`, which checks out the feature branch associated with pull request #42 to ModelDBRepository/{model_id} on GitHub (`"default"` fetches the default branch from ModelDBRepository/{model_id}, while `"/myname"` fetches the default branch from `myname/{model_id}` -- the latter option is useful for models that have not yet been synced to GitHub under the ModelDBRepository organisation).
+
+### Model configuration
+Sufficiently simple models that follow the (implicit?) `mosinit.hoc` convention should work without configuration.
+
+Regarding custom mechanisms (MOD files), the logic is as follows:
+- If the model contains no `.mod` files, it will simply be executed with `nrniv`
+- If the model contains exactly one directory of `.mod` files, they will be compiled and it will be executed with the resulting `special` executable
+- If the model contains more than one directory of `.mod` files, explicit selection of one of them via the `model_dir` key in `modeldb-run.yaml` is required.
+
+The model will be executed using the most shallowly nested `mosinit.hoc` file found within the model directory.
+If no `mosinit.hoc` is found, a trivial `quit.hoc` (containing `quit()`) is used instead; this is also used if the `run` key in `modeldb-run.yaml` is explicitly set to `null`.
+The commands under the `script` key in `modeldb-run.yaml` are executed before this search, so they can be used to modify or create `mosinit.hoc` and, therefore, modify how the model is executed.
+These commands are sometimes also used to apply CI-specific fixes to the models, for example ensuring that consistent random number seeds are used.
+
+Some entries in ModelDB contain multiple models, *i.e.* different (potentially incompatible) sets of MOD files and different launch scripts.
+There is currently no meaningful way of handling this in the general case; just choose one to try and execute.
+Sometimes it's possible to use the `run` key to execute multiple scripts sequentially from one HOC script, but this is fragile and does not always work.
+
+### Model output curation
+Some models print data to the standard output and error streams that should not be included in the comparison.
+Examples include models that print the current date or time, or models that print noisy values such as execution times.
+The `curate_patterns` key can be used to specify a list of regular expressions that are applied to the output before it
+is diffed.
+
+### Skipped models
+Due to limited person-power and historical factors, not all available models are compiled + executed.
+There are two types of model skipping:
+- `run: null`: MOD files are compiled, but `special` is just called with a trivial `quit.hoc`.
+- `skip: true`: MOD files are not compiled.
+
+In principle this should never be needed, and all instances of `run: null` and `skip: true` should be fixed.
+
 ## Funding
 
 
