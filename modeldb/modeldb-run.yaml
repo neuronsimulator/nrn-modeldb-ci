@@ -592,6 +592,12 @@
 260971:
     comment: tricky to set-up due to mosinit.hoc autodiscovery
     skip: true
+82894:
+    model_dir: mod
+    run:
+    - exact(1)
+    - run()
+    - verify_graph_()
 83344:
     model_dir: mod
 84655:

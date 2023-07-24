@@ -20,8 +20,9 @@ def download_model(arg_tuple):
         # Check that the timestamp matches our expectations.
         assert model_json["ver_date"] == expected_ver_date
         # Assemble a Model object from the JSON metadata just fetched
+        # and store model_id in the id field for easy retrieval of correct zip file
         model = Model(
-            model_json["id"],
+            model_id,
             model_json["name"],
             model_json["created"],
             model_json["ver_date"],
@@ -68,8 +69,8 @@ def download_model(arg_tuple):
 
         # Construct the path we want to save the .zip at locally.
         model_zip_uri = os.path.join(
-            MODELS_ZIP_DIR, "{model_id}.zip".format(model_id=model.id)
-        )
+            MODELS_ZIP_DIR, "{model_id}.zip".format(model_id=model_id)
+        )  # note model_id may not be same as model.id
 
         # Download the model data from `url`. Retry a few times on failure.
         num_attempts = 3
@@ -119,6 +120,7 @@ class ModelDB(object):
         if not os.path.isdir(MODELS_ZIP_DIR):
             ModelDB.logger.info("Creating cache directory: {}".format(MODELS_ZIP_DIR))
             os.mkdir(MODELS_ZIP_DIR)
+
         # Fetch the list of NEURON model IDs, and a list of timestamps for
         # those models. We do this even if `model_list` is not None to build
         # the model ID -> timestamp mapping.
@@ -126,7 +128,46 @@ class ModelDB(object):
             return requests.get(MDB_NEURON_MODELS_URL.format(model_field=field)).json()
 
         all_model_ids = query("id")
-        all_model_timestamps = query("ver_date")
+
+        # The above are model entries (conceptual models) that have NEURON
+        # implementations. But a few of those id are not associated with downloading
+        # the NEURON zip file by default. So examine those entry id that
+        # have multiple "modeling_application" and if there is an
+        # "alternative_version" with "object_name" containing "NEURON",
+        # add those id to the all_model_ids list and remove the id that
+        # are not associated with NEURON zip file download
+        # For example, replace 45539 traub ifc fortran with
+        # 113435 traub NEURON and 116860 traub NEURON 7
+        # and a bunch of Allen models with Standalone NEURON versions.
+        # Also prepare a parallel list of the version dates.
+        def adjust_for_nrnzip(nrnids):
+            # There may be multiple additions that replace one removal
+            new_nrnids = []
+            new_verdates = []  # keep parallel with new_nrnids
+
+            # next three are parallel to nrnids
+            alts = query("alternative_version")
+            apps = query("modeling_application")
+            verdates = query("ver_date")
+
+            for i, id in enumerate(nrnids):
+                changed = False
+                if len(apps[i]["value"]) > 1:
+                    if alts[i]:
+                        for sim in alts[i]["value"]:
+                            if "NEURON" in sim["object_name"]:
+                                nrnid = sim["object_id"]
+                                if nrnid != nrnids[i]:
+                                    new_nrnids.append(nrnid)
+                                    new_verdates.append(verdates[i])
+                                    changed = True
+                if not changed:
+                    new_nrnids.append(id)
+                    new_verdates.append(verdates[i])
+            return new_nrnids, new_verdates
+
+        all_model_ids, all_model_timestamps = adjust_for_nrnzip(all_model_ids)
+
         metadata = {
             model_id: timestamp
             for model_id, timestamp in zip(all_model_ids, all_model_timestamps)
