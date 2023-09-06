@@ -105,7 +105,13 @@ All entries are optional:
 
 (*) `verify_graph_()` saves all lines of all graphs to the `gout` file in the model working directory.
 
-### TODO: Model Run Activity Diagram
+### Model Run Activity Diagram
+
+When launching `runmodels` the following happens: 
+
+![runmodels.png](runmodels.png)
+
+See model configuration section for details on how to configure the model run.
 
 ### Report
 
@@ -301,6 +307,15 @@ There are two types of model skipping:
 - `skip: true`: MOD files are not compiled.
 
 In principle this should never be needed, and all instances of `run: null` and `skip: true` should be fixed.
+
+
+## Creating a new PyPI release
+
+In order to create a new release and publish it to PyPi, a new GitHub release together with a new tag on master must be published.
+Please refer to the official documentation: https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository 
+
+[python-publish.yaml GitHub workflow](.github/workflows/nrn-modeldb-ci.yaml) is used to automate the process of uploading a Python package to the Python Package Index (PyPI). The workflow is triggered by the release event (with the published type). Using the ``build`` package, it creates a source distribution and a wheel distribution of the package. The final step is to publish the package to PyPI using the ``pypa/gh-action-pypi-publish`` action. 
+
 
 ## Funding
 
