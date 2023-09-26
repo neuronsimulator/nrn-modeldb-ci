@@ -63,6 +63,15 @@ jobs:
       with:
         repository: ${{ inputs.repo || github.repository }}
         
+    - name: parse versions from PR
+        parse_neuron_v1=$(gh pr view $PR_URL --json body -q '.body | capture("(NEURON_V1=)(?<models>\\d+( \\d+)*)")')
+        if [ ! -z "$parse_neuron_v1" ]; then
+          echo "NEURON_V1=$(echo $parse_neuron_v1)" >> $GITHUB_ENV
+        fi
+        parse_neuron_v2=$(gh pr view $PR_URL --json body -q '.body | capture("(NEURON_V2=)(?<models>\\d+( \\d+)*)")')
+        if [ ! -z "$parse_neuron_v2" ]; then
+          echo "NEURON_V2=$(echo $parse_neuron_v2)" >> $GITHUB_ENV
+        fi
     - name: check for Azure drop NEURON_V1 -> ${{ env.NEURON_V1 }}
       if: startsWith(env.NEURON_V1, 'https://dev.azure.com/neuronsimulator/')
       run: |
