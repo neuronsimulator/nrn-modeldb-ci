@@ -1584,9 +1584,11 @@
     curate_patterns:
     - pattern: '^(setup|run|finish)time\s+=\s+([0-9.]+)$'
       repl: '\1time = %masked%'
+    script:
+    - sed -i '/wopen/d' Batch.hoc
+    - cp Batch.hoc mosinit.hoc
     run:
     - run()
-    - verify_graph_()
     model_dir: mod_files
 143719:
     script:
