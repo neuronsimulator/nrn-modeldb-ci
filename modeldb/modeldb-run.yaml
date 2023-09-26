@@ -1586,6 +1586,7 @@
       repl: '\1time = %masked%'
     script:
     - sed -i '/wopen/d' Batch.hoc
+    - if $( nrniv --version | grep "VERSION 8" -q) ;then sed -i '/runit/a  h.nrnunit_use_legacy(1)' Batch.hoc; fi
     - cp Batch.hoc mosinit.hoc
     run:
     - run()
