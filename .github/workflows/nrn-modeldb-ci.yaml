@@ -65,6 +65,7 @@ jobs:
         
     - name: parse versions from PR
       run: |
+        set -x
         parse_neuron_v1=$(gh pr view $PR_URL --json body -q '.body | capture("(?<nrnV1>NEURON_V1=[^\r\n]*)")')
         if [ ! -z "$parse_neuron_v1" ]; then
           echo "$(echo $parse_neuron_v1 | jq -r .nrnV1)" >> $GITHUB_ENV
@@ -167,6 +168,7 @@ jobs:
 
     - name: Run Models with NEURON V1 -> ${{ env.NEURON_V1 }}
       run: |
+        set -x
         # Install NEURON V1
         if [[ -d "${DROP_DIR_V1}" ]]; then
           python -m pip install --user --find-links ${DROP_DIR_V1} neuron-nightly
