@@ -73,6 +73,11 @@ jobs:
         if [ ! -z "$parse_neuron_v2" ]; then
           echo "$(echo $parse_neuron_v2 | jq -r .nrnV2)" >> $GITHUB_ENV
         fi
+      if: github.event_name == 'pull_request' && inputs.repo == ''
+      env:
+        PR_URL: ${{ github.event.pull_request.html_url }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: check for Azure drop NEURON_V1 -> ${{ env.NEURON_V1 }}
       if: startsWith(env.NEURON_V1, 'https://dev.azure.com/neuronsimulator/')
       run: |
