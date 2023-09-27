@@ -64,6 +64,7 @@ jobs:
         repository: ${{ inputs.repo || github.repository }}
         
     - name: parse versions from PR
+      run: |
         parse_neuron_v1=$(gh pr view $PR_URL --json body -q '.body | capture("(?<nrnV1>NEURON_V1=[\r\n]*)")')
         if [ ! -z "$parse_neuron_v1" ]; then
           echo "$(echo $parse_neuron_v1 | jq -r .nrnV1)" >> $GITHUB_ENV
