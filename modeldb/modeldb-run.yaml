@@ -1703,3 +1703,5 @@
         repl: ''
       - pattern: '\s*\^\s*'
         repl: ''
+267694:
+    model_dir: mouse_model/mod_files
