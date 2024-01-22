@@ -724,6 +724,15 @@
     script:
     # 424242: this is just avoiding a timing-related number being printed
     - sed -i'.bak' -e 's/batch_flag=0/batch_flag=1/g;s/tstop = 1e3/tstop = 20/g;s#return tti/1e3#return 424242#g;s#print tti/.*#print "%some_time%"#g' batch_.hoc
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
 106551:
     run:
     - use_mcell_ran4(1)
@@ -735,6 +744,15 @@
     - tstop=10
     - runeg()
     - verify_graph_()
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
 108458:
     model_dir: mod
     run:
@@ -890,6 +908,15 @@
     - verify_graph_()
     script:
     - sed -i'.bak' -e 's/^showdemo=1/showdemo=0/g' mosinit.hoc
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
 116956:
     run:
     - run()
@@ -1044,6 +1071,15 @@
     run:
     - run()
     - verify_graph_()
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
 138321:
     run:
     - run()
@@ -1053,6 +1089,14 @@
     curate_patterns:
       - pattern: 't=100\.00;(\d+)\([0-9.\-e]+\)'
         repl: 't=100.00;\1(%some_kind_of_clock%)'
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
     run:
     - mytstop=0.1e3
     - tstop=mytstop
@@ -1108,6 +1152,14 @@
     curate_patterns:
     - pattern: 't=([0-9\.]+);(\d+)\([0-9.\-e]+\)'
       repl: 't=\1;\2(%some_kind_of_clock%)'
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
     run:
     - run()
     - verify_graph_()
@@ -1611,3 +1663,43 @@
     - "with open('Models/1-Neuromuscular/Python/run.py') as ifile:"
     - "  exec(ifile.read())"
     - "quit()"
+116862:
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
+12631:
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
+136310:
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.oc near line \d+'
+        repl: ''
+      - pattern: ' R = 105.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
+145672:
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
