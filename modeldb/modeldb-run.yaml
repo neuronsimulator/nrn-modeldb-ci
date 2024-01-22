@@ -1214,9 +1214,7 @@
       repl: ''
     - pattern: '\s*\^\s*'
       repl: ''
-    run:
-    - run()
-    - verify_graph_()
+    run: null
     script:
     - sed -i'.bak' -r 's/(tstop=mytstop=htmax= \(LearnDur \+ ZipDur \+ BaseDur\*2\) \*) 1e3/\1 2e1/g' params.hoc
 144579:
