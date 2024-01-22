@@ -14,6 +14,15 @@
     run:
     - run()
     - verify_graph_()
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
 2798:
     run:
     - run_c()
@@ -31,6 +40,15 @@
     run:
     - runb()
     - verify_graph_()
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
 3264:
     run:
     - use_mcell_ran4(1)
@@ -202,10 +220,28 @@
     run:
     - runc()
     - verify_graph_()
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
 7659:
     run:
     - runp()
     - verify_graph_()
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
 7907:
     comment: ".mod files do not compile"
     # Based on readme, other choices are available
@@ -416,6 +452,15 @@
     run:
     - run_short()
     - verify_graph_()
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
 53435:
     comment: // disregard. mod files in subdirectory
     skip: true
@@ -546,6 +591,15 @@
     - // load_file("cells/d151.hoc")
     - // load_file("hoc/src/file_util.hoc")
     - // load_file("hoc/src/main.hoc")
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
 84612:
     model_dir: "."
     run:
@@ -1186,6 +1240,14 @@
     curate_patterns:
     - pattern: 't=([0-9\.]+);(\d+)\([0-9.\-e]+\)'
       repl: 't=\1;\2(%some_kind_of_clock%)'
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
     run:
     # main.hoc already calls run()
     - verify_graph_()
@@ -1225,6 +1287,14 @@
     curate_patterns:
       - pattern: 't=100\.00;122\([0-9]+\.[0-9]+\)'
         repl: 't=100.00;122(%some_kind_of_clock%)'
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
     run:
     - tstop=100
     - init()
@@ -1358,6 +1428,15 @@
 232097:
     script:
     - mkdir connection input
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' R\s*=\s*500.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
 232876:
     # Arbitrarily choose this over influence_ih_iT/ and high_conductance_state/
     model_dir: "current_clamp"
@@ -1703,3 +1782,73 @@
         repl: ''
 267694:
     model_dir: mouse_model/mod_files
+29942:
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
+181967:
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
+35358:
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
+37819:
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
+7399:
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
+7400:
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
+9889:
+    curate_patterns:
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
