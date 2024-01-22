@@ -1705,3 +1705,5 @@
         repl: ''
 267694:
     model_dir: mouse_model/mod_files
+267768:
+  model_dir: "Biophysical axon model (Fig 6)"
