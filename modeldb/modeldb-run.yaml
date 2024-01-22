@@ -1782,6 +1782,8 @@
         repl: ''
 267694:
     model_dir: mouse_model/mod_files
+267768:
+  model_dir: "Biophysical axon model (Fig 6)"
 29942:
     curate_patterns:
       - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
