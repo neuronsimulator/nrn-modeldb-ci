@@ -620,6 +620,9 @@
     script:
     - printf 'VERBATIM\nextern void state_discontinuity(int i, double* pd, double d);\nENDVERBATIM\n' >> simulationcode/glutamate.mod
     - ln -sf driver.hoc simulationcode/driver.hoc
+    curate_patterns:
+      - pattern: '\s*Vector.*'
+        repl: ''
 186977:
     model_dir: mods/network_sims_MODs
     run:
