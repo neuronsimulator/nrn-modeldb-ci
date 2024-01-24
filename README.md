@@ -270,6 +270,10 @@ This implies that new models being added can cause runs of `nrn-modeldb-ci`, as 
 
 It is best to pay attention to the automatic notifications from the scheduled nightly run of `nrn-modeldb-ci`, as this maximimises the chance that a broken new model can be fixed while it is still a recent addition in some meaningful sense.
 
+## Testing changes to model run parameters with pull requests
+By default, only certain models are tested when submitting a pull request.
+This can be overridden by adding `MODELS_TO_RUN=[MODELS]` anywhere to the description of the pull request, where `[MODELS]` is a space-separated list of model IDs (without any quotation marks).
+
 ### Sources of truth
 The https://modeldb.science/ website is the authoritative source of models.
 Most models are also present on GitHub under the ModelDBRepository organisation, but new models are not always added there promptly, and there have historically been some differences and inconsistencies [#71](https://github.com/neuronsimulator/nrn-modeldb-ci/issues/71).
