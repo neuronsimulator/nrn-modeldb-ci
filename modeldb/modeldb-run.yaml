@@ -1859,3 +1859,5 @@
         repl: ''
 2014998:
     github: 'default'
+266498:
+    model_dir: 'MultiCompartmentModels/Mod'
