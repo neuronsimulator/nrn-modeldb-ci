@@ -205,15 +205,30 @@ def build_python_runfile(model):
 
 
 def prepare_model(model):
+    if "github" in model.keys() and (model['github'].startswith("local:")
+        or model['github'].startswith("copy")):
+        _prepare_model(model, None, clone=True)
+        return
+
     # unzip model from cache
     with zipfile.ZipFile(
-            os.path.join(MODELS_ZIP_DIR, str(model.id) + ".zip"), "r"
+        os.path.join(MODELS_ZIP_DIR, str(model.id) + ".zip"), "r"
     ) as zip_ref:
+        _prepare_model(model, zip_ref, clone=False)
+
+def _prepare_model(model, zip_ref, clone=False):
+    if clone:
+        model_dir = os.path.join(
+            model.working_dir,
+            str(model.id),
+        )
+    else:
         model_dir = os.path.join(
             model.working_dir,
             str(model.id),
             os.path.dirname(zip_ref.infolist()[0].filename),
         )
+    if True:
         model_run_info_file = os.path.join(model_dir, str(model.id) + ".yaml")
         if model._inplace and os.path.isfile(model_run_info_file):
             with open(model_run_info_file) as run_info_file:
@@ -221,7 +236,10 @@ def prepare_model(model):
         else:
             if model._clean and is_dir_non_empty(model_dir):
                 shutil.rmtree(model_dir)
-            zip_ref.extractall(os.path.join(model.working_dir, str(model.id)))
+            if clone:
+                gitclone(model, model_dir)
+            else:
+                zip_ref.extractall(os.path.join(model.working_dir, str(model.id)))
 
             # set model_dir
             model.run_info["model_dir"] = model_dir
@@ -245,6 +263,15 @@ def prepare_model(model):
             # dump run_info into model_dir
             with open(model_run_info_file, "w+") as run_info_file:
                 yaml.dump(model.run_info, run_info_file, sort_keys=True)
+
+
+def gitclone(model, model_dir):
+    if model['github'].startswith('copy:'):
+        cmd = 'cp -R %s/%s %s' % (model['github'][5:], str(model.id), model_dir)
+    else:
+        cmd = 'git clone %s %s' % (model['github'][7:], model_dir)
+    print("\n", cmd)
+    a = subprocess.run(cmd, shell=True, check=True, capture_output=True)
 
 
 def run_model(model):
