@@ -53,6 +53,7 @@
     run:
     - use_mcell_ran4(1)
     - run_fig3a()
+    - NetStim[0].noiseFromRandom123(1,2,3) // Session file does not specify
     - init()
     - run()
     - verify_graph_()
@@ -536,6 +537,7 @@
     - fig7A()
     - verify_graph_()
 71312:
+    github: 'pull/1'
     run:
     - NregNsyn(4)
     - verify_graph_()
@@ -738,6 +740,7 @@
     run:
     - verify_graph_()
 97917:
+    github: "pull/5"
     curate_patterns:
     - pattern: 'SetupTime: [0-9.\-e]+'
       repl: 'SetupTime: %setup_time%'
@@ -1143,6 +1146,7 @@
     - verify_graph_()
     model_dir: OneDimension/Neuron
 138379:
+    github: "pull/3"
     curate_patterns:
       - pattern: 't=100\.00;(\d+)\([0-9.\-e]+\)'
         repl: 't=100.00;\1(%some_kind_of_clock%)'
@@ -1240,6 +1244,7 @@
       - pattern: 'Current time: .*'
         repl: 'Current time: %current_time%'
 146949:
+    github: "pull/4"
     curate_patterns:
     - pattern: 't=([0-9\.]+);(\d+)\([0-9.\-e]+\)'
       repl: 't=\1;\2(%some_kind_of_clock%)'
@@ -1287,6 +1292,7 @@
 150239:
     model_dir: nrn/mod
 150245:
+    github: "pull/4"
     curate_patterns:
       - pattern: 't=100\.00;122\([0-9]+\.[0-9]+\)'
         repl: 't=100.00;122(%some_kind_of_clock%)'
@@ -1410,6 +1416,7 @@
     skip: true
     comment: takes too long, need to see how to reduce time
 229276:
+    github: 'pull/3'
     model_dir: mechanisms
     script:
     - mkdir hoc_recordings
@@ -1861,3 +1868,7 @@
     github: 'default'
 266498:
     model_dir: 'MultiCompartmentModels/Mod'
+266578:
+    github: 'pull/2'
+33728:
+    github: 'pull/1'
