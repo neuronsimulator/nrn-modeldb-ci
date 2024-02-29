@@ -1152,6 +1152,8 @@
         repl: 't=100.00;\1(%some_kind_of_clock%)'
       - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
         repl: ''
+      - pattern: '^Matplotlib is building the font cache.*'
+        repl: ''
       - pattern: ' in .*\.hoc near line \d+'
         repl: ''
       - pattern: ' FARADAY.*'
