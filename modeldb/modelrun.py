@@ -9,6 +9,9 @@ import sys
 import time
 import traceback
 import zipfile
+from collections.abc import Sequence
+from pathlib import Path
+from typing import Union
 
 import yaml
 
@@ -18,6 +21,20 @@ from .hocscripts import *
 from .progressbar import ProgressBar
 
 ModelDB = modeldb.ModelDB()
+
+
+def find_modfile_group(dirs: Sequence[Union[str, Path]], /) -> set[Path]:
+    """
+    Find all of the mod files for a given group that will be compiled
+    """
+    modfiles: set[Path] = set()
+
+    for d in dirs:
+        if not Path(d).exists():
+            raise FileNotFoundError(f"Directory {d} does not exist")
+        modfiles.update(Path(d).glob("*.mod"))
+
+    return modfiles
 
 
 def is_dir_non_empty(directory):
@@ -147,7 +164,7 @@ def clean_model_dir(model):
     )
 
 
-def compile_mods(model, mods):
+def compile_mods(model, mods: dict):
     # Unfortunately nrnivmodl doesn't have an option to steer how much build
     # parallellism it tries to do, it just hardcodes `make -j 4`. Because we
     # parallelise over models, at a higher level, we want to remove this
@@ -157,12 +174,13 @@ def compile_mods(model, mods):
     # hardcoded value. Instead, we try to achieve the same effect using Make's
     # environment variables. --max-load 0.0 should ban >1 job being launched if
     # the system load is larger than zero.
-    run_commands(
-        model,
-        ["nrnivmodl"] + mods,
-        env={"MAKEFLAGS": " --max-load 0.0"},
-        work_dir=model.run_info["start_dir"],
-    )
+    for mod in mods.values():
+        run_commands(
+            model,
+            ["nrnivmodl"] + [str(item) for item in mod],
+            env={"MAKEFLAGS": " --max-load 0.0"},
+            work_dir=model.run_info["start_dir"],
+        )
 
 
 def build_driver_hoc(model):
@@ -292,49 +310,40 @@ def run_model(model):
         #   semicolon-separated list of directories containing .mod files.
         # - recursively search for directories containing .mod files, if there
         #   is exactly one such directory, use it
-        mods = []
+        # the dictionary with the group indices as keys (arbitary, but easier
+        # to use than a list of lists), and modfiles as values
+        mod_groups = {}
+
         if "model_dir" in model:
-            mod_dirs = model["model_dir"].split(";")
-            for mod_dir in mod_dirs:
-                mod_dir = os.path.join(model.model_dir, mod_dir)
-                if not os.path.isdir(mod_dir):
-                    raise Exception(
-                        "Explicitly specified model_dir {} does not exist".format(
-                            mod_dir
-                        )
-                    )
-                mods += glob.glob(mod_dir + "/*.mod")
+            # go over all of the `model_dir`s and group the mod files together for compilation
+            for index, model_dir in enumerate(model["model_dir"]):
+                mod_groups[index] = find_modfile_group(
+                    Path(model.model_dir) / item for item in model_dir.split(";")
+                )
+
         else:
             top = model.run_info["start_dir"]
-            mod_dirs = []
-            for root, _, files in os.walk(top):
-                local_mods = [
-                    os.path.join(root, name) for name in files if name.endswith(".mod")
-                ]
-                if local_mods:
-                    mod_dirs.append(os.path.relpath(root, top))
-                    # not += because we never merge multiple .mod dirs automatically
-                    mods = local_mods
-            if len(mod_dirs) > 1:
-                raise Exception(
-                    "Found multiple possible .mod file directores, please configure the correct subset: {}".format(
-                        mod_dirs
+            for index, (root, _, __) in enumerate(os.walk(top)):
+                groups = find_modfile_group([root])
+                if groups:
+                    mod_groups[index] = groups
+
+            if mod_groups:
+                for mod_group in mod_groups.values():
+                    append_log(
+                        model,
+                        model.logs,
+                        f"Added files {', '.join(map(str, mod_group))} for group compilation",
                     )
-                )
-            elif len(mod_dirs) == 1:
-                append_log(
-                    model,
-                    model.logs,
-                    "Chose subdirectory {} for .mod files".format(mod_dirs[0]),
-                )
             else:
                 append_log(model, model.logs, "No .mod file directory found")
+                raise FileNotFoundError("No .mod file directory found")
         # compile mods if available
-        if len(mods):
+        if mod_groups:
             # in case of reruns
             clean_model_dir(model)
             # translate them to cpp
-            compile_mods(model, mods)
+            compile_mods(model, mod_groups)
 
     except Exception:  # noqa
         append_log(model, model.logs, traceback.format_exc())
