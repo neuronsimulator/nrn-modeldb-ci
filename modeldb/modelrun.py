@@ -1,20 +1,21 @@
+import glob
+import json
 import logging
 import multiprocessing
-import subprocess
 import platform
+import shutil
+import subprocess
 import sys
-from .progressbar import ProgressBar
-from .data import Model
+import time
+import traceback
+import zipfile
+
+import yaml
+
 from . import modeldb
 from .config import *
 from .hocscripts import *
-import zipfile
-import glob
-import traceback
-import json
-import time
-import shutil
-import yaml
+from .progressbar import ProgressBar
 
 ModelDB = modeldb.ModelDB()
 
