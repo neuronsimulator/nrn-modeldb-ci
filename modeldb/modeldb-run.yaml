@@ -1597,6 +1597,12 @@
 267009:
     # arbitrary choice, unm_pub/mods also contains .mod files
     model_dir: "mye_pub/mods"
+267088:
+    # arbitrary choice, Hu-based_model/mod also contains .mod files
+    model_dir: "Hay-based_model/mod"
+2016137:
+    # arbitrary choice, Simplified_models/modfiles also contains .mod files
+    model_dir: "Detailed_models/modfiles"
 267146:
     comment: ".mod files do not compile"
     skip: true
