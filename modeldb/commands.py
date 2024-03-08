@@ -52,7 +52,11 @@ def runmodels(args=None):
     inplace = options.pop("--inplace", False)
 
     if os.path.abspath(working_dir) == ROOT_DIR:
-        print("Cannot run models directly into nrn-modeldb-ci ROOT_DIR -> {}".format(ROOT_DIR))
+        print(
+            "Cannot run models directly into nrn-modeldb-ci ROOT_DIR -> {}".format(
+                ROOT_DIR
+            )
+        )
         sys.exit(1)
 
     if clean and inplace:
@@ -61,16 +65,21 @@ def runmodels(args=None):
 
     if not (clean or inplace) and is_dir_non_empty(working_dir):
         print("ERROR: WorkingDirectory {} exists and is non empty.".format(working_dir))
-        print("\t re-run with one of these options:\n"
-              "\t\t--clean \t-> if you wish to OVERWRITE model runs (delete content from --workdir and re-build from cache)\n"
-              "\t\t--inplace \t-> if you wish to re-run the same model (content in --workdir is kept)\n")
+        print(
+            "\t re-run with one of these options:\n"
+            "\t\t--clean \t-> if you wish to OVERWRITE model runs (delete content from --workdir and re-build from cache)\n"
+            "\t\t--inplace \t-> if you wish to re-run the same model (content in --workdir is kept)\n"
+        )
         sys.exit(1)
 
-    mrm = ModelRunManager(working_dir, gout=gout, clean=clean, norun=norun, inplace=inplace)
+    mrm = ModelRunManager(
+        working_dir, gout=gout, clean=clean, norun=norun, inplace=inplace
+    )
     model_list = model_ids if model_ids else None
 
     if virtual:
         from pyvirtualdisplay import Display
+
         with Display(manage_global_env=True, visible=False) as _:
             mrm.run_models(model_list)
     else:
@@ -123,7 +132,8 @@ def diffgout(args=None):
     gout_file2 = options.pop("<goutFile2>")
 
     cmd = 'nrngui -c "strdef gout1" -c "gout1=\\"{}\\"" -c "strdef gout2" -c "gout2=\\"{}\\"" modeldb/showgout.hoc'.format(
-        gout_file1, gout_file2)
+        gout_file1, gout_file2
+    )
     commands = shlex.split(cmd)
     _ = subprocess.Popen(commands)
 
@@ -146,10 +156,17 @@ def modeldb_config(args=None):
     """
     options = docopt(modeldb_config.__doc__, args)
     item = options.pop("--item", None)
-    cfg_module = globals().get('config', None)
+    cfg_module = globals().get("config", None)
     if item is None:
-        pprint({var: getattr(cfg_module, var) for var in dir(cfg_module) if
-            not inspect.ismodule(var) and not var.startswith("__") and not var.endswith("__")})
+        pprint(
+            {
+                var: getattr(cfg_module, var)
+                for var in dir(cfg_module)
+                if not inspect.ismodule(var)
+                and not var.startswith("__")
+                and not var.endswith("__")
+            }
+        )
     else:
         print(getattr(cfg_module, item))
 
@@ -174,18 +191,24 @@ def report2html(args=None):
 
     json_report = options.pop("<json_report>")
 
-    file_loader = FileSystemLoader(os.path.join(Path(__file__).parent.resolve(), 'templates'))
+    file_loader = FileSystemLoader(
+        os.path.join(Path(__file__).parent.resolve(), "templates")
+    )
     env = Environment(loader=file_loader)
-    template = env.get_template('report.html')
+    template = env.get_template("report.html")
 
-    report_filename = os.path.join(os.path.splitext(os.path.basename(json_report))[0] + '.html')
-    print('Writing {} ...'.format(report_filename))
-    with open(report_filename, 'w') as fh, open(json_report, 'r+') as jr:
-        fh.write(template.render(
-            title="{} : nr-modeldb-ci HTML report".format(json_report),
-            json_report=json.load(jr),
-        ))
-    print('Done.')
+    report_filename = os.path.join(
+        os.path.splitext(os.path.basename(json_report))[0] + ".html"
+    )
+    print("Writing {} ...".format(report_filename))
+    with open(report_filename, "w") as fh, open(json_report, "r+") as jr:
+        fh.write(
+            template.render(
+                title="{} : nr-modeldb-ci HTML report".format(json_report),
+                json_report=json.load(jr),
+            )
+        )
+    print("Done.")
 
 
 def diffreports2html(args=None):
@@ -211,37 +234,50 @@ def diffreports2html(args=None):
     json_report1 = options.pop("<json_report1>")
     json_report2 = options.pop("<json_report2>")
 
-    file_loader = FileSystemLoader(os.path.join(Path(__file__).parent.resolve(), 'templates'))
-    env = Environment(loader=file_loader)
-    template = env.get_template('diffreport.html')
-    runtime_template = env.get_template('runtimes.html')
-
-
-    report_title = '{}-vs-{}'.format( os.path.splitext(os.path.basename(json_report1))[0],
-                                      os.path.splitext(os.path.basename(json_report2))[0] )
-    report_filename = os.path.join(Path(json_report1).resolve().parent, report_title + '.html')
-    runtime_report_title = 'Runtimes ' + report_title
-    runtime_report_filename = os.path.join(Path(json_report1).resolve().parent, "runtimes-" + report_title + '.html')
-    diff_dict, gout_dict, runtime_dict, stats_dict, v1, v2 = diff_reports(json_report1, json_report2)
-
-    print('Writing {} ...'.format(report_filename))
-    with open(report_filename, 'w') as fh:
-        fh.write(template.render(
-            title="{}".format(report_title),
-            diff_dict=diff_dict,
-            gout_dict=gout_dict),
-        )
-    print('Done.')
-    print('Writing {} ...'.format(runtime_report_filename))
-    with open(runtime_report_filename, 'w') as fh:
-        fh.write(runtime_template.render(
-            title="{}".format(runtime_report_title),
-            runtime_dict=runtime_dict,
-            stats={"stats":diff_dict['0']},
-            v1=v1,
-            v2=v2),
+    file_loader = FileSystemLoader(
+        os.path.join(Path(__file__).parent.resolve(), "templates")
     )
-    print('Done.')
+    env = Environment(loader=file_loader)
+    template = env.get_template("diffreport.html")
+    runtime_template = env.get_template("runtimes.html")
+
+    report_title = "{}-vs-{}".format(
+        os.path.splitext(os.path.basename(json_report1))[0],
+        os.path.splitext(os.path.basename(json_report2))[0],
+    )
+    report_filename = os.path.join(
+        Path(json_report1).resolve().parent, report_title + ".html"
+    )
+    runtime_report_title = "Runtimes " + report_title
+    runtime_report_filename = os.path.join(
+        Path(json_report1).resolve().parent, "runtimes-" + report_title + ".html"
+    )
+    diff_dict, gout_dict, runtime_dict, stats_dict, v1, v2 = diff_reports(
+        json_report1, json_report2
+    )
+
+    print("Writing {} ...".format(report_filename))
+    with open(report_filename, "w") as fh:
+        fh.write(
+            template.render(
+                title="{}".format(report_title),
+                diff_dict=diff_dict,
+                gout_dict=gout_dict,
+            ),
+        )
+    print("Done.")
+    print("Writing {} ...".format(runtime_report_filename))
+    with open(runtime_report_filename, "w") as fh:
+        fh.write(
+            runtime_template.render(
+                title="{}".format(runtime_report_title),
+                runtime_dict=runtime_dict,
+                stats={"stats": diff_dict["0"]},
+                v1=v1,
+                v2=v2,
+            ),
+        )
+    print("Done.")
     # Return a useful status code
     code = 0
     if len(diff_dict) > 1:
