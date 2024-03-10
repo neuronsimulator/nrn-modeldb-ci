@@ -23,16 +23,16 @@ from .progressbar import ProgressBar
 ModelDB = modeldb.ModelDB()
 
 
-def find_modfile_group(dirs: Sequence[Union[str, Path]], /) -> set[Path]:
+def find_modfile_group(dirs: Sequence[Union[str, Path]], /) -> list[Path]:
     """
     Find all of the mod files for a given group that will be compiled
     """
-    modfiles: set[Path] = set()
+    modfiles: list[Path] = []
 
     for d in dirs:
         if not Path(d).exists():
             raise FileNotFoundError(f"Directory {d} does not exist")
-        modfiles.update(Path(d).glob("*.mod"))
+        modfiles.extend(Path(d).glob("*.mod"))
 
     return modfiles
 
@@ -156,7 +156,9 @@ def run_neuron_cmds(model, cmds):
 
 
 def clean_model_dir(model):
-    # delete x86_64 folder
+    """
+    Delete the x86_64 folder
+    """
     run_commands(
         model,
         ["/bin/sh", "-c", "rm -rf ./{}/".format(platform.machine())],
@@ -164,7 +166,10 @@ def clean_model_dir(model):
     )
 
 
-def compile_mods(model, mods: dict):
+def compile_mods(model, mods: list[list[Path]]):
+    """
+    Compile all mod files of a given model
+    """
     # Unfortunately nrnivmodl doesn't have an option to steer how much build
     # parallellism it tries to do, it just hardcodes `make -j 4`. Because we
     # parallelise over models, at a higher level, we want to remove this
@@ -174,7 +179,7 @@ def compile_mods(model, mods: dict):
     # hardcoded value. Instead, we try to achieve the same effect using Make's
     # environment variables. --max-load 0.0 should ban >1 job being launched if
     # the system load is larger than zero.
-    for mod in mods.values():
+    for mod in mods:
         run_commands(
             model,
             ["nrnivmodl"] + [str(item) for item in mod],
@@ -310,15 +315,16 @@ def run_model(model):
         #   semicolon-separated list of directories containing .mod files.
         # - recursively search for directories containing .mod files, if there
         #   is exactly one such directory, use it
-        # the dictionary with the group indices as keys (arbitary, but easier
-        # to use than a list of lists), and modfiles as values
-        mod_groups = {}
+        # the list of lists with the groups as values
+        mod_groups = []
 
         if "model_dir" in model:
             # go over all of the `model_dir`s and group the mod files together for compilation
             for index, model_dir in enumerate(model["model_dir"]):
-                mod_groups[index] = find_modfile_group(
-                    Path(model.model_dir) / item for item in model_dir.split(";")
+                mod_groups.append(
+                    find_modfile_group(
+                        Path(model.model_dir) / item for item in model_dir.split(";")
+                    )
                 )
 
         else:
@@ -326,10 +332,10 @@ def run_model(model):
             for index, (root, _, __) in enumerate(os.walk(top)):
                 groups = find_modfile_group([root])
                 if groups:
-                    mod_groups[index] = groups
+                    mod_groups.append(groups)
 
             if mod_groups:
-                for mod_group in mod_groups.values():
+                for mod_group in mod_groups:
                     append_log(
                         model,
                         model.logs,
