@@ -1,13 +1,15 @@
-from .config import *
-from .data import Model
 import logging
 import multiprocessing
 import os
-from pprint import pformat
-from .progressbar import ProgressBar
-import requests
 import time
+from pprint import pformat
+
+import requests
 import yaml
+
+from .config import *
+from .data import Model
+from .progressbar import ProgressBar
 
 
 def download_model(arg_tuple):
