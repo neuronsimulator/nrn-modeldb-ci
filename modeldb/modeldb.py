@@ -119,6 +119,7 @@ class ModelDB(object):
         if not os.path.isdir(MODELS_ZIP_DIR):
             ModelDB.logger.info("Creating cache directory: {}".format(MODELS_ZIP_DIR))
             os.mkdir(MODELS_ZIP_DIR)
+
         # Fetch the list of NEURON model IDs, and a list of timestamps for
         # those models. We do this even if `model_list` is not None to build
         # the model ID -> timestamp mapping.
