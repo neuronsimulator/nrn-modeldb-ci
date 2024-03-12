@@ -83,7 +83,9 @@ class ModelRun(dict):
     run_py = property(lambda self: self._run_py)
 
     nrn_run_error = property(lambda self: self._nrn_run_error)
-    model_dir = property(lambda self: self.run_info["model_dir"] if "model_dir" in self.run_info else "")
+    model_dir = property(
+        lambda self: self.run_info["model_dir"] if "model_dir" in self.run_info else ""
+    )
     working_dir = property(lambda self: self._working_dir)
     run_time = property(lambda self: self._run_time)
     run_times = property(lambda self: self._run_times)
@@ -92,26 +94,30 @@ class ModelRun(dict):
 
 
 def curate_log_string(model, logstr):
-    return logstr.replace(model.model_dir, '%model_dir%') if len(model.model_dir) else logstr
+    return (
+        logstr.replace(model.model_dir, "%model_dir%")
+        if len(model.model_dir)
+        else logstr
+    )
 
 
 def append_log(model, model_sink, text):
-    model_sink.extend(curate_log_string(model, text).split('\n'))
+    model_sink.extend(curate_log_string(model, text).split("\n"))
 
 
 def run_commands(model, cmds, env={}, work_dir=None):
     full_env = os.environ
     full_env.update(env)
     out, _ = subprocess.Popen(
-            cmds,
-            env=full_env,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            universal_newlines=True,
-            cwd=model.model_dir if work_dir is None else work_dir,
-        ).communicate()
+        cmds,
+        env=full_env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        universal_newlines=True,
+        cwd=model.model_dir if work_dir is None else work_dir,
+    ).communicate()
 
-    model.logs.extend(curate_log_string(model, out).split('\n'))
+    model.logs.extend(curate_log_string(model, out).split("\n"))
 
 
 def run_neuron_cmds(model, cmds):
@@ -133,7 +139,11 @@ def run_neuron_cmds(model, cmds):
 
 def clean_model_dir(model):
     # delete x86_64 folder
-    run_commands(model, ["/bin/sh", "-c", "rm -rf ./{}/".format(platform.machine())], work_dir=model.run_info["start_dir"])
+    run_commands(
+        model,
+        ["/bin/sh", "-c", "rm -rf ./{}/".format(platform.machine())],
+        work_dir=model.run_info["start_dir"],
+    )
 
 
 def compile_mods(model, mods):
@@ -179,7 +189,9 @@ def select_mosinit(model):
     # prefer less-nested directories, then sort alphabetically
     mosfiles.sort(key=lambda x: (x.count(os.sep), x))
     if len(mosfiles):
-        model.run_info["start_dir"] = os.path.dirname(os.path.join(model.model_dir, mosfiles[0]))
+        model.run_info["start_dir"] = os.path.dirname(
+            os.path.join(model.model_dir, mosfiles[0])
+        )
         model.run_info["init"] = mosfiles[0]
     else:
         build_quit_hoc(model)
@@ -207,7 +219,7 @@ def build_python_runfile(model):
 def prepare_model(model):
     # unzip model from cache
     with zipfile.ZipFile(
-            os.path.join(MODELS_ZIP_DIR, str(model.id) + ".zip"), "r"
+        os.path.join(MODELS_ZIP_DIR, str(model.id) + ".zip"), "r"
     ) as zip_ref:
         model_dir = os.path.join(
             model.working_dir,
@@ -251,10 +263,12 @@ def run_model(model):
     start_time = time.perf_counter()
     # Some models are skipped on purpose
     if "skip" in model:
-        append_log(model, model.logs,
+        append_log(
+            model,
+            model.logs,
             "Model is skipped according to modeldb-run.yaml:\n\t{}\n".format(
                 model["comment"]
-            )
+            ),
         )
         return model
     mods = None
@@ -264,11 +278,13 @@ def run_model(model):
         prepare_model(model)
 
         if model["run"] is None:
-            append_log(model, model.logs,
-                       "Model in do not run mode according to modeldb-run.yaml:\n\t{}\n".format(
-                           model["comment"]
-                       )
-           )
+            append_log(
+                model,
+                model.logs,
+                "Model in do not run mode according to modeldb-run.yaml:\n\t{}\n".format(
+                    model["comment"]
+                ),
+            )
 
         # Get .mod files. There are two options:
         # - the `model_dir` key in `modeldb-run.yaml` can be a
@@ -281,7 +297,11 @@ def run_model(model):
             for mod_dir in mod_dirs:
                 mod_dir = os.path.join(model.model_dir, mod_dir)
                 if not os.path.isdir(mod_dir):
-                    raise Exception("Explicitly specified model_dir {} does not exist".format(mod_dir))
+                    raise Exception(
+                        "Explicitly specified model_dir {} does not exist".format(
+                            mod_dir
+                        )
+                    )
                 mods += glob.glob(mod_dir + "/*.mod")
         else:
             top = model.run_info["start_dir"]
@@ -325,23 +345,27 @@ def run_model(model):
 
     # run NEURON
     if "norun" in model:
-        append_log(model, model.logs,
-            "Model is not run due to --norun option"
-        )
+        append_log(model, model.logs, "Model is not run due to --norun option")
     else:
         try:
-            nrn_exe = "./{}/special".format(platform.machine()) if mods is not None and len(mods) else "nrniv"
+            nrn_exe = (
+                "./{}/special".format(platform.machine())
+                if mods is not None and len(mods)
+                else "nrniv"
+            )
             # '-nogui' creates segfault
-            model_run_cmds = [nrn_exe, '-nobanner']
+            model_run_cmds = [nrn_exe, "-nobanner"]
             if "hoc_stack_size" in model:
                 model_run_cmds += ["-NSTACK", str(int(model["hoc_stack_size"]))]
             if model.run_py:
-                model_run_cmds.append('-python')
+                model_run_cmds.append("-python")
             model_run_cmds += [model.run_info["init"], model.run_info["driver"]]
-            append_log(model, model.nrn_run, "RUNNING -> {}".format(" ".join(model_run_cmds)))
+            append_log(
+                model, model.nrn_run, "RUNNING -> {}".format(" ".join(model_run_cmds))
+            )
             run_neuron_cmds(model, model_run_cmds)
             if os.path.isfile(os.path.join(model.model_dir, "gout")):
-                with open(os.path.join(model.model_dir, "gout"), 'r') as gout:
+                with open(os.path.join(model.model_dir, "gout"), "r") as gout:
                     model._gout = gout.readlines()
         except Exception:  # noqa
             append_log(model, model.nrn_run, traceback.format_exc())
@@ -363,9 +387,7 @@ class ModelRunManager(object):
         self.logfile = str(master_dir) + ".log"
         self.dumpfile = str(master_dir) + ".json"
         self._setup_logging()
-        self.logger.info(
-            "Initialized -> logfile: " + self.logfile
-        )
+        self.logger.info("Initialized -> logfile: " + self.logfile)
         self.run_logs = {}
         self._gout = gout
         self._clean = clean
@@ -398,9 +420,7 @@ class ModelRunManager(object):
                 mod_errors = list(filter(lambda x: " error:" in x, logs["logs"]))
                 if len(mod_errors) > 0:
                     self.run_logs[model_id]["moderr"] = mod_errors
-                    self.logger.error(
-                        str(model_id) + "\n\t" + "\t".join(mod_errors)
-                    )
+                    self.logger.error(str(model_id) + "\n\t" + "\t".join(mod_errors))
                 if "nrn_run_err" in logs and logs["nrn_run_err"] is True:
                     self.logger.error(
                         str(model_id) + "\n\t" + "\t".join(logs["nrn_run"])
@@ -412,6 +432,7 @@ class ModelRunManager(object):
         # Run info, use key 0
         self.run_logs[0] = {}
         from neuron import __version__ as nrn_ver
+
         self.run_logs[0]["NEURON version"] = nrn_ver
         self.run_logs[0]["Stats"] = self._run_stats(self.run_logs)
 
@@ -426,30 +447,35 @@ class ModelRunManager(object):
         failed_mods = []
         failed_runs = []
         skipped_runs = []
-        
+
         for model_id in json_report.keys():
             # look for models that are marked `skip` in `modeldb-run.yaml`
             if "do_not_run" in json_report[model_id]:
                 skipped_runs.append(model_id)
 
             # moderr happens if mods present and nrnivmodl failed
-            # if no moderr we look for nrn_run_err    
+            # if no moderr we look for nrn_run_err
             if "moderr" in json_report[model_id]:
                 failed_mods.append(model_id)
             elif "nrn_run_err" in json_report[model_id]:
                 failed_runs.append(model_id)
 
-        stats["Failed models"] = {"Count": len(failed_mods),
-                                "Accession numbers": failed_mods}
+        stats["Failed models"] = {
+            "Count": len(failed_mods),
+            "Accession numbers": failed_mods,
+        }
 
-        stats["Failed runs"] = {"Count": len(failed_runs),
-                                "Accession numbers": failed_runs}
+        stats["Failed runs"] = {
+            "Count": len(failed_runs),
+            "Accession numbers": failed_runs,
+        }
 
-        stats["Skipped runs"] = {"Count": len(skipped_runs),
-                                "Accession numbers": skipped_runs}
+        stats["Skipped runs"] = {
+            "Count": len(skipped_runs),
+            "Accession numbers": skipped_runs,
+        }
 
         return stats
-
 
     def _run_models(self, model_runs):
         pool = multiprocessing.Pool()
@@ -472,15 +498,15 @@ class ModelRunManager(object):
             self.run_logs[model.id]["run_info"] = model.run_info
             self.run_logs[model.id]["run_time"] = model.run_time
             self.run_logs[model.id]["run_times"] = model.run_times
-            self.logger.debug("Done for: {} in {}".format(str(model.id), str(model.run_times)))
+            self.logger.debug(
+                "Done for: {} in {}".format(str(model.id), str(model.run_times))
+            )
 
         self._grep_for_errors()
         self._dump_run()
 
     def run_models(self, model_list=None):
-        self.logger.info(
-            "Master directory is: " + self.master_dir
-        )
+        self.logger.info("Master directory is: " + self.master_dir)
 
         if not os.path.isdir(self.master_dir):
             self.logger.info("Creating master directory...")
@@ -495,7 +521,8 @@ class ModelRunManager(object):
 
         # prepare ModelRun objects
         models_to_run = (
-            ModelRun(mdl, self.master_dir, self._clean, self._norun, self._inplace) for mdl in models_selected
+            ModelRun(mdl, self.master_dir, self._clean, self._norun, self._inplace)
+            for mdl in models_selected
         )
 
         # number of models
@@ -504,9 +531,7 @@ class ModelRunManager(object):
         )
 
         self.logger.info("Running models ...")
-        self.logger.info(
-            "\t\t-> number of models: " + str(self.nof_models)
-        )
+        self.logger.info("\t\t-> number of models: " + str(self.nof_models))
         self._run_models(models_to_run)
         self.logger.info("Done.")
 

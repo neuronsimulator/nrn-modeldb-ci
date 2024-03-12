@@ -33,6 +33,7 @@ And here another example with different options:
     >>> print p
     100% [####################]
 """
+
 from __future__ import print_function
 import sys
 import time
