@@ -320,7 +320,7 @@ def run_model(model):
 
         if "model_dir" in model:
             # go over all of the `model_dir`s and group the mod files together for compilation
-            for index, model_dir in enumerate(model["model_dir"]):
+            for model_dir in model["model_dir"]:
                 mod_groups.append(
                     find_modfile_group(
                         Path(model.model_dir) / item for item in model_dir.split(";")
@@ -329,7 +329,7 @@ def run_model(model):
 
         else:
             top = model.run_info["start_dir"]
-            for index, (root, _, __) in enumerate(os.walk(top)):
+            for root, _, __ in os.walk(top):
                 groups = find_modfile_group([root])
                 if groups:
                     mod_groups.append(groups)
