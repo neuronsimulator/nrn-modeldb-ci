@@ -1237,7 +1237,7 @@
     model_dir: channels
 146030:
     curate_patterns:
-      - pattern: 'Setup time for simulation: [0-9]+\.[0-9]+  seconds'
+      - pattern: 'Setup time for simulation:\s*[0-9]+(\.[0-9]+)?\s*seconds'
         repl: 'Setup time for simulation: %setup_time% seconds'
       - pattern: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: .*'
         repl: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: %current_date%'
