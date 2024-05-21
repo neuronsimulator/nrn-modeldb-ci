@@ -37,6 +37,7 @@ def runmodels(args=None):
         --clean                 Auto-clean model working directory before running (useful for consecutive runs and failsafe)
         --norun                 Compile and link only (nrnivmodl).
         --inplace               Skip model preparation logic, simply run NEURON.
+        --with-nmodl            Use NMODL for code generation instead of NOCMODL.
 
     Examples
         runmodels --workdir=/path/to/workdir                        # run all models
@@ -50,6 +51,7 @@ def runmodels(args=None):
     clean = options.pop("--clean", False)
     norun = options.pop("--norun", False)
     inplace = options.pop("--inplace", False)
+    with_nmodl = options.pop("--with-nmodl", False)
 
     if os.path.abspath(working_dir) == ROOT_DIR:
         print(
@@ -73,7 +75,7 @@ def runmodels(args=None):
         sys.exit(1)
 
     mrm = ModelRunManager(
-        working_dir, gout=gout, clean=clean, norun=norun, inplace=inplace
+        working_dir, gout=gout, clean=clean, norun=norun, inplace=inplace, with_nmodl=with_nmodl
     )
     model_list = model_ids if model_ids else None
 

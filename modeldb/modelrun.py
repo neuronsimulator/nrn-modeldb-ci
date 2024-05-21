@@ -15,6 +15,7 @@ import json
 import time
 import shutil
 import yaml
+from functools import partial
 
 ModelDB = modeldb.ModelDB()
 
@@ -146,7 +147,7 @@ def clean_model_dir(model):
     )
 
 
-def compile_mods(model, mods):
+def compile_mods(model, mods, with_nmodl: bool = False):
     # Unfortunately nrnivmodl doesn't have an option to steer how much build
     # parallellism it tries to do, it just hardcodes `make -j 4`. Because we
     # parallelise over models, at a higher level, we want to remove this
@@ -156,9 +157,13 @@ def compile_mods(model, mods):
     # hardcoded value. Instead, we try to achieve the same effect using Make's
     # environment variables. --max-load 0.0 should ban >1 job being launched if
     # the system load is larger than zero.
+    commands = [shutil.which("nrnivmodl")]
+    if with_nmodl:
+        commands += ["-nmodl", shutil.which("nmodl")]
+
     run_commands(
         model,
-        ["nrnivmodl"] + mods,
+        commands + mods,
         env={"MAKEFLAGS": " --max-load 0.0"},
         work_dir=model.run_info["start_dir"],
     )
@@ -259,7 +264,7 @@ def prepare_model(model):
                 yaml.dump(model.run_info, run_info_file, sort_keys=True)
 
 
-def run_model(model):
+def run_model(model, **kwargs):
     start_time = time.perf_counter()
     # Some models are skipped on purpose
     if "skip" in model:
@@ -333,7 +338,7 @@ def run_model(model):
             # in case of reruns
             clean_model_dir(model)
             # translate them to cpp
-            compile_mods(model, mods)
+            compile_mods(model, mods, **kwargs)
 
     except Exception:  # noqa
         append_log(model, model.logs, traceback.format_exc())
@@ -382,7 +387,7 @@ def run_model(model):
 
 
 class ModelRunManager(object):
-    def __init__(self, master_dir, gout=False, clean=False, norun=False, inplace=False):
+    def __init__(self, master_dir, gout=False, clean=False, norun=False, inplace=False, with_nmodl=False):
         self.master_dir = master_dir
         self.logfile = str(master_dir) + ".log"
         self.dumpfile = str(master_dir) + ".json"
@@ -393,6 +398,7 @@ class ModelRunManager(object):
         self._clean = clean
         self._norun = norun
         self._inplace = inplace
+        self._with_nmodl = with_nmodl
 
     def _setup_logging(self):
         self.logger = logging.getLogger("dev")
@@ -480,7 +486,7 @@ class ModelRunManager(object):
     def _run_models(self, model_runs):
         pool = multiprocessing.Pool()
 
-        processed_models = pool.imap_unordered(run_model, model_runs)
+        processed_models = pool.imap_unordered(partial(run_model, with_nmodl=self._with_nmodl), model_runs)
         for model in ProgressBar.iter(processed_models, self.nof_models):
             self.run_logs[model.id] = {}
             self.run_logs[model.id]["logs"] = model.logs
