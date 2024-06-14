@@ -481,7 +481,8 @@ class ModelRunManager(object):
         pool = multiprocessing.Pool()
 
         processed_models = pool.imap_unordered(run_model, model_runs)
-        for model in ProgressBar.iter(processed_models, self.nof_models):
+        for i, model in enumerate(ProgressBar.iter(processed_models, self.nof_models)):
+            self.logger.info(f"[{i} / {self.nof_models}] Running model '{model.id}'")
             self.run_logs[model.id] = {}
             self.run_logs[model.id]["logs"] = model.logs
             if self._gout:
