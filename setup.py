@@ -16,6 +16,7 @@ install_requires = [
     "matplotlib",
     "scipy",
     "2to3",
+    "numpy<2",
 ]
 
 with open("README.md", "r", encoding="utf-8") as f:
