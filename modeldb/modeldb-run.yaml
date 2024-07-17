@@ -1880,3 +1880,9 @@
     github: 'pull/2'
 33728:
     github: 'pull/1'
+2014832:
+  skip: true
+  comment: ".mod files do not compile"
+2017405:
+  skip: true
+  comment: ".mod files do not compile"
