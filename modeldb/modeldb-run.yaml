@@ -1886,3 +1886,6 @@
 2017405:
   skip: true
   comment: ".mod files do not compile"
+2016138:
+  skip: true
+  comment: ".mod files do not compile with NEURON 9.0"
