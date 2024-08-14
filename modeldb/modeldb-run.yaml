@@ -1635,6 +1635,9 @@
 267646:
     comment: ".mod files do not compile"
     skip: true
+267741:
+    comment: "Waiting for https://github.com/ModelDBRepository/267741/pull/1"
+    skip: true
 149174:
     skip: true
     comment: testing in Python + hardcoded NEURON
