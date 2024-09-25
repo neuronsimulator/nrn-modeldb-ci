@@ -1894,3 +1894,5 @@
   comment: ".mod files do not compile with NEURON 9.0"
 2016658:
   model_dir: 'MEC_model_figs5_6'
+2016662:
+  model_dir: 'code/radius = 6/20 fibers_same diameter_misaligned/dist = 0.1'
