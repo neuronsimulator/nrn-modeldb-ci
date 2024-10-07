@@ -1895,4 +1895,5 @@
 2016658:
   model_dir: 'MEC_model_figs5_6'
 2016662:
-  model_dir: 'radius = 6/20 fibers_same diameter_misaligned/dist = 0.1'
+  skip: true
+  comment: "Not on GitHub and dirs contain spaces"
