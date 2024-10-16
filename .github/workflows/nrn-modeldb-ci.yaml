@@ -134,7 +134,7 @@ jobs:
         sudo apt-get install xvfb
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1600x1200x24 -noreset -nolock -shmem &  # run in bg
         # Install python dependencies
-        python -m pip install --upgrade pip
+        python -m pip install --upgrade 'pip<=24.0'
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         #Install project in editable mode
         python -m pip install -e .

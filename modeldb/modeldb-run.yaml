@@ -1746,6 +1746,9 @@
 267646:
   comment: ".mod files do not compile"
   skip: true
+267741:
+  comment: "Waiting for https://github.com/ModelDBRepository/267741/pull/1"
+  skip: true
 149174:
   skip: true
   comment: testing in Python + hardcoded NEURON
@@ -2011,3 +2014,17 @@
   github: 'pull/2'
 33728:
   github: 'pull/1'
+2014832:
+  skip: true
+  comment: ".mod files do not compile"
+2017405:
+  skip: true
+  comment: ".mod files do not compile"
+2016138:
+  skip: true
+  comment: ".mod files do not compile with NEURON 9.0"
+2016658:
+  model_dir: 'MEC_model_figs5_6'
+2016662:
+  skip: true
+  comment: "Not on GitHub and dirs contain spaces"
