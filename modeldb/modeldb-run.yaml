@@ -1894,3 +1894,6 @@
   comment: ".mod files do not compile with NEURON 9.0"
 2016658:
   model_dir: 'MEC_model_figs5_6'
+2016662:
+  skip: true
+  comment: "Not on GitHub and dirs contain spaces"
