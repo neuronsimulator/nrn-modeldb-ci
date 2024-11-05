@@ -154,7 +154,18 @@ jobs:
       run: |
         # Install NEURON V1
         if [[ -d "${DROP_DIR_V1}" ]]; then
-          python -m pip install --user --find-links ${DROP_DIR_V1} neuron-nightly
+          # due to https://github.com/pypa/pip/issues/12110 we cannot rely on `--find-links`
+          # so we use a workaround
+          for wheel in "${DROP_DIR_V1}"/*.whl
+          do
+            if ! python -m pip install --user "${wheel}"
+            then
+              echo "Unable to install ${wheel}, trying another one"
+            else
+              echo "Successfully installed ${wheel}"
+              break
+            fi
+          done
         else
           python -m pip install $NEURON_V1
         fi
@@ -180,7 +191,18 @@ jobs:
       run: |
         # Install NEURON V2
         if [[ -d "${DROP_DIR_V2}" ]]; then
-          python -m pip install --user --find-links ${DROP_DIR_V2} neuron-nightly
+          # due to https://github.com/pypa/pip/issues/12110 we cannot rely on `--find-links`
+          # so we use a workaround
+          for wheel in "${DROP_DIR_V2}"/*.whl
+          do
+            if ! python -m pip install --user "${wheel}"
+            then
+              echo "Unable to install ${wheel}, trying another one"
+            else
+              echo "Successfully installed ${wheel}"
+              break
+            fi
+          done
         else
           python -m pip install $NEURON_V2
         fi
