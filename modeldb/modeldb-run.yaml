@@ -1397,6 +1397,7 @@
     # guessed from mosinit.hoc, there are other options
     model_dir: "01_Soma-dendritic_recordings/01_Control/140311-C1/syncytium/num10"
 189347:
+    github: 'pull/1'
     script:
     # we launch with special so don't try and dlopen mechanisms too
     - sed -i'.bak' 's#nrn_load_dll#// nrn_load_dll#g' main.hoc
