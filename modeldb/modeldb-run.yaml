@@ -287,7 +287,6 @@
     - restart("demo_ampa")
     - verify_graph_()
 18502:
-    github: 'pull/1'
     run:
     - restart("ltp_two")
     - verify_graph_()
@@ -870,7 +869,6 @@
     - run()
     - verify_graph_()
 113732:
-    github: 'pull/2'
     run:
     - use_mcell_ran4(1)
     - suprathresh()
