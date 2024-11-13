@@ -378,6 +378,7 @@
     - fig1a()
     - verify_graph_()
 32992:
+    github: 'pull/1'
     run:
     - verify_graph_()
     script:
