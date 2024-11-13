@@ -441,6 +441,7 @@
     - run()
     - verify_graph_()
 51781:
+    github: 'pull/3'
     run:
     - load_file("testnet.hoc")
     - verify_graph_()
@@ -797,6 +798,7 @@
       - pattern: '\s*\^\s*'
         repl: ''
 106551:
+    github: 'pull/2'
     run:
     - use_mcell_ran4(1)
     - tstop=10
@@ -858,6 +860,7 @@
     - runiv()
     - verify_graph_()
 112685:
+    github: 'pull/3'
     run:
     - run()
     - verify_graph_()
@@ -1038,6 +1041,7 @@
     - run()
     - verify_graph_()
 119283:
+    github: 'pull/1'
     run:
     - use_mcell_ran4(1)
     - runi()
@@ -1287,6 +1291,7 @@
     - iconv -f ISO-8859-1 -t UTF-8 init_ClmIPSCs_GC.hoc.iconv.bak > init_ClmIPSCs_GC.hoc
     - sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' init_ClmIPSCs_GC.hoc
 149739:
+    github: 'pull/3'
     run:
     - verify_graph_()
     script:
@@ -1349,6 +1354,7 @@
 168310:
     model_dir: experiment
 168314:
+    github: 'pull/1'
     script:
     # fixup for case-sensitive filesystems
     - sed -i'.bak' 's#path = "./inputs/"#path = "./Inputs/"#g' ReadExperiments.hoc
@@ -1364,6 +1370,7 @@
     comment: ".mod files do not compile"
     skip: true
 183300:
+    github: 'pull/2'
     # Arbitrarily ignoring .mod files under early_theta_version/
     model_dir: "."
 183718:
@@ -1442,6 +1449,7 @@
     # README suggests all should be included
     model_dir: "mechanisms/Event_stream;mechanisms/Golgi_CL;mechanisms/Granule_CL;mechanisms/Presynaptic_spike_generator;mechanisms/Synapses;mechanisms/gap"
 232097:
+    github: 'pull/2'
     script:
     - mkdir connection input
     curate_patterns:
@@ -1706,6 +1714,7 @@
     script:
     - sed -i'.bak' -e 's/tstop=/tstop=100 \/\//' Start.hoc
 157157:
+    github: 'pull/3'
     run:
     - run()
     - verify_graph_()
@@ -1884,7 +1893,7 @@
 266498:
     model_dir: 'MultiCompartmentModels/Mod'
 266578:
-    github: 'pull/2'
+    github: 'pull/3'
 33728:
     github: 'pull/1'
 2014832:
@@ -1905,3 +1914,21 @@
   github: 'pull/1'
 185513:
   github: 'pull/3'
+151731:
+  github: 'pull/1'
+147757:
+  github: 'pull/1'
+155602:
+  github: 'pull/3'
+257027:
+  github: 'pull/1'
+2015410:
+  github: 'pull/1'
+128559:
+  github: 'pull/1'
+127021:
+  github: 'pull/3'
+137259:
+  github: 'pull/1'
+126640:
+  github: 'pull/1'
