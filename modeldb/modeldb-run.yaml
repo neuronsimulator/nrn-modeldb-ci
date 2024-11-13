@@ -136,6 +136,7 @@
     - run()
     - verify_graph_()
 3670:
+    github: 'pull/1'
     run:
     - restart("Fig5A")
     - run()
@@ -331,6 +332,7 @@
     - runh()
     - verify_graph_()
 19746:
+    github: 'pull/1'
     run:
     - run()
     - verify_graph_()
@@ -537,7 +539,7 @@
     - fig7A()
     - verify_graph_()
 71312:
-    github: 'pull/1'
+    github: 'pull/2'
     run:
     - NregNsyn(4)
     - verify_graph_()
@@ -693,10 +695,12 @@
     - run()
     - verify_graph_()
 93398:
+    github: 'pull/1'
     run:
     - restart("shortRun")
     - verify_graph_()
 94321:
+    github: 'pull/1'
     model_dir: mechanisms
     run:
     - tstop=10
@@ -1128,6 +1132,7 @@
     # Arbitrary choice, Welday_et_al_Fig9C also exists.
     model_dir: "Welday_et_al_Fig9AB"
 136095:
+    github: 'pull/4'
     run:
     - run()
     - verify_graph_()
@@ -1369,6 +1374,7 @@
     model_dir: "integrator"
     skip: true
 184054:
+    github: 'pull/1'
     model_dir: fullMorphCaLTP8
     script:
     - sed -i'.bak' 's#tstop = 250#tstop = 25#g' fullMorphCaLTP8/doTBSStimCC.hoc
@@ -1897,3 +1903,5 @@
 2016662:
   skip: true
   comment: "Not on GitHub and dirs contain spaces"
+184732:
+  github: 'pull/2'
