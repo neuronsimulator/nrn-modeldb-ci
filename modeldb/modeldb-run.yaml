@@ -287,6 +287,7 @@
     - restart("demo_ampa")
     - verify_graph_()
 18502:
+    github: 'pull/1'
     run:
     - restart("ltp_two")
     - verify_graph_()
@@ -1158,7 +1159,7 @@
     - verify_graph_()
     model_dir: OneDimension/Neuron
 138379:
-    github: "pull/3"
+    github: "pull/4"
     curate_patterns:
       - pattern: 't=100\.00;(\d+)\([0-9.\-e]+\)'
         repl: 't=100.00;\1(%some_kind_of_clock%)'
@@ -1258,7 +1259,7 @@
       - pattern: 'Current time: .*'
         repl: 'Current time: %current_time%'
 146949:
-    github: "pull/4"
+    github: "pull/5"
     curate_patterns:
     - pattern: 't=([0-9\.]+);(\d+)\([0-9.\-e]+\)'
       repl: 't=\1;\2(%some_kind_of_clock%)'
@@ -1435,7 +1436,7 @@
     skip: true
     comment: takes too long, need to see how to reduce time
 229276:
-    github: 'pull/3'
+    github: 'pull/4'
     model_dir: mechanisms
     script:
     - mkdir hoc_recordings
