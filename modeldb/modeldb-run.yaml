@@ -1311,7 +1311,7 @@
 150239:
     model_dir: nrn/mod
 150245:
-    github: "pull/4"
+    github: "pull/5"
     curate_patterns:
       - pattern: 't=100\.00;176\([0-9]+\.[0-9]+\)'
         repl: 't=100.00;176(%some_kind_of_clock%)'
