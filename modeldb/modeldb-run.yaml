@@ -566,7 +566,9 @@
     - reg_20()
     - verify_graph_()
 82784:
+    github: 'pull/1'
     run:
+    - system("mkdir -p out")
     - load_file("runShort.hoc")
     - verify_graph_()
 82849:
