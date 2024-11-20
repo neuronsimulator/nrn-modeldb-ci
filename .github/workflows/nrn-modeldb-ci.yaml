@@ -63,6 +63,22 @@ jobs:
       with:
         repository: ${{ inputs.repo || github.repository }}
         
+    - name: parse versions from PR
+      run: |
+        set -x
+        parse_neuron_v1=$(gh pr view $PR_URL --json body -q '.body | capture("(?<nrnV1>NEURON_V1=[^\r\n]*)")')
+        if [ ! -z "$parse_neuron_v1" ]; then
+          echo "$(echo $parse_neuron_v1 | jq -r .nrnV1)" >> $GITHUB_ENV
+        fi
+        parse_neuron_v2=$(gh pr view $PR_URL --json body -q '.body | capture("(?<nrnV2>NEURON_V2=[^\r\n]*)")')
+        if [ ! -z "$parse_neuron_v2" ]; then
+          echo "$(echo $parse_neuron_v2 | jq -r .nrnV2)" >> $GITHUB_ENV
+        fi
+      if: github.event_name == 'pull_request' && inputs.repo == ''
+      env:
+        PR_URL: ${{ github.event.pull_request.html_url }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: check for Azure drop NEURON_V1 -> ${{ env.NEURON_V1 }}
       if: startsWith(env.NEURON_V1, 'https://dev.azure.com/neuronsimulator/')
       run: |
@@ -152,6 +168,7 @@ jobs:
 
     - name: Run Models with NEURON V1 -> ${{ env.NEURON_V1 }}
       run: |
+        set -x
         # Install NEURON V1
         if [[ -d "${DROP_DIR_V1}" ]]; then
           # due to https://github.com/pypa/pip/issues/12110 we cannot rely on `--find-links`
