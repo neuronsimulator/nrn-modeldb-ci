@@ -183,6 +183,7 @@ jobs:
 
     - name: Run Models with NEURON V1 -> ${{ env.NEURON_V1 }}
       run: |
+        set -x
         # Install NEURON V1
         if [[ -d "${DROP_DIR_V1}" ]]; then
           # due to https://github.com/pypa/pip/issues/12110 we cannot rely on `--find-links`
