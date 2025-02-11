@@ -95,7 +95,7 @@ jobs:
         echo "DROP_DIR_V2=`pwd`/DROP_V2" >> $GITHUB_ENV
 
     - name: check for artifact URL NEURON_V1 -> ${{ env.NEURON_V1 }}
-      if: startsWith(env.NEURON_V1, 'https://api.github.com/repos/neuronsimulator/')
+      if: startsWith(env.NEURON_V1, 'https://github.com/neuronsimulator/')
       run: |
         # Download artifact and unzip
         ARTIFACT_ID=$(echo "${NEURON_V1}" | grep --color=never -oE '[0-9]+$')
@@ -111,7 +111,7 @@ jobs:
         echo "DROP_DIR_V1=$(pwd)/DROP_V1" >> $GITHUB_ENV
 
     - name: check for artifact URL NEURON_V2 -> ${{ env.NEURON_V2 }}
-      if: startsWith(env.NEURON_V2, 'https://api.github.com/repos/neuronsimulator/')
+      if: startsWith(env.NEURON_V2, 'https://github.com/neuronsimulator/')
       run: |
         # Download artifact and unzip
         ARTIFACT_ID=$(echo "${NEURON_V2}" | grep --color=never -oE '[0-9]+$')
