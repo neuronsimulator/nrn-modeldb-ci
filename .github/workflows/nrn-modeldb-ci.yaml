@@ -48,7 +48,7 @@ on:
 
 jobs:
   nrn-modeldb-ci:
-    runs-on: [ubuntu-latest, self-hosted]
+    runs-on: self-hosted
     strategy:
       fail-fast: false
     env:
