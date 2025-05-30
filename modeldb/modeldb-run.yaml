@@ -137,7 +137,8 @@
     - run()
     - verify_graph_()
 3670:
-  run:
+    github: 'pull/1'
+    run:
     - restart("Fig5A")
     - run()
     - verify_graph_()
@@ -288,7 +289,8 @@
     - restart("demo_ampa")
     - verify_graph_()
 18502:
-  run:
+    github: 'pull/1'
+    run:
     - restart("ltp_two")
     - verify_graph_()
 18742:
@@ -333,7 +335,8 @@
     - runh()
     - verify_graph_()
 19746:
-  run:
+    github: 'pull/1'
+    run:
     - run()
     - verify_graph_()
 19747:
@@ -382,7 +385,8 @@
     - fig1a()
     - verify_graph_()
 32992:
-  run:
+    github: 'pull/1'
+    run:
     - verify_graph_()
   script:
     - echo 'use_mcell_ran4(1)' > temp
@@ -446,7 +450,8 @@
     - run()
     - verify_graph_()
 51781:
-  run:
+    github: 'pull/3'
+    run:
     - load_file("testnet.hoc")
     - verify_graph_()
   script:
@@ -546,8 +551,8 @@
     - fig7A()
     - verify_graph_()
 71312:
-  github: 'pull/1'
-  run:
+    github: 'pull/2'
+    run:
     - NregNsyn(4)
     - verify_graph_()
 74298:
@@ -570,7 +575,9 @@
     - reg_20()
     - verify_graph_()
 82784:
-  run:
+    github: 'pull/1'
+    run:
+    - system("mkdir -p out")
     - load_file("runShort.hoc")
     - verify_graph_()
 82849:
@@ -629,9 +636,9 @@
     - run()
     - verify_graph_()
 180373:
-  model_dir:
-    - simulationcode
-  run:
+    github: 'pull/1'
+    model_dir: simulationcode
+    run:
     - run()
     - verify_graph_()
   script:
@@ -714,13 +721,14 @@
     - run()
     - verify_graph_()
 93398:
-  run:
+    github: 'pull/1'
+    run:
     - restart("shortRun")
     - verify_graph_()
 94321:
-  model_dir:
-    - mechanisms
-  run:
+    github: 'pull/1'
+    model_dir: mechanisms
+    run:
     - tstop=10
     - init()
     - run()
@@ -805,7 +813,8 @@
     - run()
     - verify_graph_()
 105507:
-  run:
+    github: 'pull/4'
+    run:
     - load_file("batch_.hoc")
     - verify_graph_()
   script:
@@ -822,7 +831,8 @@
     - pattern: '\s*\^\s*'
       repl: ''
 106551:
-  run:
+    github: 'pull/2'
+    run:
     - use_mcell_ran4(1)
     - tstop=10
     - run()
@@ -885,7 +895,8 @@
     - runiv()
     - verify_graph_()
 112685:
-  run:
+    github: 'pull/3'
+    run:
     - run()
     - verify_graph_()
 113446:
@@ -895,7 +906,8 @@
     - run()
     - verify_graph_()
 113732:
-  run:
+    github: 'pull/2'
+    run:
     - use_mcell_ran4(1)
     - suprathresh()
     - tstop=50
@@ -1072,7 +1084,8 @@
     - run()
     - verify_graph_()
 119283:
-  run:
+    github: 'pull/1'
+    run:
     - use_mcell_ran4(1)
     - runi()
     - verify_graph_()
@@ -1169,7 +1182,8 @@
   model_dir:
     - "Welday_et_al_Fig9AB"
 136095:
-  run:
+    github: 'pull/4'
+    run:
     - run()
     - verify_graph_()
   curate_patterns:
@@ -1188,21 +1202,21 @@
   model_dir:
     - OneDimension/Neuron
 138379:
-  github: "pull/3"
-  curate_patterns:
-    - pattern: 't=100\.00;(\d+)\([0-9.\-e]+\)'
-      repl: 't=100.00;\1(%some_kind_of_clock%)'
-    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-      repl: ''
-    - pattern: '^Matplotlib is building the font cache.*'
-      repl: ''
-    - pattern: ' in .*\.hoc near line \d+'
-      repl: ''
-    - pattern: ' FARADAY.*'
-      repl: ''
-    - pattern: '\s*\^\s*'
-      repl: ''
-  run:
+    github: "pull/4"
+    curate_patterns:
+      - pattern: 't=100\.00;(\d+)\([0-9.\-e]+\)'
+        repl: 't=100.00;\1(%some_kind_of_clock%)'
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: '^Matplotlib is building the font cache.*'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
+    run:
     - mytstop=0.1e3
     - tstop=mytstop
     - finish_run()
@@ -1298,8 +1312,8 @@
       - pattern: 'Current time: .*'
         repl: 'Current time: %current_time%'
 146949:
-  github: "pull/4"
-  curate_patterns:
+    github: "pull/5"
+    curate_patterns:
     - pattern: 't=([0-9\.]+);(\d+)\([0-9.\-e]+\)'
       repl: 't=\1;\2(%some_kind_of_clock%)'
     - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
@@ -1337,7 +1351,8 @@
     - iconv -f ISO-8859-1 -t UTF-8 init_ClmIPSCs_GC.hoc.iconv.bak > init_ClmIPSCs_GC.hoc
     - sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' init_ClmIPSCs_GC.hoc
 149739:
-  run:
+    github: 'pull/3'
+    run:
     - verify_graph_()
   script:
     - mkdir Connection SP
@@ -1348,19 +1363,19 @@
   model_dir:
     - nrn/mod
 150245:
-  github: "pull/4"
-  curate_patterns:
-    - pattern: 't=100\.00;176\([0-9]+\.[0-9]+\)'
-      repl: 't=100.00;176(%some_kind_of_clock%)'
-    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-      repl: ''
-    - pattern: ' in .*\.hoc near line \d+'
-      repl: ''
-    - pattern: ' FARADAY.*'
-      repl: ''
-    - pattern: '\s*\^\s*'
-      repl: ''
-  run:
+    github: "pull/5"
+    curate_patterns:
+      - pattern: 't=100\.00;176\([0-9]+\.[0-9]+\)'
+        repl: 't=100.00;176(%some_kind_of_clock%)'
+      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+        repl: ''
+      - pattern: ' in .*\.hoc near line \d+'
+        repl: ''
+      - pattern: ' FARADAY.*'
+        repl: ''
+      - pattern: '\s*\^\s*'
+        repl: ''
+    run:
     - tstop=100
     - init()
     - run()
@@ -1407,7 +1422,8 @@
   model_dir:
     - experiment
 168314:
-  script:
+    github: 'pull/1'
+    script:
     # fixup for case-sensitive filesystems
     - sed -i'.bak' 's#path = "./inputs/"#path = "./Inputs/"#g' ReadExperiments.hoc
     - sed -i'.bak' 's#load_file("protocol.hoc")#load_file("Protocol.hoc")#g' Hipp.hoc
@@ -1423,6 +1439,7 @@
   comment: ".mod files do not compile"
   skip: true
 183300:
+    github: 'pull/2'
     # Arbitrarily ignoring .mod files under early_theta_version/
   model_dir:
     - "."
@@ -1433,9 +1450,9 @@
     - "integrator"
   skip: true
 184054:
-  model_dir:
-    - fullMorphCaLTP8
-  script:
+    github: 'pull/1'
+    model_dir: fullMorphCaLTP8
+    script:
     - sed -i'.bak' 's#tstop = 250#tstop = 25#g' fullMorphCaLTP8/doTBSStimCC.hoc
 184314:
     # x86_64/ directory is included in the GitHub repository; should be removed
@@ -1467,7 +1484,8 @@
   model_dir:
     - "01_Soma-dendritic_recordings/01_Control/140311-C1/syncytium/num10"
 189347:
-  script:
+    github: 'pull/1'
+    script:
     # we launch with special so don't try and dlopen mechanisms too
     - sed -i'.bak' 's#nrn_load_dll#// nrn_load_dll#g' main.hoc
 195666:
@@ -1490,10 +1508,9 @@
   skip: true
   comment: takes too long, need to see how to reduce time
 229276:
-  github: 'pull/3'
-  model_dir:
-    - mechanisms
-  script:
+    github: 'pull/4'
+    model_dir: mechanisms
+    script:
     - mkdir hoc_recordings
     - cp template.hoc template.hoc.iconv.bak
     - cp createsimulation.hoc createsimulation.hoc.iconv.bak
@@ -1512,7 +1529,8 @@
   model_dir:
     - "mechanisms/Event_stream;mechanisms/Golgi_CL;mechanisms/Granule_CL;mechanisms/Presynaptic_spike_generator;mechanisms/Synapses;mechanisms/gap"
 232097:
-  script:
+    github: 'pull/2'
+    script:
     - mkdir connection input
   curate_patterns:
     - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
@@ -1744,8 +1762,11 @@
   model_dir:
     - "131/mod"
 267646:
-  comment: ".mod files do not compile"
-  skip: true
+    comment: ".mod files do not compile"
+    skip: true
+267741:
+    comment: "Waiting for https://github.com/ModelDBRepository/267741/pull/1"
+    skip: true
 149174:
   skip: true
   comment: testing in Python + hardcoded NEURON
@@ -1821,7 +1842,8 @@
   script:
     - sed -i'.bak' -e 's/tstop=/tstop=100 \/\//' Start.hoc
 157157:
-  run:
+    github: 'pull/3'
+    run:
     - run()
     - verify_graph_()
   script:
@@ -2008,6 +2030,44 @@
   model_dir:
     - 'MultiCompartmentModels/Mod'
 266578:
-  github: 'pull/2'
+    github: 'pull/3'
 33728:
+    github: 'pull/1'
+2014832:
+  skip: true
+  comment: ".mod files do not compile"
+2017405:
+  skip: true
+  comment: ".mod files do not compile"
+2016138:
+  skip: true
+  comment: ".mod files do not compile with NEURON 9.0"
+2016658:
+  model_dir: 'MEC_model_figs5_6'
+2016662:
+  skip: true
+  comment: "Not on GitHub and dirs contain spaces"
+139150:
   github: 'pull/1'
+185513:
+  github: 'pull/3'
+151731:
+  github: 'pull/1'
+147757:
+  github: 'pull/1'
+155602:
+  github: 'pull/3'
+257027:
+  github: 'pull/1'
+2015410:
+  github: 'pull/1'
+128559:
+  github: 'pull/1'
+127021:
+  github: 'pull/3'
+137259:
+  github: 'pull/1'
+126640:
+  github: 'pull/1'
+184732:
+  github: 'pull/2'
