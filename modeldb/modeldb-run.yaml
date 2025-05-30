@@ -137,8 +137,8 @@
     - run()
     - verify_graph_()
 3670:
-    github: 'pull/1'
-    run:
+  github: 'pull/1'
+  run:
     - restart("Fig5A")
     - run()
     - verify_graph_()
@@ -247,7 +247,7 @@
       repl: ''
 7907:
   comment: ".mod files do not compile"
-    # Based on readme, other choices are available
+  # Based on readme, other choices are available
   model_dir:
     - "batch_back/back/mod/kvz_naz"
   skip: true
@@ -289,8 +289,8 @@
     - restart("demo_ampa")
     - verify_graph_()
 18502:
-    github: 'pull/1'
-    run:
+  github: 'pull/1'
+  run:
     - restart("ltp_two")
     - verify_graph_()
 18742:
@@ -335,8 +335,8 @@
     - runh()
     - verify_graph_()
 19746:
-    github: 'pull/1'
-    run:
+  github: 'pull/1'
+  run:
     - run()
     - verify_graph_()
 19747:
@@ -365,8 +365,7 @@
     - verify_graph_()
   script:
     # Model tries to abort on mac, but let's try and run it anyway
-    - sed -i'.bak' -e 's#if (unix_mac_pc() ==1 || unix_mac_pc() ==3 ) {#if (1) { //
-      assume works on mac/linux/windows#g' mechanism/mosinit.hoc
+    - sed -i'.bak' -e 's#if (unix_mac_pc() ==1 || unix_mac_pc() ==3 ) {#if (1) { // assume works on mac/linux/windows#g' mechanism/mosinit.hoc
 20756:
   run:
     - 'pyr3_ = new pyr3( 21 ) '
@@ -393,17 +392,15 @@
     - cat mosinit.hoc >> temp
     - mv temp  mosinit.hoc
 33975:
-    # The "interesting" feature of this model is that it produces an error message, roughly:
-    #   We were unable to associate a PlayRecord item with a RANGE variable
-    # whose format changed after 8.2.2, and which went away in the data structure PR #2027.
-    # The error going away caused an (empty) gout file to be written, which also caused a diff.
-    # To avoid false positives, we regex away the error + traceback, and never produce a gout.
+  # The "interesting" feature of this model is that it produces an error message, roughly:
+  #   We were unable to associate a PlayRecord item with a RANGE variable
+  # whose format changed after 8.2.2, and which went away in the data structure PR #2027.
+  # The error going away caused an (empty) gout file to be written, which also caused a diff.
+  # To avoid false positives, we regex away the error + traceback, and never produce a gout.
   curate_patterns:
-    - pattern: 'hoc_run1: caught exception: hoc_execerror: We were unable to associate
-        a PlayRecord item with a RANGE variable'
+    - pattern: 'hoc_run1: caught exception: hoc_execerror: We were unable to associate a PlayRecord item with a RANGE variable'
       repl: ''
-    - pattern: '%neuron-executable%: We were unable to associate a PlayRecord item
-        with a RANGE variable'
+    - pattern: '%neuron-executable%: We were unable to associate a PlayRecord item with a RANGE variable'
       repl: ''
     - pattern: ' in %model_dir%/driver.hoc near line \d+'
       repl: ''
@@ -411,7 +408,7 @@
       repl: ''
     - pattern: '^\s+\^'
       repl: ''
-    # this should be removed once the latest release and development branch include nrn#2027
+      # this should be removed once the latest release and development branch include nrn#2027
   ignore_exit_code: true
   run:
     - ringperf()
@@ -522,8 +519,7 @@
     - run()
     - verify_graph_()
 64195:
-  comment: //do not run problem due to randomness and takes too long due to failure
-    to set steps_per_ms consistent with dt
+  comment: //do not run problem due to randomness and takes too long due to failure to set steps_per_ms consistent with dt
   model_dir:
     - "."
   run:
@@ -551,8 +547,8 @@
     - fig7A()
     - verify_graph_()
 71312:
-    github: 'pull/2'
-    run:
+  github: 'pull/2'
+  run:
     - NregNsyn(4)
     - verify_graph_()
 74298:
@@ -575,8 +571,8 @@
     - reg_20()
     - verify_graph_()
 82784:
-    github: 'pull/1'
-    run:
+  github: 'pull/1'
+  run:
     - system("mkdir -p out")
     - load_file("runShort.hoc")
     - verify_graph_()
@@ -599,8 +595,7 @@
     - mechanisms
   run: []
   script:
-    - sed -i'.bak' -e 's/mustart  = -0.400/mustart  = 0.800/g;s/sigmastart  = 0.064/sigmastart  =
-      0.128/g' mylibs/TFparams.hoc
+    - sed -i'.bak' -e 's/mustart  = -0.400/mustart  = 0.800/g;s/sigmastart  = 0.064/sigmastart  = 0.128/g' mylibs/TFparams.hoc
 84589:
   model_dir:
     - mod
@@ -643,8 +638,7 @@
     - run()
     - verify_graph_()
   script:
-    - printf 'VERBATIM\nextern void state_discontinuity(int i, double* pd, double
-      d);\nENDVERBATIM\n' >> simulationcode/glutamate.mod
+    - printf 'VERBATIM\nextern void state_discontinuity(int i, double* pd, double d);\nENDVERBATIM\n' >> simulationcode/glutamate.mod
     - ln -sf driver.hoc simulationcode/driver.hoc
   curate_patterns:
     - pattern: '\s*Vector.*'
@@ -778,8 +772,8 @@
   curate_patterns:
     - pattern: 'SetupTime: [0-9.\-e]+'
       repl: 'SetupTime: %setup_time%'
-    # There is a different (clashing) model under pardentategyrus, don't test
-    # that one at all for now
+      # There is a different (clashing) model under pardentategyrus, don't test
+      # that one at all for now
   model_dir:
     - nrntraub/mod
   run:
@@ -788,8 +782,7 @@
     # Stop mosinit from running nrnivmodl on the fly; use the special produced
     # by nrn-modeldb-ci from the model_dir set above
   script:
-    - sed -i'.bak' -e 's/mkdll_("nrntraub", "mod", s.s)) {/1) {\n\t\tchdir("nrntraub")/g'
-      mosinit.hoc
+    - sed -i'.bak' -e 's/mkdll_("nrntraub", "mod", s.s)) {/1) {\n\t\tchdir("nrntraub")/g' mosinit.hoc
 98005:
   run:
     - run()
@@ -821,8 +814,7 @@
     - verify_graph_()
   script:
     # 424242: this is just avoiding a timing-related number being printed
-    - sed -i'.bak' -e 's/batch_flag=0/batch_flag=1/g;s/tstop = 1e3/tstop = 20/g;s#return
-      tti/1e3#return 424242#g;s#print tti/.*#print "%some_time%"#g' batch_.hoc
+    - sed -i'.bak' -e 's/batch_flag=0/batch_flag=1/g;s/tstop = 1e3/tstop = 20/g;s#return tti/1e3#return 424242#g;s#print tti/.*#print "%some_time%"#g' batch_.hoc
   curate_patterns:
     - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
       repl: ''
@@ -833,8 +825,8 @@
     - pattern: '\s*\^\s*'
       repl: ''
 106551:
-    github: 'pull/2'
-    run:
+  github: 'pull/2'
+  run:
     - use_mcell_ran4(1)
     - tstop=10
     - run()
@@ -897,8 +889,8 @@
     - runiv()
     - verify_graph_()
 112685:
-    github: 'pull/3'
-    run:
+  github: 'pull/3'
+  run:
     - run()
     - verify_graph_()
 113446:
@@ -908,8 +900,8 @@
     - run()
     - verify_graph_()
 113732:
-    github: 'pull/2'
-    run:
+  github: 'pull/2'
+  run:
     - use_mcell_ran4(1)
     - suprathresh()
     - tstop=50
@@ -1086,13 +1078,13 @@
     - run()
     - verify_graph_()
 119283:
-    github: 'pull/1'
-    run:
+  github: 'pull/1'
+  run:
     - use_mcell_ran4(1)
     - runi()
     - verify_graph_()
 120692:
-    # dynamic/ subdir also exists, semi-arbitrarily preferring less-nested dirs
+  # dynamic/ subdir also exists, semi-arbitrarily preferring less-nested dirs
   model_dir:
     - "."
   run:
@@ -1166,7 +1158,7 @@
     - stim.amp = 0.1
     - runa()
     - verify_graph_()
-  script:   # todo -> fix model for NEURON 8.0.0 and remove this script
+  script: # todo -> fix model for NEURON 8.0.0 and remove this script
     - sed -i'.bak' -e 's/return 0;//g' MOPP_Fig_1B_left/ichan2.mod
 124513:
   script:
@@ -1174,13 +1166,12 @@
     # - it tries to access /proc/uptime, which is not portable
     # - if that works (i.e. on Linux) it runs with a different seed every time,
     #   which is unhelpful in a CI context
-    - sed -i'.bak' -e 's#ropen("/proc/uptime")#// ropen("/proc/uptime")#g;s#rseed
-      = fscan()#rseed=424242#g' 50knet.hoc
+    - sed -i'.bak' -e 's#ropen("/proc/uptime")#// ropen("/proc/uptime")#g;s#rseed = fscan()#rseed=424242#g' 50knet.hoc
 125385:
   comment: ".mod files do not compile"
   skip: true
 129067:
-    # Arbitrary choice, Welday_et_al_Fig9C also exists.
+  # Arbitrary choice, Welday_et_al_Fig9C also exists.
   model_dir:
     - "Welday_et_al_Fig9AB"
 136095:
@@ -1204,21 +1195,21 @@
   model_dir:
     - OneDimension/Neuron
 138379:
-    github: "pull/4"
-    curate_patterns:
-      - pattern: 't=100\.00;(\d+)\([0-9.\-e]+\)'
-        repl: 't=100.00;\1(%some_kind_of_clock%)'
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: '^Matplotlib is building the font cache.*'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
-    run:
+  github: "pull/4"
+  curate_patterns:
+    - pattern: 't=100\.00;(\d+)\([0-9.\-e]+\)'
+      repl: 't=100.00;\1(%some_kind_of_clock%)'
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: '^Matplotlib is building the font cache.*'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
+  run:
     - mytstop=0.1e3
     - tstop=mytstop
     - finish_run()
@@ -1236,12 +1227,10 @@
   comment: //do not run Lytton model takes too long to run and complex to edit
   run:
 141063:
-  comment: //do not run Problem is that Vbox.dialog() steals the focus (complex to
-    fix)
+  comment: //do not run Problem is that Vbox.dialog() steals the focus (complex to fix)
   run:
 141272:
-  comment: //do not run Problem is that Vbox.dialog() steals the focus (complex to
-    fix)
+  comment: //do not run Problem is that Vbox.dialog() steals the focus (complex to fix)
   run:
 141505:
   comment: //do not run Specialized installation environment
@@ -1250,11 +1239,11 @@
   model_dir:
     - mod
 143633:
-    # they also seem to exist under master/; random choice
+  # they also seem to exist under master/; random choice
   model_dir:
     - "modfiles"
 144007:
-    # Arbitrary choice, jnphysiol2012 also exists
+  # Arbitrary choice, jnphysiol2012 also exists
   model_dir:
     - "jneurosci2012"
 144385:
@@ -1264,7 +1253,7 @@
   model_dir:
     - mechanism/mechanism_cell1
 144490:
-    # readme says to use the top-level directory
+  # readme says to use the top-level directory
   model_dir:
     - "."
 144523:
@@ -1291,8 +1280,7 @@
       repl: ''
   run:
   script:
-    - sed -i'.bak' -r 's/(tstop=mytstop=htmax= \(LearnDur \+ ZipDur \+ BaseDur\*2\)
-      \*) 1e3/\1 2e1/g' params.hoc
+    - sed -i'.bak' -r 's/(tstop=mytstop=htmax= \(LearnDur \+ ZipDur \+ BaseDur\*2\) \*) 1e3/\1 2e1/g' params.hoc
 144579:
   comment: ".mod files do not compile"
   skip: true
@@ -1304,15 +1292,15 @@
   model_dir:
     - channels
 146030:
-    curate_patterns:
-      - pattern: 'Setup time for simulation:\s*[0-9]+(\.[0-9]+)?\s*seconds'
-        repl: 'Setup time for simulation: %setup_time% seconds'
-      - pattern: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: .*'
-        repl: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: %current_date%'
-      - pattern: 'Finished simulation in [0-9\.]+ seconds'
-        repl: 'Finished simulation in %simulation_time% seconds'
-      - pattern: 'Current time: .*'
-        repl: 'Current time: %current_time%'
+  curate_patterns:
+    - pattern: 'Setup time for simulation:\s*[0-9]+(\.[0-9]+)?\s*seconds'
+      repl: 'Setup time for simulation: %setup_time% seconds'
+    - pattern: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: .*'
+      repl: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: %current_date%'
+    - pattern: 'Finished simulation in [0-9\.]+ seconds'
+      repl: 'Finished simulation in %simulation_time% seconds'
+    - pattern: 'Current time: .*'
+      repl: 'Current time: %current_time%'
 146949:
   github: "pull/5"
   curate_patterns:
@@ -1337,7 +1325,7 @@
   comment: ".mod files do not compile"
   skip: true
 147460:
-    # Arbitrary choice, Interneuron/NEURON_code also exists.
+  # Arbitrary choice, Interneuron/NEURON_code also exists.
   model_dir:
     - "Pyramidal/NEURON_code"
 147461:
@@ -1365,26 +1353,26 @@
   model_dir:
     - nrn/mod
 150245:
-    github: "pull/5"
-    curate_patterns:
-      - pattern: 't=100\.00;176\([0-9]+\.[0-9]+\)'
-        repl: 't=100.00;176(%some_kind_of_clock%)'
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
-    run:
+  github: "pull/5"
+  curate_patterns:
+    - pattern: 't=100\.00;176\([0-9]+\.[0-9]+\)'
+      repl: 't=100.00;176(%some_kind_of_clock%)'
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
+  run:
     - tstop=100
     - init()
     - run()
     - verify_graph_()
 150284:
   comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
-    # there is also a .mod file under biochemical_circuits/
+  # there is also a .mod file under biochemical_circuits/
   model_dir:
     - "mod"
   run:
@@ -1393,15 +1381,15 @@
   model_dir:
     - channels
 152197:
-    # Semi-arbitrarily ignoring back/ subdirectory that also contains MOD files
+  # Semi-arbitrarily ignoring back/ subdirectory that also contains MOD files
   model_dir:
     - "."
 154096:
   comment: ".mod files do not compile"
   skip: true
 155705:
-    # There are two sibling dirs to "all_mods", and all_mods/nmdaR.mod and
-    # synapse/nmdaR.mod are not the same.
+  # There are two sibling dirs to "all_mods", and all_mods/nmdaR.mod and
+  # synapse/nmdaR.mod are not the same.
   model_dir:
     - "Two_netsPaper/mods/all_mods"
 155735:
@@ -1413,10 +1401,9 @@
   comment: ".mod files do not compile"
   skip: true
 167772:
-  comment: //do not run Tried "initDialog.unmap(1)" - didnt work.  Need to change
-    archive
-    # Various other directories containing .mod files exist under the
-    # SchmidtHieber/ path, arbitrarily choosing this one.
+  comment: //do not run Tried "initDialog.unmap(1)" - didnt work.  Need to change archive
+  # Various other directories containing .mod files exist under the
+  # SchmidtHieber/ path, arbitrarily choosing this one.
   model_dir:
     - "HH/Neuron"
   run:
@@ -1424,14 +1411,14 @@
   model_dir:
     - experiment
 168314:
-    github: 'pull/1'
-    script:
+  github: 'pull/1'
+  script:
     # fixup for case-sensitive filesystems
     - sed -i'.bak' 's#path = "./inputs/"#path = "./Inputs/"#g' ReadExperiments.hoc
     - sed -i'.bak' 's#load_file("protocol.hoc")#load_file("Protocol.hoc")#g' Hipp.hoc
 168858:
-    # Ignore x86_64/ directories committed to the repository, and ignore
-    # HHmodel/Scripts/NeuronMechanisms/ subdirectory
+  # Ignore x86_64/ directories committed to the repository, and ignore
+  # HHmodel/Scripts/NeuronMechanisms/ subdirectory
   model_dir:
     - "."
 182134:
@@ -1447,7 +1434,7 @@
     - "."
 183718:
   comment: ".mod files do not compile"
-    # Arbitrarily ignoring .mod files under resonator/
+  # Arbitrarily ignoring .mod files under resonator/
   model_dir:
     - "integrator"
   skip: true
@@ -1458,12 +1445,12 @@
   script:
     - sed -i'.bak' 's#tstop = 250#tstop = 25#g' fullMorphCaLTP8/doTBSStimCC.hoc
 184314:
-    # x86_64/ directory is included in the GitHub repository; should be removed
+  # x86_64/ directory is included in the GitHub repository; should be removed
   model_dir:
     - "."
 184497:
   comment: ".mod files do not compile"
-    # readme says to use both
+  # readme says to use both
   model_dir:
     - "model;optmz"
   skip: true
@@ -1478,17 +1465,17 @@
       repl: 'TIME HOST 0: %elapsed_time% seconds (created cells)'
 187615:
   comment: "Tries to open bac6.ses, which doesn't exist"
-    # hay/ also exists, but doesn't have a mosinit.hoc
+  # hay/ also exists, but doesn't have a mosinit.hoc
   model_dir:
     - "almog"
   run:
 189186:
-    # guessed from mosinit.hoc, there are other options
+  # guessed from mosinit.hoc, there are other options
   model_dir:
     - "01_Soma-dendritic_recordings/01_Control/140311-C1/syncytium/num10"
 189347:
-    github: 'pull/1'
-    script:
+  github: 'pull/1'
+  script:
     # we launch with special so don't try and dlopen mechanisms too
     - sed -i'.bak' 's#nrn_load_dll#// nrn_load_dll#g' main.hoc
 195666:
@@ -1529,7 +1516,7 @@
   comment: ".mod files do not compile"
   skip: true
 232023:
-    # README suggests all should be included
+  # README suggests all should be included
   model_dir:
     - "mechanisms/Event_stream;mechanisms/Golgi_CL;mechanisms/Granule_CL;mechanisms/Presynaptic_spike_generator;mechanisms/Synapses;mechanisms/gap"
 232097:
@@ -1546,16 +1533,16 @@
     - pattern: '\s*\^\s*'
       repl: ''
 232876:
-    # Arbitrarily choose this over influence_ih_iT/ and high_conductance_state/
+  # Arbitrarily choose this over influence_ih_iT/ and high_conductance_state/
   model_dir:
     - "current_clamp"
 236310:
-    # Ignore Elec/kir.mod arbitrarily
+  # Ignore Elec/kir.mod arbitrarily
   model_dir:
     - "Syn"
 237469:
   comment: ".mod files do not compile"
-    # readme hints this is the preferred one
+  # readme hints this is the preferred one
   model_dir:
     - "approxhaynet"
   skip: true
@@ -1563,11 +1550,11 @@
   model_dir:
     - mechanism
 237595:
-    # x86_64 directory is checked into the repository
+  # x86_64 directory is checked into the repository
   model_dir:
     - "Multicompartmental_Biophysical_models/mechanism"
 239177:
-    # Arbitrarily chosen over PIR-Inetwork/
+  # Arbitrarily chosen over PIR-Inetwork/
   model_dir:
     - "PIR-EInetwork"
 239421:
@@ -1577,7 +1564,7 @@
   comment: ".mod files do not compile with 8.2.2"
   skip: true
 240960:
-    # SimpleModel sounds better than FullModel/ for a CI check
+  # SimpleModel sounds better than FullModel/ for a CI check
   model_dir:
     - "SimpleModel"
 241160:
@@ -1590,8 +1577,8 @@
   comment: "uses bad assumptions about ParallelComputeTool.cache"
   run:
 243508:
-    # arbitrarily ignoring clusterCaSim/hpc/model/, neuronSims/ExtraMechanism/
-    # and neuronSims/ExtraMechanism/fink2000/
+  # arbitrarily ignoring clusterCaSim/hpc/model/, neuronSims/ExtraMechanism/
+  # and neuronSims/ExtraMechanism/fink2000/
   model_dir:
     - "neuronSims"
 244262:
@@ -1603,29 +1590,29 @@
   skip: true
 249463:
   comment: "Tries to open bac6.ses, which does not exist"
-    # .mod files exist under hay/ too, but almog/ has mosinit.hoc
+  # .mod files exist under hay/ too, but almog/ has mosinit.hoc
   model_dir:
     - "almog"
   run:
 249705:
-    # have to disambiguate because x86_64/ is checked into the model repo
+  # have to disambiguate because x86_64/ is checked into the model repo
   model_dir:
     - "mod"
 253369:
-    # Chosen alphabetically, all of the following also have .mod files:
-    # Isolated_Dendrite_gPas__Fig1/
-    # Isolated_Dendrite_pGABA _HCO3__Fig5u7/
-    # Isolated_Dendrite_pH__Fig8/
-    # Isolated_Dendrite_tauGABA__Fig4/
-    # Isolated_Dendrite_tauNKCC1__Fig9/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-VDpas__Fig2g/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-_tauNKCC1__Fig9/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-gGABA__Fig3/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-gPas__Fig2/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-pGABA_tauHCO3__Fig6u7/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-tauGABA__Fig4/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl_var-pH__Fig8/
-    # Real_Cell_Dynamic_Cl_HCO3_1GDP/
+  # Chosen alphabetically, all of the following also have .mod files:
+  # Isolated_Dendrite_gPas__Fig1/
+  # Isolated_Dendrite_pGABA _HCO3__Fig5u7/
+  # Isolated_Dendrite_pH__Fig8/
+  # Isolated_Dendrite_tauGABA__Fig4/
+  # Isolated_Dendrite_tauNKCC1__Fig9/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl-VDpas__Fig2g/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl-_tauNKCC1__Fig9/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl-gGABA__Fig3/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl-gPas__Fig2/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl-pGABA_tauHCO3__Fig6u7/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl-tauGABA__Fig4/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl_var-pH__Fig8/
+  # Real_Cell_Dynamic_Cl_HCO3_1GDP/
   model_dir:
     - "Isolated_Dendrite_gGABA__Fig3"
 254217:
@@ -1638,105 +1625,105 @@
   comment: ".mod files do not compile"
   skip: true
 257028:
-    # sounds smaller/faster than CCTC_model_scaleup/modfiles/
+  # sounds smaller/faster than CCTC_model_scaleup/modfiles/
   model_dir:
     - "CCTC_model/modfiles"
 260015:
-    # .mod files also exist under analysis/UMAP_analysis_code/*/, but this
-    # sounds like a better bet
+  # .mod files also exist under analysis/UMAP_analysis_code/*/, but this
+  # sounds like a better bet
   model_dir:
     - "sim/mod"
 261460:
   comment: ".mod files do not compile"
   skip: true
 262373:
-    # ignore orig/ subdir fairly arbitrarily
+  # ignore orig/ subdir fairly arbitrarily
   model_dir:
     - "."
 263988:
-    # there are 3 other dataset_XX... directories, and each one also has .mod
-    # files more deeply nested under it...
+  # there are 3 other dataset_XX... directories, and each one also has .mod
+  # files more deeply nested under it...
   model_dir:
     - "dataset_01__fields/code"
 265523:
   comment: ".mod files do not compile"
-    # arbitrarily ignoring: SWR/SDprox2/, Theta/SDprox1/, Theta/SDprox2/,
-    # Theta_DoubledInputs/SDprox1/, Theta_DoubledInputs/SDprox2/,
-    # Theta_NoiseTests/SDprox1/, Theta_NoiseTests/SDprox2/,
-    # Theta_RemovedInputs/SDprox1/ and Theta_RemovedInputs/SDprox2/
+  # arbitrarily ignoring: SWR/SDprox2/, Theta/SDprox1/, Theta/SDprox2/,
+  # Theta_DoubledInputs/SDprox1/, Theta_DoubledInputs/SDprox2/,
+  # Theta_NoiseTests/SDprox1/, Theta_NoiseTests/SDprox2/,
+  # Theta_RemovedInputs/SDprox1/ and Theta_RemovedInputs/SDprox2/
   model_dir:
     - "SWR/SDprox1"
   skip: true
 265584:
-    # there are 3 other top-level directories with .mod files inside
+  # there are 3 other top-level directories with .mod files inside
   model_dir:
     - "01_GrC_2020_regular/mod_files"
 266732:
   comment: ".mod files do not compile"
-    # arbitrarily ignoring fig3_5_7/, fig8/ and fig9/
+  # arbitrarily ignoring fig3_5_7/, fig8/ and fig9/
   model_dir:
     - "fig2_4_6"
   skip: true
 266775:
-    # there are more .mod files, but the readme says to use these ones
+  # there are more .mod files, but the readme says to use these ones
   model_dir:
     - "mechanisms/single"
 266797:
-    # "mod - new" subdir seems to just contain duplicates
+  # "mod - new" subdir seems to just contain duplicates
   model_dir:
     - "."
 266799:
   comment: ".mod files do not compile"
-    # there are 5 other figure* directories with .mod files in them
+  # there are 5 other figure* directories with .mod files in them
   model_dir:
     - "figure1/mod"
   skip: true
 266802:
-    # arbitrarily ignoring: Figure_2_synaptic_thresholds/,
-    # Figure_3_200um_on_BigNeuron/, Figure_4_and_5_modified conductances/,
-    # Figure_6_CA3/, Figure_6_DGC/ and Figure_7_variable_gAMPA/
+  # arbitrarily ignoring: Figure_2_synaptic_thresholds/,
+  # Figure_3_200um_on_BigNeuron/, Figure_4_and_5_modified conductances/,
+  # Figure_6_CA3/, Figure_6_DGC/ and Figure_7_variable_gAMPA/
   model_dir:
     - "Figure_1_single_EPSPs"
 266806:
   comment: ".mod files do not compile"
-    # there's also a Morphology_2 directory
+  # there's also a Morphology_2 directory
   model_dir:
     - "Morphology_1/mod_files"
   skip: true
 266842:
-    # Scaleup_5x_all/modfiles/ also exists but sounds slower
+  # Scaleup_5x_all/modfiles/ also exists but sounds slower
   model_dir:
     - "CCTC_model/modfiles"
 266844:
-    # arbitrary choice, "Fig 3/The other spines/Multi-spines model" and
-    # "Fig S8/Single spine model" also contain .mod files
+  # arbitrary choice, "Fig 3/The other spines/Multi-spines model" and
+  # "Fig S8/Single spine model" also contain .mod files
   model_dir:
     - "Fig 3/XL-sized spines/Multi-spines model"
 266851:
-    # readme seems to prefer this one
+  # readme seems to prefer this one
   model_dir:
     - "models/DuraBernal/mod"
 266864:
   comment: ".mod files do not compile"
   skip: true
 267009:
-    # arbitrary choice, unm_pub/mods also contains .mod files
-    model_dir:
-      - "mye_pub/mods"
+  # arbitrary choice, unm_pub/mods also contains .mod files
+  model_dir:
+    - "mye_pub/mods"
 267088:
-    # arbitrary choice, Hu-based_model/mod also contains .mod files
-    model_dir:
-      - "Hay-based_model/mod"
+  # arbitrary choice, Hu-based_model/mod also contains .mod files
+  model_dir:
+    - "Hay-based_model/mod"
 2016137:
-    # arbitrary choice, Simplified_models/modfiles also contains .mod files
-    model_dir:
-      - "Detailed_models/modfiles"
+  # arbitrary choice, Simplified_models/modfiles also contains .mod files
+  model_dir:
+    - "Detailed_models/modfiles"
 267146:
   comment: ".mod files do not compile"
   skip: true
 267189:
   comment: ".mod files do not compile"
-    # arbitrary choice, Purkinje/mod_files/ and DCN/mod_files/ also exist
+  # arbitrary choice, Purkinje/mod_files/ and DCN/mod_files/ also exist
   model_dir:
     - "Granule/mod_files"
   skip: true
@@ -1745,32 +1732,32 @@
   skip: true
 267587:
   comment: ".mod files do not compile"
-    # readme hints this is reasonable
+  # readme hints this is reasonable
   model_dir:
     - "L5Circuit/default_circuit/mod"
   skip: true
 267589:
-    # arbitrary choice, dLGN-network/mods/ and dLGN-network/lmods/ also contain
-    # .mod files
+  # arbitrary choice, dLGN-network/mods/ and dLGN-network/lmods/ also contain
+  # .mod files
   model_dir:
     - "TC-fitting/mods"
 267595:
   comment: ".mod files do not compile"
   skip: true
 267610:
-    # readme hints this is reasonable
+  # readme hints this is reasonable
   model_dir:
     - "multi_compartmental/1_0um"
 267621:
-    # arbitrary choice, 1292/mod/ also contains .mod files
+  # arbitrary choice, 1292/mod/ also contains .mod files
   model_dir:
     - "131/mod"
 267646:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 267741:
-    comment: "Waiting for https://github.com/ModelDBRepository/267741/pull/1"
-    skip: true
+  comment: "Waiting for https://github.com/ModelDBRepository/267741/pull/1"
+  skip: true
 149174:
   skip: true
   comment: testing in Python + hardcoded NEURON
@@ -1779,8 +1766,7 @@
   script:
     - sed -i'.bak' -e 's/tstop = /tstop = 50\/\//' Fig8_tuft_NMDA_spike.hoc
     - sed -i'.bak' -e 's/simul_iter=/simul_iter=2 \/\//' Fig8_tuft_NMDA_spike.hoc
-  comment: 'Usual simulation time is ~ 10 minutes (tstop = 120 and simul_iter=10),
-    skipped because it tries to load C:/Daten/Modeling/Alpha5_NMDA_single_comp/shared/ATF.hoc'
+  comment: 'Usual simulation time is ~ 10 minutes (tstop = 120 and simul_iter=10), skipped because it tries to load C:/Daten/Modeling/Alpha5_NMDA_single_comp/shared/ATF.hoc'
 260178:
   model_dir:
     - _mod
@@ -1792,22 +1778,21 @@
     - sed -i'.bak' '1s/^/{load_file("stdlib.hoc")}\n/' hoc_tools/nav_states.hoc
     - sed -i'.bak' '1s/^/{load_file("stdgui.hoc")}\n/' hoc_tools/plots.hoc
 267067:
-    # This model ID seems to have two ~different models inside it. Arbitrarily choose one.
+  # This model ID seems to have two ~different models inside it. Arbitrarily choose one.
   model_dir:
     - 'Na12 Analysis/mechanisms'
   run:
     - run()
     - verify_graph_()
   script:
-    - (cd "Na12 Analysis" && mv mosinit.hoc mosinit.hoc.bak && ln -s runModel.hoc
-      mosinit.hoc)
+    - (cd "Na12 Analysis" && mv mosinit.hoc mosinit.hoc.bak && ln -s runModel.hoc mosinit.hoc)
     - sed -i'.bak' -e 's#\./mosinit\.hoc#./mosinit.hoc.bak#g' 'Na12 Analysis/runModel.hoc'
     - sed -i'.bak' -e 's#^tstop=30000#tstop=100#g' 'Na12 Analysis/constants.hoc'
 # 267140: segfaults with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
 267293:
   comment: Tries to open bac6.ses, which does not exist
-    # this is the dir with mosinit.hoc in it, other .mod files exist under
-    # modulhcn_hay/
+  # this is the dir with mosinit.hoc in it, other .mod files exist under
+  # modulhcn_hay/
   model_dir:
     - "modulhcn_almog"
   run:
@@ -1816,20 +1801,19 @@
     - 'BBP_TTPC_EXAMPLE'
   script:
     # 12 is the largest value (runModel-template.hoc); this is a guess
-    - sed -i'.bak' 's#load_file("nrngui.hoc")#objref transvec\ntransvec = new Vector(12)\nload_file("nrngui.hoc")#'
-      BBP_TTPC_EXAMPLE/mosinit.hoc
+    - sed -i'.bak' 's#load_file("nrngui.hoc")#objref transvec\ntransvec = new Vector(12)\nload_file("nrngui.hoc")#' BBP_TTPC_EXAMPLE/mosinit.hoc
 267594:
   comment: 'Seems to be missing files: parinit.hoc, .mod file for h_ca, ...?'
   model_dir:
     - mods
   run:
 267599:
-    # There is also a subdirectory that seems to have older versions.
+  # There is also a subdirectory that seems to have older versions.
   model_dir:
     - "."
 267691:
-    # output is two data files Vm_6_1.dat Vm_axon_6_1.dat, which should be compared...
-  hoc_stack_size: 2000   # default of 1000 is apparently not enough
+  # output is two data files Vm_6_1.dat Vm_axon_6_1.dat, which should be compared...
+  hoc_stack_size: 2000 # default of 1000 is apparently not enough
   model_dir:
     - mechanisms
   script:
@@ -1862,15 +1846,13 @@
 #    - sed 's/tstop=/tstop=20\/\//g' Fig_13.hoc > temp.tmp
 #    - mv temp.tmp Fig_13.hoc
 244922:
-    # segfaults with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
+  # segfaults with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
   run:
     - run()
     - verify_graph_()
   script:
-    - sed -i'.bak' -e 's/500/5/g;s/2\([0|1]\)000/2\1/g;s/for(k=1; k<=50; k+=1/for(k=50;
-      k<=50; k+=1/g' BPF.hoc
-  comment: diving some numbers with 100 halvened the sim time, 1 iteration instead
-    of 50
+    - sed -i'.bak' -e 's/500/5/g;s/2\([0|1]\)000/2\1/g;s/for(k=1; k<=50; k+=1/for(k=50; k<=50; k+=1/g' BPF.hoc
+  comment: diving some numbers with 100 halvened the sim time, 1 iteration instead of 50
 151126:
   run:
     - run()
@@ -1896,13 +1878,12 @@
     - import os; os.system("python mosinit.py"); quit();
   script:
     - 2to3 -w .
-    - sed -i'.bak' -e 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/'
-      clay_mohit.py
+    - sed -i'.bak' -e 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
 251881:
   model_dir:
     - mechanisms
 2014814:
-    # Note there are many other models and HOC versions under this accession ID
+  # Note there are many other models and HOC versions under this accession ID
   model_dir:
     - Models/1-Neuromuscular/Python
   python: true
@@ -2034,9 +2015,9 @@
   model_dir:
     - 'MultiCompartmentModels/Mod'
 266578:
-    github: 'pull/3'
+  github: 'pull/3'
 33728:
-    github: 'pull/1'
+  github: 'pull/1'
 2014832:
   skip: true
   comment: ".mod files do not compile"
