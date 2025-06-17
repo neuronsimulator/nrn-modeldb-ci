@@ -1923,6 +1923,11 @@
 2016662:
   skip: true
   comment: "Not on GitHub and dirs contain spaces"
+2016664:
+  model_dir: _mod
+2017402:
+  skip: true
+  comment: "Error: new_seed used as both variable and function in file Gfluc.mod"
 2018247:
   skip: true
   comment: "Not on GitHub and dirs contain spaces"
