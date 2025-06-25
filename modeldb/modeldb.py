@@ -32,7 +32,7 @@ def download_model(arg_tuple):
         # from ModelDB, but it can be overriden to come from GitHub instead.
         if "github" in model_run_info:
             # This means we should try to download the model content from
-            # GitHub instead of from ModelDB.
+            # GitHub instead of from ModelDB. (but see the local: case below.)
             github = model_run_info["github"]
             organisation = "ModelDBRepository"
             suffix = ""  # default branch
@@ -59,6 +59,27 @@ def download_model(arg_tuple):
                 # if you need to test changes to a model that does not exist on
                 # GitHub under the ModelDBRepository organisation.
                 organisation = github[1:]
+            elif github.startswith("local:"):
+                # Using
+                #  github: "local: /path/to/repository"
+                # in modeldb-run.yaml implies that we 'git clone /path/to/repository'.
+                # This is useful to tentatively explore the effect of
+                # model changes on results with different nrn versions
+                # without committing to github or before being ready to
+                # make a pull request
+                print("\nTo be cloned by runmodel", github)
+                return model_id, model
+            elif github.startswith("copy:"):
+                # Using
+                #  github: "copy: /path/to/parentfolder"
+                # in modeldb-run.yaml implies that we
+                #  'cp -R /path/to/parentfolder/<id> <workingdir>'
+                # A copy differs from a clone in that local changes in
+                # the checkout are mirrored in the copy without having to
+                # be committed. Note the copy leaves out the .git and
+                # x86_64 folders.
+                print("\nTo be copied by runmodel %s/%s" % (github, model_id))
+                return model_id, model
             else:
                 raise Exception("Invalid value for github key: {}".format(github))
             url = "https://api.github.com/repos/{organisation}/{model_id}/zipball{suffix}".format(
