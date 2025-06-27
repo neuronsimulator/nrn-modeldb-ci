@@ -96,15 +96,15 @@ jobs:
 
     - name: check for artifact URL NEURON_V1 -> ${{ env.NEURON_V1 }}
       if: startsWith(env.NEURON_V1, 'https://github.com/neuronsimulator/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        # Download artifact and unzip
         ARTIFACT_ID=$(echo "${NEURON_V1}" | grep --color=never -oE '[0-9]+$')
         echo "Extracted Artifact ID: ${ARTIFACT_ID}"
-        curl -L -sfS \
+        gh api \
           -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.NRN_MODELDB_CI_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          "https://api.github.com/repos/neuronsimulator/nrn/actions/artifacts/${ARTIFACT_ID}/zip" -o DROP_V1.zip
+          /repos/neuronsimulator/nrn/actions/artifacts/${ARTIFACT_ID}/zip > DROP_V1.zip
         unzip -d DROP_V1 DROP_V1.zip
 
         # Set drop dir in the env
@@ -112,15 +112,15 @@ jobs:
 
     - name: check for artifact URL NEURON_V2 -> ${{ env.NEURON_V2 }}
       if: startsWith(env.NEURON_V2, 'https://github.com/neuronsimulator/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        # Download artifact and unzip
         ARTIFACT_ID=$(echo "${NEURON_V2}" | grep --color=never -oE '[0-9]+$')
         echo "Extracted Artifact ID: ${ARTIFACT_ID}"
-        curl -L -sfS \
+        gh api \
           -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.NRN_MODELDB_CI_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          "https://api.github.com/repos/neuronsimulator/nrn/actions/artifacts/${ARTIFACT_ID}/zip" -o DROP_V2.zip
+          /repos/neuronsimulator/nrn/actions/artifacts/${ARTIFACT_ID}/zip > DROP_V2.zip
         unzip -d DROP_V2 DROP_V2.zip
 
         # Set drop dir in the env
