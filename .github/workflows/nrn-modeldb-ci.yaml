@@ -79,7 +79,7 @@ jobs:
 
   modeldb-v2:
     name: Running with ${{ env.NEURON_V2 }}
-    uses: ./.github/workflows/nrn-modeldb-ci-template.yaml@master
+    uses: ./.github/workflows/nrn-modeldb-ci-template.yaml@jelic/parallel_running
     with:
       neuron_version: ${{ github.event.inputs.neuron_v2 || inputs.neuron_v2 || 'neuron-nightly' }}
       models_to_run: ${{ github.event.inputs.models_to_run || inputs.models_to_run || '' }}
