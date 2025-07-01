@@ -2059,7 +2059,7 @@
   github: 'pull/2'
 2016664:
   model_dir:
-    - '../mechanisms'
+    - '../_mod'
 2019342:
   skip: true
   comment: "Mod files do not compile"
