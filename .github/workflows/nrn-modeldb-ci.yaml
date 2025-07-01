@@ -70,6 +70,7 @@ env:
 jobs:
   set-models:
     name: Set models to run for PR
+    runs-on: ubuntu-latest
     outputs:
       models_to_run: ${{ steps.set-models.outputs.models_to_run }}
     steps:
