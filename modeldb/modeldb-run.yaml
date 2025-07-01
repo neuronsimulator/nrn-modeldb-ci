@@ -2057,3 +2057,6 @@
   github: 'pull/1'
 184732:
   github: 'pull/2'
+2016664:
+  model_dir:
+    - '../mechanisms'
