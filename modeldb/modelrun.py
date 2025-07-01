@@ -260,7 +260,6 @@ def prepare_model(model):
             zip_ref.extractall(os.path.join(model.working_dir, str(model.id)))
 
             # set model_dir
-            #model.run_info["model_dir"] = model_dir if not model.get('model_dir') else model['model_dir'][0]
             model.run_info["model_dir"] = model_dir
 
             # write driver.hoc
@@ -495,7 +494,9 @@ class ModelRunManager(object):
         return stats
 
     def _run_models(self, model_runs):
-        processed_models = map(run_model, model_runs)
+        pool = multiprocessing.Pool()
+
+        processed_models = pool.imap_unordered(run_model, model_runs)
         for model in ProgressBar.iter(processed_models, self.nof_models):
             self.run_logs[model.id] = {}
             self.run_logs[model.id]["logs"] = model.logs
