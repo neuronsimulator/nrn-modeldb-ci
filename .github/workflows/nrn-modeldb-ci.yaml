@@ -68,21 +68,58 @@ env:
   NEURON_V2: ${{ github.event.inputs.neuron_v2 || inputs.neuron_v2 || 'neuron-nightly' }}
 
 jobs:
+  set-models:
+    name: Set models to run for PR
+    outputs:
+      models_to_run: ${{ steps.set-models.outputs.models_to_run }}
+    steps:
+      - name: Set models to run for PR
+        id: set-models
+        if: github.event_name == 'pull_request' && inputs.repo == ''
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # For PRs we only have a few models for quick sanity checking.
+          # Once the PR is green you need to manually run the ModelDB CI workflow by simply selecting your branch in the UI.
+
+          # The follwing selection aims to target different features (since we haven't worked on unit testing yet -> #38 ).
+          # Select a few models to run CI for PRs:
+          #   64195   -> run: null
+          #   22203   -> skip: true
+          #   156120  -> several model directories
+          #   97868   -> failed nrnivmodl
+          #   146030  -> curate_patterns
+          #   244679  -> no entry in modeldb-run.yaml
+          #   rest:   -> currently yielding differences in the pipeline
+          echo 'models_to_run=64195 22203 156120 51781 97868 22203 97756 97917 105507 136803 138379 138382 146030 244679 251881' >> $GITHUB_OUTPUT
+
+          # parse PR description for models to run
+
+          parse_models=$(gh pr view $PR_URL --json body -q '.body | capture("(MODELS_TO_RUN=)(?<models>\\d+( \\d+)*)")')
+          if [ ! -z "$parse_models" ]; then
+            echo "models_to_run=$(echo $parse_models | jq -r .models)" >> $GITHUB_OUTPUT
+          fi
+
   modeldb-v1:
     name: Running with V1
+    needs:
+      - set-models
     uses: ./.github/workflows/nrn-modeldb-ci-template.yaml
     with:
       neuron_version: ${{ github.event.inputs.neuron_v1 || inputs.neuron_v1 || 'neuron' }}
-      models_to_run: ${{ github.event.inputs.models_to_run || inputs.models_to_run || '' }}
+      models_to_run: ${{ github.event.inputs.models_to_run || inputs.models_to_run || needs.set-models.outputs.models_to_run || '' }}
       platform: ubuntu-latest
       python_version: '3.9'
 
   modeldb-v2:
     name: Running with V2
+    needs:
+      - set-models
     uses: ./.github/workflows/nrn-modeldb-ci-template.yaml
     with:
       neuron_version: ${{ github.event.inputs.neuron_v2 || inputs.neuron_v2 || 'neuron-nightly' }}
-      models_to_run: ${{ github.event.inputs.models_to_run || inputs.models_to_run || '' }}
+      models_to_run: ${{ github.event.inputs.models_to_run || inputs.models_to_run || needs.set-models.outputs.models_to_run || '' }}
       platform: ubuntu-latest
       python_version: '3.9'
 
