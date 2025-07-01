@@ -124,6 +124,6 @@ jobs:
       with:
         name: ${{ inputs.neuron_version }}-${{ inputs.platform }}-${{ inputs.python_version }}
         path: |
-          '*.json.xz'
-          '*.json'
-          '*.html'
+          *.json.xz
+          *.json
+          *.html
