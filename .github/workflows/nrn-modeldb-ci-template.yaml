@@ -1,0 +1,129 @@
+name: Neuron ModelDB CI template
+
+on:
+  workflow_call:
+   inputs:
+      neuron_version:
+        description: 'Version of NEURON wheel on PyPI / artifacts URL'
+        default: 'neuron'
+        required: true
+        type: string
+      models_to_run:
+        description: 'Empty for all models, space separated accession numbers for specific models'
+        default: ''
+        required: false
+        type: string
+      repo:
+        default: 'neuronsimulator/nrn-modeldb-ci'
+        type: string
+        required: false
+      platform:
+        description: 'The platform/OS to run the CI'
+        type: string
+        default: 'ubuntu-latest'
+        required: false
+      python_version:
+        description: 'The Python version used by the wheel'
+        type: string
+        default: '3.9'
+        required: false
+
+jobs:
+  modeldb:
+    name: Run modelDB CI on ${{ inputs.platform }} with Python ${{ inputs.python_version }}
+    runs-on: ${{ inputs.platform }}
+    env:
+      DISPLAY: ${{ ':0' }}
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: ${{ inputs.repo || github.repository }}
+
+    - name: check for Azure drop of NEURON -> ${{ inputs.neuron_version }}
+      if: startsWith(inputs.version, 'https://dev.azure.com/neuronsimulator/')
+      env:
+        ARTIFACT_URL: ${{ inputs.neuron_version }}
+      run: |
+        # check URI
+        curl -sfSI -X GET '${ARTIFACT_URL}'
+
+        # Download Azure drop and unzip
+        wget --tries=4 -LO DROP.zip ${ARTIFACT_URL}
+        unzip DROP.zip
+        mv drop DROP
+
+    - name: Setup Python ${{ inputs.python_version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python_version }}
+
+    - name: Install dependencies and project
+      id: install-deps
+      run: |
+        set
+        # Set up Xvfb
+        sudo apt-get install xvfb
+        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1600x1200x24 -noreset -nolock -shmem &  # run in bg
+        # Install python dependencies
+        python -m pip install --upgrade 'pip<=24.0'
+        # Install project in editable mode
+        python -m pip install -e .
+
+    - name: Cache ModelDB models
+      uses: actions/cache@v4
+      with:
+        path: |
+          cache
+          modeldb/modeldb-meta.yaml
+        key: dynamic-models
+
+    - name: Get ModelDB models
+      env:
+        MODELS_TO_RUN: ${{ inputs.models_to_run }}
+      run: |
+        getmodels $MODELS_TO_RUN
+
+    - name: Run Models with NEURON -> ${{ inputs.neuron_version }}
+      env:
+        NEURON_VERSION: ${{ inputs.neuron_version }}
+        MODELS_TO_RUN: ${{ inputs.models_to_run }}
+      run: |
+        # Install NEURON
+        if [[ -d "DROP" ]]; then
+          # due to https://github.com/pypa/pip/issues/12110 we cannot rely on `--find-links`
+          # so we use a workaround
+          for wheel in DROP/*.whl
+          do
+            if ! python -m pip install --user "${wheel}"
+            then
+              echo "Unable to install ${wheel}, trying another one"
+            else
+              echo "Successfully installed ${wheel}"
+              break
+            fi
+          done
+        else
+          python -m pip install $NEURON_VERSION
+        fi
+        nrn_ver="$(python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)")"
+        runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
+        # Filter out the gout data before generating HTML reports. The HTML
+        # diff uses the original gout files on disk anyway. Compress the large
+        # JSON file including gout data for inclusion in the artifacts
+        mv ${nrn_ver}.json ${nrn_ver}-full.json
+        jq -r 'del(.[].gout)' ${nrn_ver}-full.json > ${nrn_ver}.json
+        xz ${nrn_ver}-full.json
+        report2html ${nrn_ver}.json
+
+        echo "nrn_ver=$nrn_ver" >> $GITHUB_ENV
+
+      - name: Upload artifacts for ${{ inputs.neuron_version }}
+        uses: actions/upload-artifact@v4
+        id: upload
+        with:
+          name: ${{ inputs.neuron_version }}-${{ inputs.platform }}-${{ inputs.python_version }}
+          path: |
+            '*.json.xz'
+            '*.json'
+            '*.html'
