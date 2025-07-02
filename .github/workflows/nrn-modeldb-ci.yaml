@@ -143,6 +143,24 @@ jobs:
           name: ${{ env.NEURON_V2 }}-ubuntu-latest-3.9
           path: v2
 
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.repo || github.repository }}
+
+      - name: Setup Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies and project
+        id: install-deps
+        run: |
+          set
+          # Install python dependencies
+          python -m pip install --upgrade 'pip<=24.0'
+          # Install project in editable mode
+          python -m pip install -e .
+
       - name: diffreports2html
         if: env.NEURON_V1 != env.NEURON_V2
         run: |
