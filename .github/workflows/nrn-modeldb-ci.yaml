@@ -131,18 +131,6 @@ jobs:
       - modeldb-v2
     runs-on: ubuntu-latest
     steps:
-      - name: Download artifacts for ${{ env.NEURON_V1 }}
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ env.NEURON_V1 }}-ubuntu-latest-3.9
-          path: v1
-
-      - name: Download artifacts for ${{ env.NEURON_V2 }}
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ env.NEURON_V2 }}-ubuntu-latest-3.9
-          path: v2
-
       - uses: actions/checkout@v4
         with:
           repository: ${{ inputs.repo || github.repository }}
@@ -160,6 +148,18 @@ jobs:
           python -m pip install --upgrade 'pip<=24.0'
           # Install project in editable mode
           python -m pip install -e .
+
+      - name: Download artifacts for ${{ env.NEURON_V1 }}
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.NEURON_V1 }}-ubuntu-latest-3.9
+          path: v1
+
+      - name: Download artifacts for ${{ env.NEURON_V2 }}
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.NEURON_V2 }}-ubuntu-latest-3.9
+          path: v2
 
       - name: diffreports2html
         if: env.NEURON_V1 != env.NEURON_V2
