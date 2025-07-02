@@ -52,7 +52,7 @@ jobs:
         ARTIFACT_URL: ${{ inputs.neuron_version }}
       run: |
         # check URI
-        curl -sfSI -X GET '${ARTIFACT_URL}'
+        curl -sfSI -X GET ${ARTIFACT_URL}
 
         # Download Azure drop and unzip
         wget --tries=4 -LO DROP.zip ${ARTIFACT_URL}
