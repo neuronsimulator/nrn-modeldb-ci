@@ -152,13 +152,13 @@ jobs:
       - name: Download artifacts for ${{ env.NEURON_V1 }}
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.NEURON_V1 }}-ubuntu-latest-3.9
+          name: modeldb-${{ env.NEURON_V1 }}-ubuntu-latest-3.9
           path: v1
 
       - name: Download artifacts for ${{ env.NEURON_V2 }}
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.NEURON_V2 }}-ubuntu-latest-3.9
+          name: modeldb-${{ env.NEURON_V2 }}-ubuntu-latest-3.9
           path: v2
 
       - name: diffreports2html
@@ -169,3 +169,13 @@ jobs:
         run: |
           tree
           diffreports2html v1/${file1}.json v2/${file2}.json
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        env:
+          file1: ${{ needs.modeldb-v1.outputs.json_file }}
+          file2: ${{ needs.modeldb-v2.outputs.json_file }}
+        with:
+          name: modeldb-comparison
+          path: |
+            v1/*vs*.html
