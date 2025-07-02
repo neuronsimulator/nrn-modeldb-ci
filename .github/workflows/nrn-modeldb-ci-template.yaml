@@ -47,12 +47,12 @@ jobs:
         repository: ${{ inputs.repo || github.repository }}
 
     - name: check for Azure drop of NEURON -> ${{ inputs.neuron_version }}
-      if: startsWith(inputs.version, 'https://dev.azure.com/neuronsimulator/')
+      if: startsWith(inputs.neuron_version, 'https://dev.azure.com/neuronsimulator/')
       env:
         ARTIFACT_URL: ${{ inputs.neuron_version }}
       run: |
         # check URI
-        curl -sfSI -X GET '${ARTIFACT_URL}'
+        curl -sfSI -X GET ${ARTIFACT_URL}
 
         # Download Azure drop and unzip
         wget --tries=4 -LO DROP.zip ${ARTIFACT_URL}
