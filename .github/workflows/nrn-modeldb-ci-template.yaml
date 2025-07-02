@@ -27,6 +27,10 @@ on:
         type: string
         default: '3.9'
         required: false
+    outputs:
+      json_file:
+        description: "The name of the JSON file for comparison"
+        value: ${{ jobs.modeldb.outputs.json_file }}
 
 jobs:
   modeldb:
