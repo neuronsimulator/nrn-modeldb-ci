@@ -124,7 +124,7 @@ jobs:
       platform: ubuntu-latest
       python_version: '3.9'
 
-  compare:
+  nrn-modeldb-ci:
     name: Compare results
     needs:
       - modeldb-v1
