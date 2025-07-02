@@ -167,4 +167,5 @@ jobs:
           file1: ${{ needs.modeldb-v1.outputs.json_file }}
           file2: ${{ needs.modeldb-v2.outputs.json_file }}
         run: |
+          tree
           diffreports2html v1/${file1}.json v2/${file2}.json
