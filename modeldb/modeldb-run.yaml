@@ -1292,6 +1292,7 @@
   model_dir:
     - channels
 146030:
+  github: 'pull/1'
   curate_patterns:
     - pattern: 'Setup time for simulation:\s*[0-9]+(\.[0-9]+)?\s*seconds'
       repl: 'Setup time for simulation: %setup_time% seconds'
