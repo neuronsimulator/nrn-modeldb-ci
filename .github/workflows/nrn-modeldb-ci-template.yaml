@@ -32,6 +32,8 @@ jobs:
   modeldb:
     name: Run modelDB CI on ${{ inputs.platform }} with Python ${{ inputs.python_version }}
     runs-on: ${{ inputs.platform }}
+    outputs:
+      json_file: ${{ steps.run-models.outputs.json_file }}
     env:
       DISPLAY: ${{ ':0' }}
 
@@ -85,6 +87,7 @@ jobs:
         getmodels $MODELS_TO_RUN
 
     - name: Run Models with NEURON -> ${{ inputs.neuron_version }}
+      id: run-models
       env:
         NEURON_VERSION: ${{ inputs.neuron_version }}
         MODELS_TO_RUN: ${{ inputs.models_to_run }}
@@ -116,7 +119,7 @@ jobs:
         xz ${nrn_ver}-full.json
         report2html ${nrn_ver}.json
 
-        echo "nrn_ver=$nrn_ver" >> $GITHUB_ENV
+        echo "json_file=$nrn_ver" >> $GITHUB_OUTPUT
 
     - name: Upload artifacts for ${{ inputs.neuron_version }}
       uses: actions/upload-artifact@v4
