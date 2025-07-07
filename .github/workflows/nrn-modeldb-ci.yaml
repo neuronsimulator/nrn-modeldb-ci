@@ -125,7 +125,6 @@ jobs:
       python_version: '3.9'
 
   nrn-modeldb-ci:
-    name: Compare results
     needs:
       - modeldb-v1
       - modeldb-v2
