@@ -2026,6 +2026,8 @@
   skip: true
   comment: ".mod files do not compile"
 2016138:
+  model_dir:
+    - "Figure1/Neuron_codes/mod"
   skip: true
   comment: ".mod files do not compile with NEURON 9.0"
 2016658:
