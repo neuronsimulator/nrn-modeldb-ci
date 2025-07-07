@@ -2027,6 +2027,8 @@
 2016138:
   skip: true
   comment: ".mod files do not compile with NEURON 9.0"
+267741:
+  github: 'pull/1'
 2016658:
   model_dir:
     - 'MEC_model_figs5_6'
