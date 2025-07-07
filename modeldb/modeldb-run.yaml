@@ -408,7 +408,7 @@
       repl: ''
     - pattern: '^\s+\^'
       repl: ''
-  model_dir: 
+  model_dir:
     - '.'
   # this should be removed once the latest release and development branch include nrn#2027
   ignore_exit_code: true
