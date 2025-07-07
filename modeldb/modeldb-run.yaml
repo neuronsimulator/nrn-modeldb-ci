@@ -1,56 +1,56 @@
 279:
-    run:
+  run:
     - restart("tc1_cc")
     - run()
     - verify_graph_()
 2487:
-    run:
+  run:
     - run()
     - verify_graph_()
 2730:
-    run:
+  run:
     - //launch but do not run
 2796:
-    run:
+  run:
     - run()
     - verify_graph_()
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 2798:
-    run:
+  run:
     - run_c()
     - verify_graph_()
 2937:
-    run:
+  run:
     - run3()
     - verify_graph_()
 3167:
-    run:
+  run:
     - use_mcell_ran4(1)
     - run()
     - verify_graph_()
 3263:
-    run:
+  run:
     - runb()
     - verify_graph_()
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 3264:
-    run:
+  run:
     - use_mcell_ran4(1)
     - run_fig3a()
     - NetStim[0].noiseFromRandom123(1,2,3) // Session file does not specify
@@ -58,90 +58,92 @@
     - run()
     - verify_graph_()
 3289:
-    run:
+  run:
     - run()
     - verify_graph_()
 3332:
-    run:
+  run:
     - run()
     - verify_graph_()
 3342:
-    model_dir: .
-    run:
+  model_dir:
+    - .
+  run:
     - run()
     - verify_graph_()
 3343:
-    run:
+  run:
     - restart("Fspin")
     - init()
     - run()
     - verify_graph_()
 3344:
-    run:
+  run:
     - run()
     - verify_graph_()
 3434:
-    curate_patterns:
-      - pattern: 'realtime = [0-9]+\.[0-9]+ s'
-        repl: 'realtime = %wallclock_time%'
-    run:
+  curate_patterns:
+    - pattern: 'realtime = [0-9]+\.[0-9]+ s'
+      repl: 'realtime = %wallclock_time%'
+  run:
     - init()
     - gr.showAllTimeGraphs=1
     - tstop=1
     - run()
     - verify_graph_()
 3454:
-    run:
+  run:
     - run(NetStim[0].interval=10)
     - verify_graph_()
 3457:
-    run:
+  run:
     - run()
     - verify_graph_()
 3483:
-    run:
+  run:
     - run()
     - verify_graph_()
 3488:
-    run:
+  run:
     - run()
     - verify_graph_()
 3491:
-    run:
+  run:
     - run()
     - verify_graph_()
 3493:
-    run:
+  run:
     - run()
     - verify_graph_()
 3533:
-    run:
+  run:
     - run()
     - verify_graph_()
 3648:
-    run:
+  run:
     - run()
     - verify_graph_()
 3658:
-    run:
+  run:
     - glubes2D()
     - run()
     - verify_graph_()
 3660:
-    run:
+  run:
     - run()
     - verify_graph_()
 3665:
-    run:
+  run:
     - run()
     - verify_graph_()
 3670:
-    run:
+  github: 'pull/1'
+  run:
     - restart("Fig5A")
     - run()
     - verify_graph_()
 3673:
-    run:
+  run:
     - verify_graph_()
     - objref save_window_[1]
     - graphList[0].remove_all
@@ -151,62 +153,62 @@
     - run()
     - verify_graph_()
 3676:
-    run:
+  run:
     - xopen("fig2.hoc")
     - verify_graph_()
 3682:
-    run:
+  run:
     - verify_graph_()
-    script:
+  script:
     - echo 'use_mcell_ran4(1)' > temp
     - cat mosinit.hoc >> temp
     - mv temp  mosinit.hoc
 3684:
-    run:
+  run:
     - run()
     - verify_graph_()
 3793:
-    run:
+  run:
     - restart("fig5a")
     - verify_graph_()
 3798:
-    run:
+  run:
     - '{inter_fhdens(0.4e-3) demyl1(1,3) run()}'
     - verify_graph_()
 3801:
-    run:
+  run:
     - run()
     - verify_graph_()
 3802:
-    run:
+  run:
     - run()
     - verify_graph_()
 3808:
-    run:
+  run:
     - xstatedum[2]=1
     - new_experiment(3)
     - run()
     - verify_graph_()
 3810:
-    run:
+  run:
     - stdinit()
     - continuerun(2)
     - cvode_active(1)
     - continuerun(150)
     - verify_graph_()
 3815:
-    run:
+  run:
     - run_fig1a()
     - init()
     - run()
     - verify_graph_()
 3817:
-    run:
+  run:
     - restart("demo_PY_RS")
     - run()
     - verify_graph_()
 5426:
-    run:
+  run:
     - verify_graph_()
     - '{restart() load_file("hhk.ses") run() verify_graph_()}'
     - '{restart() load_file("hhna.ses") run() verify_graph_()}'
@@ -214,104 +216,106 @@
     - '{restart() load_file("hhnafit.ses") run() verify_graph_()}'
     - '{restart() load_file("hhna.ses") run() verify_graph_()}'
 6763:
-    run:
+  run:
     - run()
     - verify_graph_()
 7386:
-    run:
+  run:
     - runc()
     - verify_graph_()
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 7659:
-    run:
+  run:
     - runp()
     - verify_graph_()
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 7907:
-    comment: ".mod files do not compile"
-    # Based on readme, other choices are available
-    model_dir: "batch_back/back/mod/kvz_naz"
-    skip: true
+  comment: ".mod files do not compile"
+  # Based on readme, other choices are available
+  model_dir:
+    - "batch_back/back/mod/kvz_naz"
+  skip: true
 8115:
-    run:
+  run:
     - use_mcell_ran4(1)
     - run()
     - verify_graph_()
 8210:
-    run:
+  run:
     - dend_inj()
     - verify_graph_()
 8284:
-    run:
+  run:
     - run()
     - verify_graph_()
 9769:
-    run:
+  run:
     - use_mcell_ran4(1)
     - rund()
     - verify_graph_()
 17663:
-    run:
+  run:
     - restart("re1_cc")
     - run()
     - verify_graph_()
 18197:
-    run:
+  run:
     - restart("demo_glutamate_neuralcomputation")
     - verify_graph_()
 18198:
-    run:
+  run:
     - restart("release")
     - run()
     - verify_graph_()
 18500:
-    run:
+  run:
     - 'duration = 2 '
     - restart("demo_ampa")
     - verify_graph_()
 18502:
-    run:
+  github: 'pull/1'
+  run:
     - restart("ltp_two")
     - verify_graph_()
 18742:
-    run:
+  run:
     - restart("fig6A")
     - verify_graph_()
 19022:
-    run:
+  run:
     - run()
     - verify_graph_()
 19176:
-    run:
+  run:
     - experiment1()
     - verify_graph_()
 19214:
-    run:
+  run:
     - Main(5)
     - run()
     - verify_graph_()
 19366:
-    run:
+  run:
     - Main(2)
     - verify_graph_()
 19591:
-    run:
+  run:
     - restart("fig1a")
     - verify_graph_()
     - restart("fig2a1")
@@ -327,70 +331,73 @@
     - restart("fig2b3")
     - verify_graph_()
 19696:
-    run:
+  run:
     - runh()
     - verify_graph_()
 19746:
-    run:
+  github: 'pull/1'
+  run:
     - run()
     - verify_graph_()
 19747:
-    run:
+  run:
     - run()
     - verify_graph_()
 19920:
-    run:
+  run:
     - run()
     - verify_graph_()
 20014:
-    run:
+  run:
     - Main(1)
     - verify_graph_()
 20015:
-    run:
+  run:
     - run()
     - verify_graph_()
 20212:
-    model_dir: mechanism
-    run:
+  model_dir:
+    - mechanism
+  run:
     - chdir("mechanism")
     - xopen("mosinit.hoc")
     - unix_spike_atten_hof()
     - verify_graph_()
-    script:
+  script:
     # Model tries to abort on mac, but let's try and run it anyway
     - sed -i'.bak' -e 's#if (unix_mac_pc() ==1 || unix_mac_pc() ==3 ) {#if (1) { // assume works on mac/linux/windows#g' mechanism/mosinit.hoc
 20756:
-    run:
+  run:
     - 'pyr3_ = new pyr3( 21 ) '
     - setFig2()
     - tstop=100
     - run()
     - verify_graph_()
 21329:
-    comment: //do not run random seed different every time
-    run: null
+  comment: //do not run random seed different every time
+  run:
 22203:
-    comment: //disregard cannot be run in batch mode
-    skip: true
+  comment: //disregard cannot be run in batch mode
+  skip: true
 26997:
-    run:
+  run:
     - fig1a()
     - verify_graph_()
 32992:
-    run:
+  github: 'pull/1'
+  run:
     - verify_graph_()
-    script:
+  script:
     - echo 'use_mcell_ran4(1)' > temp
     - cat mosinit.hoc >> temp
     - mv temp  mosinit.hoc
 33975:
-    # The "interesting" feature of this model is that it produces an error message, roughly:
-    #   We were unable to associate a PlayRecord item with a RANGE variable
-    # whose format changed after 8.2.2, and which went away in the data structure PR #2027.
-    # The error going away caused an (empty) gout file to be written, which also caused a diff.
-    # To avoid false positives, we regex away the error + traceback, and never produce a gout.
-    curate_patterns:
+  # The "interesting" feature of this model is that it produces an error message, roughly:
+  #   We were unable to associate a PlayRecord item with a RANGE variable
+  # whose format changed after 8.2.2, and which went away in the data structure PR #2027.
+  # The error going away caused an (empty) gout file to be written, which also caused a diff.
+  # To avoid false positives, we regex away the error + traceback, and never produce a gout.
+  curate_patterns:
     - pattern: 'hoc_run1: caught exception: hoc_execerror: We were unable to associate a PlayRecord item with a RANGE variable'
       repl: ''
     - pattern: '%neuron-executable%: We were unable to associate a PlayRecord item with a RANGE variable'
@@ -401,191 +408,198 @@
       repl: ''
     - pattern: '^\s+\^'
       repl: ''
-    # this should be removed once the latest release and development branch include nrn#2027
-    ignore_exit_code: true
-    run:
+      # this should be removed once the latest release and development branch include nrn#2027
+  ignore_exit_code: true
+  run:
     - ringperf()
     - run()
     # - verify_graph_()
 37856:
-    run:
+  run:
     - runiv()
     - verify_graph_()
 37857:
-    run:
+  run:
     - run()
     - verify_graph_()
 43039:
-    run:
+  run:
     - rung()
     - verify_graph_()
 44050:
-    run:
+  run:
     - runm()
     - verify_graph_()
 50207:
-    run:
+  run:
     - run()
     - verify_graph_()
 50210:
-    run:
+  run:
     - runshift()
     - verify_graph_()
 50997:
-    run:
+  run:
     - restart("makefig7")
     - verify_graph_()
 51196:
-    run:
+  run:
     - run()
     - verify_graph_()
 51781:
-    run:
+  github: 'pull/3'
+  run:
     - load_file("testnet.hoc")
     - verify_graph_()
-    script:
+  script:
     # there are two problems with the code in this model:
     # - it tries to access /proc/uptime, which is not portable
     # - if that works (i.e. on Linux) it runs with a different seed every time,
     #   which is unhelpful in a CI context
-    -  sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' testnet.hoc
+    - sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' testnet.hoc
 52034:
-    run:
+  run:
     - run_short()
     - verify_graph_()
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 53435:
-    comment: // disregard. mod files in subdirectory
-    skip: true
+  comment: // disregard. mod files in subdirectory
+  skip: true
 53437:
-    run:
+  run:
     - run()
     - verify_graph_()
 53451:
-    run:
+  run:
     - restart("fig7")
     - verify_graph_()
 53569:
-    run:
+  run:
     - run()
     - verify_graph_()
 53869:
-    run:
+  run:
     - //takes a long time
 53876:
-    model_dir: "."
-    run:
+  model_dir:
+    - "."
+  run:
     - restart("fig2c")
     - verify_graph_()
 53893:
-    run:
+  run:
     - restart("fig3")
     - verify_graph_()
 53965:
-    comment: // disregard
-    skip: true
+  comment: // disregard
+  skip: true
 54903:
-    run:
+  run:
     - '{load_file("Fig6-B.ses")}'
     - run()
     - verify_graph_()
 55035:
-    run:
+  run:
     - runm()
     - verify_graph_()
 62266:
-    run:
+  run:
     - run()
     - verify_graph_()
 62284:
-    run:
+  run:
     - run()
     - verify_graph_()
 64195:
-    comment: //do not run problem due to randomness and takes too long due to failure
-        to set steps_per_ms consistent with dt
-    model_dir: "."
-    run: null
+  comment: //do not run problem due to randomness and takes too long due to failure to set steps_per_ms consistent with dt
+  model_dir:
+    - "."
+  run:
 64228:
-    run:
+  run:
     - restart("0222AP_BR.ses")
     - run()
     - verify_graph_()
 64229:
-    model_dir: parbulbNet
-    run:
+  model_dir:
+    - parbulbNet
+  run:
     - run()
     - verify_graph_()
 64259:
-    run:
+  run:
     - use_mcell_ran4(1)
     - run()
     - verify_graph_()
 64261:
-    comment: //do not run takes too long
-    run: null
+  comment: //do not run takes too long
+  run:
 64296:
-    run:
+  run:
     - fig7A()
     - verify_graph_()
 71312:
-    github: 'pull/1'
-    run:
+  github: 'pull/2'
+  run:
     - NregNsyn(4)
     - verify_graph_()
 74298:
-    run:
+  run:
     - load_file("sample.hoc")
     - verify_graph_()
-    script:
-    -  sed -i'.bak' -e 's/tstop *=/tstop = 100\/\//g;/whichAP/,$d' sample.hoc
+  script:
+    - sed -i'.bak' -e 's/tstop *=/tstop = 100\/\//g;/whichAP/,$d' sample.hoc
 76879:
-    run:
+  run:
     - tstop=20
     - run1(1)
     - verify_graph_()
 80769:
-    run:
+  run:
     - restart("shortRun")
     - verify_graph_()
 82364:
-    run:
+  run:
     - reg_20()
     - verify_graph_()
 82784:
-    run:
+  github: 'pull/1'
+  run:
+    - system("mkdir -p out")
     - load_file("runShort.hoc")
     - verify_graph_()
 82849:
-    run:
+  run:
     - load_file("fig2A.hoc")
     - verify_graph_()
 83319:
-    comment: //disregard NEURON in subdirectory
-    skip: true
+  comment: //disregard NEURON in subdirectory
+  skip: true
 83523:
-    run:
+  run:
     - //nothing to do
 83547:
-    run:
+  run:
     - run()
     - verify_graph_()
 83590:
-    model_dir: mechanisms
-    run: []
-    script:
+  model_dir:
+    - mechanisms
+  run: []
+  script:
     - sed -i'.bak' -e 's/mustart  = -0.400/mustart  = 0.800/g;s/sigmastart  = 0.064/sigmastart  = 0.128/g' mylibs/TFparams.hoc
 84589:
-    model_dir: mod
-    run:
+  model_dir:
+    - mod
+  run:
     - //ignore sim in subdirectory
     - // have not been able to run yet
     - ////model_dir mod
@@ -593,240 +607,260 @@
     - // load_file("cells/d151.hoc")
     - // load_file("hoc/src/file_util.hoc")
     - // load_file("hoc/src/main.hoc")
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 84612:
-    model_dir: "."
-    run:
+  model_dir:
+    - "."
+  run:
     - restart_("fig4b1")
     - tstop=1000
     - run()
     - verify_graph_()
 156120:
-    model_dir: mods/other_mods;mods/synapse
-    run:
+  model_dir:
+    - mods/other_mods;mods/synapse
+  run:
     - run()
     - verify_graph_()
 180373:
-    model_dir: simulationcode
-    run:
+  github: 'pull/1'
+  model_dir:
+    - simulationcode
+  run:
     - run()
     - verify_graph_()
-    script:
+  script:
     - printf 'VERBATIM\nextern void state_discontinuity(int i, double* pd, double d);\nENDVERBATIM\n' >> simulationcode/glutamate.mod
     - ln -sf driver.hoc simulationcode/driver.hoc
-    curate_patterns:
-      - pattern: '\s*Vector.*'
-        repl: ''
+  curate_patterns:
+    - pattern: '\s*Vector.*'
+      repl: ''
 186977:
-    model_dir: mods/network_sims_MODs
-    run:
+  model_dir:
+    - mods/network_sims_MODs
+  run:
     - tstop = 400
     - run()
     - verify_graph_()
 223031:
-    model_dir: S1
-    run:
+  model_dir:
+    - S1
+  run:
     - run()
     - verify_graph_()
 235769:
-    model_dir: fig3
-    run:
+  model_dir:
+    - fig3
+  run:
     - tstop = 1000
     - run()
     - verify_graph_()
 241165:
-    model_dir: mechanisms
-    run:
+  model_dir:
+    - mechanisms
+  run:
     - tstop = 300 # original tstop is 30000 , too big
     - run()
     - verify_graph_()
 260971:
-    comment: tricky to set-up due to mosinit.hoc autodiscovery
-    skip: true
+  comment: tricky to set-up due to mosinit.hoc autodiscovery
+  skip: true
 83344:
-    model_dir: mod
+  model_dir:
+    - mod
 84655:
-    run:
+  run:
     - run()
     - verify_graph_()
 86537:
-    run:
+  run:
     - restart_("fig4")
     - verify_graph_()
 87454:
-    run:
+  run:
     - chdir("NEURON_Chopper_Network_Simulation")
     - xopen("mosinit.hoc")
     - runhere()
     - verify_graph_()
 87473:
-    comment: //disregard
-    skip: true
+  comment: //disregard
+  skip: true
 87535:
-    run:
+  run:
     - runm()
     - verify_graph_()
 87546:
-    run:
+  run:
     - cvode_active(1)
     - tstop=200
     - run()
     - verify_graph_()
 93321:
-    run:
+  run:
     - fig3topleft()
     - verify_graph_()
 93325:
-    run:
+  run:
     - run()
     - verify_graph_()
 93326:
-    run:
+  run:
     - run()
     - verify_graph_()
 93398:
-    run:
+  github: 'pull/1'
+  run:
     - restart("shortRun")
     - verify_graph_()
 94321:
-    model_dir: mechanisms
-    run:
+  github: 'pull/1'
+  model_dir:
+    - mechanisms
+  run:
     - tstop=10
     - init()
     - run()
     - verify_graph_()
 95870:
-    run:
+  run:
     - run()
     - verify_graph_()
 95960:
-    run:
+  run:
     - fig6a()
     - verify_graph_()
 96444:
-    run:
+  run:
     - chdir("ring")
     - load_file("ringpar.hoc")
     - verify_graph_()
 97263:
-    run:
+  run:
     - run()
     - verify_graph_()
 97756:
-    run:
+  run:
     - xopen("show_start.hoc")
     - verify_graph_()
-    script:
+  script:
     # avoid printing out times
     - sed -i'.bak' -e 's/^startsw()$/{startsw()}/g' ga_setup.hoc
 97860:
-    model_dir: mod
-    run:
+  model_dir:
+    - mod
+  run:
     - run()
     - verify_graph_()
 97868:
-    comment: 'Depends on MySQL, do not run'
-    skip: true
+  comment: 'Depends on MySQL, do not run'
+  skip: true
 97874:
-    model_dir: modeldb
-    run:
+  model_dir:
+    - modeldb
+  run:
     - verify_graph_()
 97917:
-    github: "pull/5"
-    curate_patterns:
+  github: "pull/5"
+  curate_patterns:
     - pattern: 'SetupTime: [0-9.\-e]+'
       repl: 'SetupTime: %setup_time%'
-    # There is a different (clashing) model under pardentategyrus, don't test
-    # that one at all for now
-    model_dir: nrntraub/mod
-    run:
+      # There is a different (clashing) model under pardentategyrus, don't test
+      # that one at all for now
+  model_dir:
+    - nrntraub/mod
+  run:
     - traub_launch()
     - verify_graph_()
     # Stop mosinit from running nrnivmodl on the fly; use the special produced
     # by nrn-modeldb-ci from the model_dir set above
-    script:
+  script:
     - sed -i'.bak' -e 's/mkdll_("nrntraub", "mod", s.s)) {/1) {\n\t\tchdir("nrntraub")/g' mosinit.hoc
 98005:
-    run:
+  run:
     - run()
     - verify_graph_()
 98017:
-    comment: //do not run
-    run: null
+  comment: //do not run
+  run:
 101629:
-    run:
+  run:
     - tstop=250
     - run()
     - verify_graph_()
 102288:
-    run:
+  run:
     - fig9A1()
     - verify_graph_()
 105385:
-    model_dir: mod
-    run:
+  model_dir:
+    - mod
+  run:
     - loadfig9()
     - tstop=100
     - run()
     - verify_graph_()
 105507:
-    run:
+  github: 'pull/4'
+  run:
     - load_file("batch_.hoc")
     - verify_graph_()
-    script:
+  script:
     # 424242: this is just avoiding a timing-related number being printed
     - sed -i'.bak' -e 's/batch_flag=0/batch_flag=1/g;s/tstop = 1e3/tstop = 20/g;s#return tti/1e3#return 424242#g;s#print tti/.*#print "%some_time%"#g' batch_.hoc
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 106551:
-    run:
+  github: 'pull/2'
+  run:
     - use_mcell_ran4(1)
     - tstop=10
     - run()
     - verify_graph_()
 106891:
-    run:
+  run:
     - tstop=10
     - runeg()
     - verify_graph_()
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 108458:
-    model_dir: mod
-    run:
+  model_dir:
+    - mod
+  run:
     - AP3_toq = 1
     - set_stim()
     - run()
     - verify_graph_()
 108459:
-    model_dir: mod
-    run:
+  model_dir:
+    - mod
+  run:
     - run()
     - verify_graph_()
 110560:
-    run:
+  run:
     - xopen("calcium.hoc")
     - fig1b()
     - objref gg, rvp_
@@ -839,33 +873,35 @@
     - gg.addobject(rvp_, 2, 1, 0.8, 0.9)
     - verify_graph_()
 112086:
-    run:
+  run:
     - use_mcell_ran4(1)
     - restart("metal()")
     - run()
     - verify_graph_()
 112359:
-    run:
+  run:
     - tstop=2000
     - tstop_changed()
     - control()
     - verify_graph_()
 112546:
-    run:
+  run:
     - runiv()
     - verify_graph_()
 112685:
-    run:
+  github: 'pull/3'
+  run:
     - run()
     - verify_graph_()
 113446:
-    run:
+  run:
     - tstop=500
     - tstop_changed()
     - run()
     - verify_graph_()
 113732:
-    run:
+  github: 'pull/2'
+  run:
     - use_mcell_ran4(1)
     - suprathresh()
     - tstop=50
@@ -873,19 +909,20 @@
     - run()
     - verify_graph_()
 113997:
-    run:
+  run:
     - restart("demo_HPGA_non-saturating.hoc")
     - tstop=30000
     - run()
     - verify_graph_()
 114047:
-    run:
+  run:
     - tstop=1e1
     - xopen("fig6.hoc")
     - verify_graph_()
 114355:
-    model_dir: mechanisms
-    run:
+  model_dir:
+    - mechanisms
+  run:
     - forall delete_section()
     - chdir("main")
     - load_file("main.hoc")
@@ -895,34 +932,36 @@
     - run()
     - verify_graph_()
 114359:
-    model_dir: mod
+  model_dir:
+    - mod
 114394:
-    run:
+  run:
     - run()
     - verify_graph_()
 114665:
-    run:
+  run:
     - disp()
     - verify_graph_()
 114685:
-    run:
+  run:
     - short_run()
     - verify_graph_()
 114735:
-    run:
+  run:
     - run()
     - verify_graph_()
 115356:
-    run:
+  run:
     - short_test()
     - verify_graph_()
 115357:
-    run:
+  run:
     - makeplusplus()
     - verify_graph_()
 116094:
-    model_dir: LongDendrite
-    run:
+  model_dir:
+    - LongDendrite
+  run:
     - load_file("mosinit.hoc")
     - run_experiment("fig2ace")
     - tstop=40
@@ -936,90 +975,94 @@
     # - run_fig1bde()
     # - verify_graph_()
 116096:
-    run:
+  run:
     - tstop=1
     - init()
     - run()
     - verify_graph_()
 116491:
-    run:
+  run:
     - nrnpython("import ch6_model")
     - verify_graph_()
 116740:
-    run:
+  run:
     - '{init() run()}'
     - verify_graph_()
 116830:
-    run:
+  run:
     - // takes too long and no gout data
     - //load_file("init.hoc")
     - //verify_graph_()
-    script:
+  script:
     - sed -i'.bak' -e 's/tstop = 100/tstop = 20/g' init.hoc
 116835:
-    run:
+  run:
     - tstop=10
     - run()
     - verify_graph_()
 116838:
-    run:
+  run:
     - tstop=10
     - run()
     - verify_graph_()
-    script:
+  script:
     - sed -i'.bak' -e 's/^showdemo=1/showdemo=0/g' mosinit.hoc
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 116956:
-    run:
+  run:
     - run()
     - verify_graph_()
 116981:
-    run:
+  run:
     - fig5()
     - verify_graph_()
 116983:
-    run:
+  run:
     - tstop=10
     - run()
     - verify_graph_()
 117207:
-    model_dir: Model
-    run:
+  model_dir:
+    - Model
+  run:
     - restart("AckerAnticBasalBackprop")
     - RunAll()
     - verify_graph_()
 117459:
-    model_dir: No5HT/3cell
-    run:
+  model_dir:
+    - No5HT/3cell
+  run:
     - run()
     - verify_graph_()
 121600:
-    model_dir: model/4
-    run:
+  model_dir:
+    - model/4
+  run:
     - run()
     - verify_graph_()
 118098:
-    run:
+  run:
     - newPlotV()
     - run()
     - Graph[0].exec_menu("View = plot")
     - verify_graph_()
 118631:
-    model_dir: mechanisms
-    run:
+  model_dir:
+    - mechanisms
+  run:
     - use_mcell_ran4(1)
     - graph_and_run()
     - verify_graph_()
 118662:
-    run:
+  run:
     - proc run(){}
     - restart_("figure_4a_cell1")
     - newPlotV()
@@ -1027,182 +1070,194 @@
     - run()
     - verify_graph_()
 118986:
-    run:
+  run:
     - run()
     - verify_graph_()
 119266:
-    run:
+  run:
     - run()
     - verify_graph_()
 119283:
-    run:
+  github: 'pull/1'
+  run:
     - use_mcell_ran4(1)
     - runi()
     - verify_graph_()
 120692:
-    # dynamic/ subdir also exists, semi-arbitrarily preferring less-nested dirs
-    model_dir: "."
-    run:
+  # dynamic/ subdir also exists, semi-arbitrarily preferring less-nested dirs
+  model_dir:
+    - "."
+  run:
     - load("fig7.hoc")
     - verify_graph_()
 120910:
-    run:
+  run:
     - run()
     - verify_graph_()
 121060:
-    run:
+  run:
     - Exec()
     - verify_graph_()
 121253:
-    run:
+  run:
     - short_run()
     - verify_graph_()
 121259:
-    run:
+  run:
     - load_file("homrun.hoc")
     - verify_graph_()
 122329:
-    run:
+  run:
     - '{ load_file("withSKsoma.hoc") init() }'
     - tstop = 500
     - run()
     - verify_graph_()
 122442:
-    run:
+  run:
     - load_file("DCM_0.6um_axon.ses")
     - newPlotV()
     - run()
     - verify_graph_()
 123453:
-    run:
+  run:
     - run_model(prot)
     - verify_graph_()
 123623:
-    run:
+  run:
     - run()
     - verify_graph_()
 123815:
-    run:
+  run:
     - tstop=5
     - newPlotV()
     - run()
     - verify_graph_()
 123897:
-    model_dir: mechanism
-    run:
+  model_dir:
+    - mechanism
+  run:
     - xopen("experiment/Pyramidal_Main.hoc")
     - freePlay()
     - tstop=20
     - run()
     - verify_graph_()
 124043:
-    run:
+  run:
     - tstop=80
     - run()
     - verify_graph_()
 124063:
-    run:
+  run:
     - tstop=10
     - run()
     - verify_graph_()
-    script:
+  script:
     - sed -i'.bak' -e 's/tstop = 6500/tstop = 100/g' session.ses
 124291:
-    run:
+  run:
     - stim.amp = 0.1
     - runa()
     - verify_graph_()
-    script: # todo -> fix model for NEURON 8.0.0 and remove this script
+  script: # todo -> fix model for NEURON 8.0.0 and remove this script
     - sed -i'.bak' -e 's/return 0;//g' MOPP_Fig_1B_left/ichan2.mod
 124513:
-    script:
+  script:
     # there are two problems with the code in this model:
     # - it tries to access /proc/uptime, which is not portable
     # - if that works (i.e. on Linux) it runs with a different seed every time,
     #   which is unhelpful in a CI context
-    -  sed -i'.bak' -e 's#ropen("/proc/uptime")#// ropen("/proc/uptime")#g;s#rseed = fscan()#rseed=424242#g' 50knet.hoc
+    - sed -i'.bak' -e 's#ropen("/proc/uptime")#// ropen("/proc/uptime")#g;s#rseed = fscan()#rseed=424242#g' 50knet.hoc
 125385:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 129067:
-    # Arbitrary choice, Welday_et_al_Fig9C also exists.
-    model_dir: "Welday_et_al_Fig9AB"
+  # Arbitrary choice, Welday_et_al_Fig9C also exists.
+  model_dir:
+    - "Welday_et_al_Fig9AB"
 136095:
-    run:
+  github: 'pull/4'
+  run:
     - run()
     - verify_graph_()
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 138321:
-    run:
+  run:
     - run()
     - verify_graph_()
-    model_dir: OneDimension/Neuron
+  model_dir:
+    - OneDimension/Neuron
 138379:
-    github: "pull/3"
-    curate_patterns:
-      - pattern: 't=100\.00;(\d+)\([0-9.\-e]+\)'
-        repl: 't=100.00;\1(%some_kind_of_clock%)'
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: '^Matplotlib is building the font cache.*'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
-    run:
+  github: "pull/4"
+  curate_patterns:
+    - pattern: 't=100\.00;(\d+)\([0-9.\-e]+\)'
+      repl: 't=100.00;\1(%some_kind_of_clock%)'
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: '^Matplotlib is building the font cache.*'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
+  run:
     - mytstop=0.1e3
     - tstop=mytstop
     - finish_run()
     - verify_graph_()
 139656:
-    comment: //do not run
-    run: null
+  comment: //do not run
+  run:
 140471:
-    model_dir: mods
+  model_dir:
+    - mods
 140828:
-    model_dir: 'mod.files'
+  model_dir:
+    - 'mod.files'
 140881:
-    comment: //do not run Lytton model takes too long to run and complex to edit
-    run: null
+  comment: //do not run Lytton model takes too long to run and complex to edit
+  run:
 141063:
-    comment: //do not run Problem is that Vbox.dialog() steals the focus (complex
-        to fix)
-    run: null
+  comment: //do not run Problem is that Vbox.dialog() steals the focus (complex to fix)
+  run:
 141272:
-    comment: //do not run Problem is that Vbox.dialog() steals the focus (complex
-        to fix)
-    run: null
+  comment: //do not run Problem is that Vbox.dialog() steals the focus (complex to fix)
+  run:
 141505:
-    comment: //do not run Specialized installation environment
-    run: null
+  comment: //do not run Specialized installation environment
+  run:
 143604:
-    model_dir: mod
+  model_dir:
+    - mod
 143633:
-    # they also seem to exist under master/; random choice
-    model_dir: "modfiles"
+  # they also seem to exist under master/; random choice
+  model_dir:
+    - "modfiles"
 144007:
-    # Arbitrary choice, jnphysiol2012 also exists
-    model_dir: "jneurosci2012"
+  # Arbitrary choice, jnphysiol2012 also exists
+  model_dir:
+    - "jneurosci2012"
 144385:
-    model_dir: mod
+  model_dir:
+    - mod
 144482:
-    model_dir: mechanism/mechanism_cell1
+  model_dir:
+    - mechanism/mechanism_cell1
 144490:
-    # readme says to use the top-level directory
-    model_dir: "."
+  # readme says to use the top-level directory
+  model_dir:
+    - "."
 144523:
-    run:
+  run:
     - objref test_graph_
     - test_graph_ = new Graph()
     - graphList[0].append(test_graph_)
@@ -1212,7 +1267,7 @@
     - run()
     - verify_graph_()
 144538:
-    curate_patterns:
+  curate_patterns:
     - pattern: 't=([0-9\.]+);(\d+)\([0-9.\-e]+\)'
       repl: 't=\1;\2(%some_kind_of_clock%)'
     - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
@@ -1223,31 +1278,32 @@
       repl: ''
     - pattern: '\s*\^\s*'
       repl: ''
-    run: null
-    script:
+  run:
+  script:
     - sed -i'.bak' -r 's/(tstop=mytstop=htmax= \(LearnDur \+ ZipDur \+ BaseDur\*2\) \*) 1e3/\1 2e1/g' params.hoc
 144579:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 145836:
-    run:
+  run:
     - ParmFitnessGui[0].run()
     - verify_graph_()
 146026:
-    model_dir: channels
+  model_dir:
+    - channels
 146030:
-    curate_patterns:
-      - pattern: 'Setup time for simulation:\s*[0-9]+(\.[0-9]+)?\s*seconds'
-        repl: 'Setup time for simulation: %setup_time% seconds'
-      - pattern: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: .*'
-        repl: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: %current_date%'
-      - pattern: 'Finished simulation in [0-9\.]+ seconds'
-        repl: 'Finished simulation in %simulation_time% seconds'
-      - pattern: 'Current time: .*'
-        repl: 'Current time: %current_time%'
+  curate_patterns:
+    - pattern: 'Setup time for simulation:\s*[0-9]+(\.[0-9]+)?\s*seconds'
+      repl: 'Setup time for simulation: %setup_time% seconds'
+    - pattern: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: .*'
+      repl: 'Starting simulation of duration 300\.0 ms, dt: 0\.025, reference: Sim_8c at time: %current_date%'
+    - pattern: 'Finished simulation in [0-9\.]+ seconds'
+      repl: 'Finished simulation in %simulation_time% seconds'
+    - pattern: 'Current time: .*'
+      repl: 'Current time: %current_time%'
 146949:
-    github: "pull/4"
-    curate_patterns:
+  github: "pull/5"
+  curate_patterns:
     - pattern: 't=([0-9\.]+);(\d+)\([0-9.\-e]+\)'
       repl: 't=\1;\2(%some_kind_of_clock%)'
     - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
@@ -1258,24 +1314,25 @@
       repl: ''
     - pattern: '\s*\^\s*'
       repl: ''
-    run:
+  run:
     # main.hoc already calls run()
     - verify_graph_()
-    script:
+  script:
     - ln -s main.hoc mosinit.hoc
     # without this the script calls quit() before we run verify_graph_()
     - sed -i'.bak' -r 's#^quit()#// quit() removed by nrn-modeldb-ci#g' main.hoc
 147141:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 147460:
-    # Arbitrary choice, Interneuron/NEURON_code also exists.
-    model_dir: "Pyramidal/NEURON_code"
+  # Arbitrary choice, Interneuron/NEURON_code also exists.
+  model_dir:
+    - "Pyramidal/NEURON_code"
 147461:
-    comment: //do not run Minimum time would be 1/2 hr default time is about 8.3 hours
-    run: null
+  comment: //do not run Minimum time would be 1/2 hr default time is about 8.3 hours
+  run:
 148253:
-    script:
+  script:
     # there are two problems with the code in this model:
     # - it tries to access /proc/uptime, which is not portable
     # - if that works (i.e. on Linux) it runs with a different seed every time,
@@ -1284,104 +1341,122 @@
     - iconv -f ISO-8859-1 -t UTF-8 init_ClmIPSCs_GC.hoc.iconv.bak > init_ClmIPSCs_GC.hoc
     - sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' init_ClmIPSCs_GC.hoc
 149739:
-    run:
+  github: 'pull/3'
+  run:
     - verify_graph_()
-    script:
+  script:
     - mkdir Connection SP
     - mv OB.hoc OB.hoc.iconv.bak
     - iconv -f LATIN1 -t UTF-8 OB.hoc.iconv.bak > OB.hoc
     - sed -i'.bak' 's#tstop   = 3000#tstop   = 10#g' OB.hoc
 150239:
-    model_dir: nrn/mod
+  model_dir:
+    - nrn/mod
 150245:
-    github: "pull/4"
-    curate_patterns:
-      - pattern: 't=100\.00;176\([0-9]+\.[0-9]+\)'
-        repl: 't=100.00;176(%some_kind_of_clock%)'
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
-    run:
+  github: "pull/5"
+  curate_patterns:
+    - pattern: 't=100\.00;176\([0-9]+\.[0-9]+\)'
+      repl: 't=100.00;176(%some_kind_of_clock%)'
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
+  run:
     - tstop=100
     - init()
     - run()
     - verify_graph_()
 150284:
-    comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
-    # there is also a .mod file under biochemical_circuits/
-    model_dir: "mod"
-    run: null
+  comment: //do not run Mattione Le Novere missing _run_me.hoc in parallel model
+  # there is also a .mod file under biochemical_circuits/
+  model_dir:
+    - "mod"
+  run:
 # 150551: segfault with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
 151443:
-    model_dir: channels
+  model_dir:
+    - channels
 152197:
-    # Semi-arbitrarily ignoring back/ subdirectory that also contains MOD files
-    model_dir: "."
+  # Semi-arbitrarily ignoring back/ subdirectory that also contains MOD files
+  model_dir:
+    - "."
 154096:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 155705:
-    # There are two sibling dirs to "all_mods", and all_mods/nmdaR.mod and
-    # synapse/nmdaR.mod are not the same.
-    model_dir: "Two_netsPaper/mods/all_mods"
+  # There are two sibling dirs to "all_mods", and all_mods/nmdaR.mod and
+  # synapse/nmdaR.mod are not the same.
+  model_dir:
+    - "Two_netsPaper/mods/all_mods"
 155735:
-    comment: ".mod files do not compile"
-    model_dir: "mod-files/misc;mod-files/KR;mod-files/DSB"
-    skip: true
+  comment: ".mod files do not compile"
+  model_dir:
+    - "mod-files/misc;mod-files/KR;mod-files/DSB"
+  skip: true
 155796:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 167772:
-    comment: //do not run Tried "initDialog.unmap(1)" - didnt work.  Need to change
-        archive
-    # Various other directories containing .mod files exist under the
-    # SchmidtHieber/ path, arbitrarily choosing this one.
-    model_dir: "HH/Neuron"
-    run: null
+  comment: //do not run Tried "initDialog.unmap(1)" - didnt work.  Need to change archive
+  # Various other directories containing .mod files exist under the
+  # SchmidtHieber/ path, arbitrarily choosing this one.
+  model_dir:
+    - "HH/Neuron"
+  run:
 168310:
-    model_dir: experiment
+  model_dir:
+    - experiment
 168314:
-    script:
+  github: 'pull/1'
+  script:
     # fixup for case-sensitive filesystems
     - sed -i'.bak' 's#path = "./inputs/"#path = "./Inputs/"#g' ReadExperiments.hoc
     - sed -i'.bak' 's#load_file("protocol.hoc")#load_file("Protocol.hoc")#g' Hipp.hoc
 168858:
-    # Ignore x86_64/ directories committed to the repository, and ignore
-    # HHmodel/Scripts/NeuronMechanisms/ subdirectory
-    model_dir: "."
+  # Ignore x86_64/ directories committed to the repository, and ignore
+  # HHmodel/Scripts/NeuronMechanisms/ subdirectory
+  model_dir:
+    - "."
 182134:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 183014:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 183300:
-    # Arbitrarily ignoring .mod files under early_theta_version/
-    model_dir: "."
+  github: 'pull/2'
+  # Arbitrarily ignoring .mod files under early_theta_version/
+  model_dir:
+    - "."
 183718:
-    comment: ".mod files do not compile"
-    # Arbitrarily ignoring .mod files under resonator/
-    model_dir: "integrator"
-    skip: true
+  comment: ".mod files do not compile"
+  # Arbitrarily ignoring .mod files under resonator/
+  model_dir:
+    - "integrator"
+  skip: true
 184054:
-    model_dir: fullMorphCaLTP8
-    script:
+  github: 'pull/1'
+  model_dir:
+    - fullMorphCaLTP8
+  script:
     - sed -i'.bak' 's#tstop = 250#tstop = 25#g' fullMorphCaLTP8/doTBSStimCC.hoc
 184314:
-    # x86_64/ directory is included in the GitHub repository; should be removed
-    model_dir: "."
+  # x86_64/ directory is included in the GitHub repository; should be removed
+  model_dir:
+    - "."
 184497:
-    comment: ".mod files do not compile"
-    # readme says to use both
-    model_dir: "model;optmz"
-    skip: true
+  comment: ".mod files do not compile"
+  # readme says to use both
+  model_dir:
+    - "model;optmz"
+  skip: true
 187473:
-    model_dir: mods
+  model_dir:
+    - mods
 187604:
   curate_patterns:
     - pattern: 'TIME HOST 0: [0-9\.]+ seconds \(set up\)'
@@ -1389,38 +1464,44 @@
     - pattern: 'TIME HOST 0: [0-9\.]+ seconds \(created cells\)'
       repl: 'TIME HOST 0: %elapsed_time% seconds (created cells)'
 187615:
-    comment: "Tries to open bac6.ses, which doesn't exist"
-    # hay/ also exists, but doesn't have a mosinit.hoc
-    model_dir: "almog"
-    run: null
+  comment: "Tries to open bac6.ses, which doesn't exist"
+  # hay/ also exists, but doesn't have a mosinit.hoc
+  model_dir:
+    - "almog"
+  run:
 189186:
-    # guessed from mosinit.hoc, there are other options
-    model_dir: "01_Soma-dendritic_recordings/01_Control/140311-C1/syncytium/num10"
+  # guessed from mosinit.hoc, there are other options
+  model_dir:
+    - "01_Soma-dendritic_recordings/01_Control/140311-C1/syncytium/num10"
 189347:
-    script:
+  github: 'pull/1'
+  script:
     # we launch with special so don't try and dlopen mechanisms too
     - sed -i'.bak' 's#nrn_load_dll#// nrn_load_dll#g' main.hoc
 195666:
-    model_dir: mod_files
+  model_dir:
+    - mod_files
 206244:
-    run:
+  run:
     - chdir("mechanism")
     - xopen("mosinit.hoc")
     - unix_spike_atten_hof()
     - verify_graph_()
 222359:
-    script:
+  script:
     # Fix for case-sensitive filesystems
     - mv Voltage.ses voltage.ses
 223649:
-    model_dir: 1_Hemond/Segregated
+  model_dir:
+    - 1_Hemond/Segregated
 223962:
-    skip: true
-    comment: takes too long, need to see how to reduce time
+  skip: true
+  comment: takes too long, need to see how to reduce time
 229276:
-    github: 'pull/3'
-    model_dir: mechanisms
-    script:
+  github: 'pull/4'
+  model_dir:
+    - mechanisms
+  script:
     - mkdir hoc_recordings
     - cp template.hoc template.hoc.iconv.bak
     - cp createsimulation.hoc createsimulation.hoc.iconv.bak
@@ -1429,263 +1510,313 @@
     - sed -i'.bak' -e 's#^tstop=\([0-9a-z+]*\)#tstop=((\1)/500)#g' createsimulation.hoc
     - sed -i'.bak' 's#\(cell.synapses.update_synapses(synapse_plot)\)#// \1#g' init_super.hoc
 229585:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 230861:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 232023:
-    # README suggests all should be included
-    model_dir: "mechanisms/Event_stream;mechanisms/Golgi_CL;mechanisms/Granule_CL;mechanisms/Presynaptic_spike_generator;mechanisms/Synapses;mechanisms/gap"
+  # README suggests all should be included
+  model_dir:
+    - "mechanisms/Event_stream;mechanisms/Golgi_CL;mechanisms/Granule_CL;mechanisms/Presynaptic_spike_generator;mechanisms/Synapses;mechanisms/gap"
 232097:
-    script:
+  github: 'pull/2'
+  script:
     - mkdir connection input
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' R\s*=\s*500.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' R\s*=\s*500.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 232876:
-    # Arbitrarily choose this over influence_ih_iT/ and high_conductance_state/
-    model_dir: "current_clamp"
+  # Arbitrarily choose this over influence_ih_iT/ and high_conductance_state/
+  model_dir:
+    - "current_clamp"
 236310:
-    # Ignore Elec/kir.mod arbitrarily
-    model_dir: "Syn"
+  # Ignore Elec/kir.mod arbitrarily
+  model_dir:
+    - "Syn"
 237469:
-    comment: ".mod files do not compile"
-    # readme hints this is the preferred one
-    model_dir: "approxhaynet"
-    skip: true
+  comment: ".mod files do not compile"
+  # readme hints this is the preferred one
+  model_dir:
+    - "approxhaynet"
+  skip: true
 237594:
-    model_dir: mechanism
+  model_dir:
+    - mechanism
 237595:
-    # x86_64 directory is checked into the repository
-    model_dir: "Multicompartmental_Biophysical_models/mechanism"
+  # x86_64 directory is checked into the repository
+  model_dir:
+    - "Multicompartmental_Biophysical_models/mechanism"
 239177:
-    # Arbitrarily chosen over PIR-Inetwork/
-    model_dir: "PIR-EInetwork"
+  # Arbitrarily chosen over PIR-Inetwork/
+  model_dir:
+    - "PIR-EInetwork"
 239421:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 240116:
-    comment: ".mod files do not compile with 8.2.2"
-    skip: true
+  comment: ".mod files do not compile with 8.2.2"
+  skip: true
 240960:
-    # SimpleModel sounds better than FullModel/ for a CI check
-    model_dir: "SimpleModel"
+  # SimpleModel sounds better than FullModel/ for a CI check
+  model_dir:
+    - "SimpleModel"
 241160:
-    model_dir: mechanism
-    script:
+  model_dir:
+    - mechanism
+  script:
     - mkdir -p membraneVoltages/shape-plot
     - sed -i'.bak' 's#tstop[[:space:]]*=[[:space:]]*1050#tstop = 10#g' experiment/Pyramidal_Main.hoc
 241169:
-    comment: "uses bad assumptions about ParallelComputeTool.cache"
-    run: null
+  comment: "uses bad assumptions about ParallelComputeTool.cache"
+  run:
 243508:
-    # arbitrarily ignoring clusterCaSim/hpc/model/, neuronSims/ExtraMechanism/
-    # and neuronSims/ExtraMechanism/fink2000/
-    model_dir: "neuronSims"
+  # arbitrarily ignoring clusterCaSim/hpc/model/, neuronSims/ExtraMechanism/
+  # and neuronSims/ExtraMechanism/fink2000/
+  model_dir:
+    - "neuronSims"
 244262:
-    script:
+  script:
     - if [[ ! -f Iintra.dat ]]; then unzip Iintra.dat.zip; fi
     - ls -l Iintra.dat
 246546:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 249463:
-    comment: "Tries to open bac6.ses, which does not exist"
-    # .mod files exist under hay/ too, but almog/ has mosinit.hoc
-    model_dir: "almog"
-    run: null
+  comment: "Tries to open bac6.ses, which does not exist"
+  # .mod files exist under hay/ too, but almog/ has mosinit.hoc
+  model_dir:
+    - "almog"
+  run:
 249705:
-    # have to disambiguate because x86_64/ is checked into the model repo
-    model_dir: "mod"
+  # have to disambiguate because x86_64/ is checked into the model repo
+  model_dir:
+    - "mod"
 253369:
-    # Chosen alphabetically, all of the following also have .mod files:
-    # Isolated_Dendrite_gPas__Fig1/
-    # Isolated_Dendrite_pGABA _HCO3__Fig5u7/
-    # Isolated_Dendrite_pH__Fig8/
-    # Isolated_Dendrite_tauGABA__Fig4/
-    # Isolated_Dendrite_tauNKCC1__Fig9/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-VDpas__Fig2g/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-_tauNKCC1__Fig9/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-gGABA__Fig3/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-gPas__Fig2/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-pGABA_tauHCO3__Fig6u7/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl-tauGABA__Fig4/
-    # Real_Cell_Cl_HCO3_1GDP_Var-Cl_var-pH__Fig8/
-    # Real_Cell_Dynamic_Cl_HCO3_1GDP/
-    model_dir: "Isolated_Dendrite_gGABA__Fig3"
+  # Chosen alphabetically, all of the following also have .mod files:
+  # Isolated_Dendrite_gPas__Fig1/
+  # Isolated_Dendrite_pGABA _HCO3__Fig5u7/
+  # Isolated_Dendrite_pH__Fig8/
+  # Isolated_Dendrite_tauGABA__Fig4/
+  # Isolated_Dendrite_tauNKCC1__Fig9/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl-VDpas__Fig2g/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl-_tauNKCC1__Fig9/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl-gGABA__Fig3/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl-gPas__Fig2/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl-pGABA_tauHCO3__Fig6u7/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl-tauGABA__Fig4/
+  # Real_Cell_Cl_HCO3_1GDP_Var-Cl_var-pH__Fig8/
+  # Real_Cell_Dynamic_Cl_HCO3_1GDP/
+  model_dir:
+    - "Isolated_Dendrite_gGABA__Fig3"
 254217:
-    model_dir: _mod
+  model_dir:
+    - _mod
 256024:
-    model_dir: mods
+  model_dir:
+    - mods
 256311:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 257028:
-    # sounds smaller/faster than CCTC_model_scaleup/modfiles/
-    model_dir: "CCTC_model/modfiles"
+  # sounds smaller/faster than CCTC_model_scaleup/modfiles/
+  model_dir:
+    - "CCTC_model/modfiles"
 260015:
-    # .mod files also exist under analysis/UMAP_analysis_code/*/, but this
-    # sounds like a better bet
-    model_dir: "sim/mod"
+  # .mod files also exist under analysis/UMAP_analysis_code/*/, but this
+  # sounds like a better bet
+  model_dir:
+    - "sim/mod"
 261460:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 262373:
-    # ignore orig/ subdir fairly arbitrarily
-    model_dir: "."
+  # ignore orig/ subdir fairly arbitrarily
+  model_dir:
+    - "."
 263988:
-    # there are 3 other dataset_XX... directories, and each one also has .mod
-    # files more deeply nested under it...
-    model_dir: "dataset_01__fields/code"
+  # there are 3 other dataset_XX... directories, and each one also has .mod
+  # files more deeply nested under it...
+  model_dir:
+    - "dataset_01__fields/code"
 265523:
-    comment: ".mod files do not compile"
-    # arbitrarily ignoring: SWR/SDprox2/, Theta/SDprox1/, Theta/SDprox2/,
-    # Theta_DoubledInputs/SDprox1/, Theta_DoubledInputs/SDprox2/,
-    # Theta_NoiseTests/SDprox1/, Theta_NoiseTests/SDprox2/,
-    # Theta_RemovedInputs/SDprox1/ and Theta_RemovedInputs/SDprox2/
-    model_dir: "SWR/SDprox1"
-    skip: true
+  comment: ".mod files do not compile"
+  # arbitrarily ignoring: SWR/SDprox2/, Theta/SDprox1/, Theta/SDprox2/,
+  # Theta_DoubledInputs/SDprox1/, Theta_DoubledInputs/SDprox2/,
+  # Theta_NoiseTests/SDprox1/, Theta_NoiseTests/SDprox2/,
+  # Theta_RemovedInputs/SDprox1/ and Theta_RemovedInputs/SDprox2/
+  model_dir:
+    - "SWR/SDprox1"
+  skip: true
 265584:
-    # there are 3 other top-level directories with .mod files inside
-    model_dir: "01_GrC_2020_regular/mod_files"
+  # there are 3 other top-level directories with .mod files inside
+  model_dir:
+    - "01_GrC_2020_regular/mod_files"
 266732:
-    comment: ".mod files do not compile"
-    # arbitrarily ignoring fig3_5_7/, fig8/ and fig9/
-    model_dir: "fig2_4_6"
-    skip: true
+  comment: ".mod files do not compile"
+  # arbitrarily ignoring fig3_5_7/, fig8/ and fig9/
+  model_dir:
+    - "fig2_4_6"
+  skip: true
 266775:
-    # there are more .mod files, but the readme says to use these ones
-    model_dir: "mechanisms/single"
+  # there are more .mod files, but the readme says to use these ones
+  model_dir:
+    - "mechanisms/single"
 266797:
-    # "mod - new" subdir seems to just contain duplicates
-    model_dir: "."
+  # "mod - new" subdir seems to just contain duplicates
+  model_dir:
+    - "."
 266799:
-    comment: ".mod files do not compile"
-    # there are 5 other figure* directories with .mod files in them
-    model_dir: "figure1/mod"
-    skip: true
+  comment: ".mod files do not compile"
+  # there are 5 other figure* directories with .mod files in them
+  model_dir:
+    - "figure1/mod"
+  skip: true
 266802:
-    # arbitrarily ignoring: Figure_2_synaptic_thresholds/,
-    # Figure_3_200um_on_BigNeuron/, Figure_4_and_5_modified conductances/,
-    # Figure_6_CA3/, Figure_6_DGC/ and Figure_7_variable_gAMPA/
-    model_dir: "Figure_1_single_EPSPs"
+  # arbitrarily ignoring: Figure_2_synaptic_thresholds/,
+  # Figure_3_200um_on_BigNeuron/, Figure_4_and_5_modified conductances/,
+  # Figure_6_CA3/, Figure_6_DGC/ and Figure_7_variable_gAMPA/
+  model_dir:
+    - "Figure_1_single_EPSPs"
 266806:
-    comment: ".mod files do not compile"
-    # there's also a Morphology_2 directory
-    model_dir: "Morphology_1/mod_files"
-    skip: true
+  comment: ".mod files do not compile"
+  # there's also a Morphology_2 directory
+  model_dir:
+    - "Morphology_1/mod_files"
+  skip: true
 266842:
-    # Scaleup_5x_all/modfiles/ also exists but sounds slower
-    model_dir: "CCTC_model/modfiles"
+  # Scaleup_5x_all/modfiles/ also exists but sounds slower
+  model_dir:
+    - "CCTC_model/modfiles"
 266844:
-    # arbitrary choice, "Fig 3/The other spines/Multi-spines model" and
-    # "Fig S8/Single spine model" also contain .mod files
-    model_dir: "Fig 3/XL-sized spines/Multi-spines model"
+  # arbitrary choice, "Fig 3/The other spines/Multi-spines model" and
+  # "Fig S8/Single spine model" also contain .mod files
+  model_dir:
+    - "Fig 3/XL-sized spines/Multi-spines model"
 266851:
-    # readme seems to prefer this one
-    model_dir: "models/DuraBernal/mod"
+  # readme seems to prefer this one
+  model_dir:
+    - "models/DuraBernal/mod"
 266864:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 267009:
-    # arbitrary choice, unm_pub/mods also contains .mod files
-    model_dir: "mye_pub/mods"
+  # arbitrary choice, unm_pub/mods also contains .mod files
+  model_dir:
+    - "mye_pub/mods"
 267088:
-    # arbitrary choice, Hu-based_model/mod also contains .mod files
-    model_dir: "Hay-based_model/mod"
+  # arbitrary choice, Hu-based_model/mod also contains .mod files
+  model_dir:
+    - "Hay-based_model/mod"
 2016137:
-    # arbitrary choice, Simplified_models/modfiles also contains .mod files
-    model_dir: "Detailed_models/modfiles"
+  # arbitrary choice, Simplified_models/modfiles also contains .mod files
+  model_dir:
+    - "Detailed_models/modfiles"
 267146:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 267189:
-    comment: ".mod files do not compile"
-    # arbitrary choice, Purkinje/mod_files/ and DCN/mod_files/ also exist
-    model_dir: "Granule/mod_files"
-    skip: true
+  comment: ".mod files do not compile"
+  # arbitrary choice, Purkinje/mod_files/ and DCN/mod_files/ also exist
+  model_dir:
+    - "Granule/mod_files"
+  skip: true
 267511:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 267587:
-    comment: ".mod files do not compile"
-    # readme hints this is reasonable
-    model_dir: "L5Circuit/default_circuit/mod"
-    skip: true
+  comment: ".mod files do not compile"
+  # readme hints this is reasonable
+  model_dir:
+    - "L5Circuit/default_circuit/mod"
+  skip: true
 267589:
-    # arbitrary choice, dLGN-network/mods/ and dLGN-network/lmods/ also contain
-    # .mod files
-    model_dir: "TC-fitting/mods"
+  # arbitrary choice, dLGN-network/mods/ and dLGN-network/lmods/ also contain
+  # .mod files
+  model_dir:
+    - "TC-fitting/mods"
 267595:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
 267610:
-    # readme hints this is reasonable
-    model_dir: "multi_compartmental/1_0um"
+  # readme hints this is reasonable
+  model_dir:
+    - "multi_compartmental/1_0um"
 267621:
-    # arbitrary choice, 1292/mod/ also contains .mod files
-    model_dir: "131/mod"
+  # arbitrary choice, 1292/mod/ also contains .mod files
+  model_dir:
+    - "131/mod"
 267646:
-    comment: ".mod files do not compile"
-    skip: true
+  comment: ".mod files do not compile"
+  skip: true
+267741:
+  comment: "Waiting for https://github.com/ModelDBRepository/267741/pull/1"
+  skip: true
 149174:
-    skip: true
-    comment: testing in Python + hardcoded NEURON
+  skip: true
+  comment: testing in Python + hardcoded NEURON
 258867:
-    run: null
-    script:
+  run:
+  script:
     - sed -i'.bak' -e 's/tstop = /tstop = 50\/\//' Fig8_tuft_NMDA_spike.hoc
     - sed -i'.bak' -e 's/simul_iter=/simul_iter=2 \/\//' Fig8_tuft_NMDA_spike.hoc
-    comment: 'Usual simulation time is ~ 10 minutes (tstop = 120 and simul_iter=10), skipped because it tries to load C:/Daten/Modeling/Alpha5_NMDA_single_comp/shared/ATF.hoc'
+  comment: 'Usual simulation time is ~ 10 minutes (tstop = 120 and simul_iter=10), skipped because it tries to load C:/Daten/Modeling/Alpha5_NMDA_single_comp/shared/ATF.hoc'
 260178:
-    model_dir: _mod
+  model_dir:
+    - _mod
 260967:
-    model_dir: lib
+  model_dir:
+    - lib
 266818:
-    script:
+  script:
     - sed -i'.bak' '1s/^/{load_file("stdlib.hoc")}\n/' hoc_tools/nav_states.hoc
     - sed -i'.bak' '1s/^/{load_file("stdgui.hoc")}\n/' hoc_tools/plots.hoc
 267067:
-    # This model ID seems to have two ~different models inside it. Arbitrarily choose one.
-    model_dir: 'Na12 Analysis/mechanisms'
-    run:
+  # This model ID seems to have two ~different models inside it. Arbitrarily choose one.
+  model_dir:
+    - 'Na12 Analysis/mechanisms'
+  run:
     - run()
     - verify_graph_()
-    script:
+  script:
     - (cd "Na12 Analysis" && mv mosinit.hoc mosinit.hoc.bak && ln -s runModel.hoc mosinit.hoc)
     - sed -i'.bak' -e 's#\./mosinit\.hoc#./mosinit.hoc.bak#g' 'Na12 Analysis/runModel.hoc'
     - sed -i'.bak' -e 's#^tstop=30000#tstop=100#g' 'Na12 Analysis/constants.hoc'
 # 267140: segfaults with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
 267293:
-    comment: Tries to open bac6.ses, which does not exist
-    # this is the dir with mosinit.hoc in it, other .mod files exist under
-    # modulhcn_hay/
-    model_dir: "modulhcn_almog"
-    run: null
+  comment: Tries to open bac6.ses, which does not exist
+  # this is the dir with mosinit.hoc in it, other .mod files exist under
+  # modulhcn_hay/
+  model_dir:
+    - "modulhcn_almog"
+  run:
 267384:
-    model_dir: 'BBP_TTPC_EXAMPLE'
-    script:
+  model_dir:
+    - 'BBP_TTPC_EXAMPLE'
+  script:
     # 12 is the largest value (runModel-template.hoc); this is a guess
     - sed -i'.bak' 's#load_file("nrngui.hoc")#objref transvec\ntransvec = new Vector(12)\nload_file("nrngui.hoc")#' BBP_TTPC_EXAMPLE/mosinit.hoc
 267594:
-    comment: 'Seems to be missing files: parinit.hoc, .mod file for h_ca, ...?'
-    model_dir: mods
-    run: null
+  comment: 'Seems to be missing files: parinit.hoc, .mod file for h_ca, ...?'
+  model_dir:
+    - mods
+  run:
 267599:
-    # There is also a subdirectory that seems to have older versions.
-    model_dir: "."
+  # There is also a subdirectory that seems to have older versions.
+  model_dir:
+    - "."
 267691:
-    # output is two data files Vm_6_1.dat Vm_axon_6_1.dat, which should be compared...
-    hoc_stack_size: 2000 # default of 1000 is apparently not enough
-    model_dir: mechanisms
-    script:
+  # output is two data files Vm_6_1.dat Vm_axon_6_1.dat, which should be compared...
+  hoc_stack_size: 2000 # default of 1000 is apparently not enough
+  model_dir:
+    - mechanisms
+  script:
     # based on mosinit.ps1 file in the repository
     - ln -s init_icms.hoc mosinit.hoc
     # reduce the cell count from 448 to 1 (this sed command works for cell_id = 6 below)
@@ -1693,20 +1824,21 @@
     # it seems the scripts expect cell_id to be passed on the commandline when special is run
     - sed -i'.bak' -e 's#// cell_id = 6#cell_id = 6#' init_icms.hoc
 206267:
-    run:
+  run:
     - run()
     - verify_graph_()
-    script:
+  script:
     - sed -i'.bak' -e 's/tstop=/tstop=100 \/\//' Start.hoc
 157157:
-    run:
+  github: 'pull/3'
+  run:
     - run()
     - verify_graph_()
-    script:
+  script:
     - sed -i'.bak' -e 's/tstop = 5000/tstop = 250 \/\//g' PC.ses
 244848:
-    run: null
-    comment: not straightforward to cut down simulation time, takes too long
+  run:
+  comment: not straightforward to cut down simulation time, takes too long
 #    run:
 #    - run()
 #    - verify_graph_()
@@ -1714,172 +1846,178 @@
 #    - sed 's/tstop=/tstop=20\/\//g' Fig_13.hoc > temp.tmp
 #    - mv temp.tmp Fig_13.hoc
 244922:
-    # segfaults with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
-    run:
+  # segfaults with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
+  run:
     - run()
     - verify_graph_()
-    script:
+  script:
     - sed -i'.bak' -e 's/500/5/g;s/2\([0|1]\)000/2\1/g;s/for(k=1; k<=50; k+=1/for(k=50; k<=50; k+=1/g' BPF.hoc
-    comment: diving some numbers with 100 halvened the sim time, 1 iteration instead of 50
+  comment: diving some numbers with 100 halvened the sim time, 1 iteration instead of 50
 151126:
-    run:
+  run:
     - run()
     - verify_graph_()
-    script:
+  script:
     - sed -i'.bak' -e 's/tstop = 550/tstop = 100/' HAM_SR1.ses
 136803:
-    curate_patterns:
+  curate_patterns:
     - pattern: '^(setup|run|finish)time\s+=\s+([0-9.]+)$'
       repl: '\1time = %masked%'
-    run:
+  run:
     - run()
     - verify_graph_()
-    model_dir: mod_files
+  model_dir:
+    - mod_files
 143719:
-    script:
+  script:
     - sed -i'.bak' -e 's/in=0/in=15/g' experiment/Simulation.hoc
 # python models
 189922:
-    python: true
-    run:
+  python: true
+  run:
     - import os; os.system("python mosinit.py"); quit();
-    script:
+  script:
     - 2to3 -w .
     - sed -i'.bak' -e 's/plt.show()/plt.show(block=False);plt.pause(1);plt.close();quit()/' clay_mohit.py
 251881:
-    model_dir: mechanisms
+  model_dir:
+    - mechanisms
 2014814:
-    # Note there are many other models and HOC versions under this accession ID
-    model_dir: Models/1-Neuromuscular/Python
-    python: true
-    run:
+  # Note there are many other models and HOC versions under this accession ID
+  model_dir:
+    - Models/1-Neuromuscular/Python
+  python: true
+  run:
     - "import matplotlib"
     - "matplotlib.use('agg')" # headless
     - "with open('Models/1-Neuromuscular/Python/run.py') as ifile:"
     - "  exec(ifile.read())"
     - "quit()"
 116862:
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 12631:
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 136310:
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.oc near line \d+'
-        repl: ''
-      - pattern: ' R = 105.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.oc near line \d+'
+      repl: ''
+    - pattern: ' R = 105.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 145672:
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 267694:
-    model_dir: mouse_model/mod_files
+  model_dir:
+    - mouse_model/mod_files
 267768:
-  model_dir: "Biophysical axon model (Fig 6)"
+  model_dir:
+    - "Biophysical axon model (Fig 6)"
 29942:
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 181967:
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 35358:
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 37819:
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 7399:
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 7400:
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 9889:
-    curate_patterns:
-      - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
-        repl: ''
-      - pattern: ' in .*\.hoc near line \d+'
-        repl: ''
-      - pattern: ' FARADAY.*'
-        repl: ''
-      - pattern: '\s*\^\s*'
-        repl: ''
+  curate_patterns:
+    - pattern: '%neuron-executable%: Assignment to modern physical constant \w+'
+      repl: ''
+    - pattern: ' in .*\.hoc near line \d+'
+      repl: ''
+    - pattern: ' FARADAY.*'
+      repl: ''
+    - pattern: '\s*\^\s*'
+      repl: ''
 2014998:
-    github: 'default'
+  github: 'default'
 266498:
-    model_dir: 'MultiCompartmentModels/Mod'
+  model_dir:
+    - 'MultiCompartmentModels/Mod'
 266578:
-    github: 'pull/2'
+  github: 'pull/3'
 33728:
-    github: 'pull/1'
+  github: 'pull/1'
 2014832:
   skip: true
   comment: ".mod files do not compile"
@@ -1891,3 +2029,33 @@
   comment: ".mod files do not compile with NEURON 9.0"
 267741:
   github: 'pull/1'
+2016658:
+  model_dir:
+    - 'MEC_model_figs5_6'
+2016662:
+  skip: true
+  comment: "Not on GitHub and dirs contain spaces"
+139150:
+  github: 'pull/1'
+185513:
+  github: 'pull/3'
+151731:
+  github: 'pull/1'
+147757:
+  github: 'pull/1'
+155602:
+  github: 'pull/3'
+257027:
+  github: 'pull/1'
+2015410:
+  github: 'pull/1'
+128559:
+  github: 'pull/1'
+127021:
+  github: 'pull/3'
+137259:
+  github: 'pull/1'
+126640:
+  github: 'pull/1'
+184732:
+  github: 'pull/2'
