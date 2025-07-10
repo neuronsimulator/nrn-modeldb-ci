@@ -47,7 +47,6 @@ on:
 
 jobs:
   nrn-modeldb-ci:
-    name: 'ModelDB CI'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
