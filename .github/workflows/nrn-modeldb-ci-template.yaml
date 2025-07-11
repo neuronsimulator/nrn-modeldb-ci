@@ -138,11 +138,12 @@ jobs:
         report2html ${nrn_ver}.json
 
         echo "json_file=$nrn_ver" >> $GITHUB_OUTPUT
+        echo "nrn_ver=$nrn_ver" >> $GITHUB_ENV
 
     - name: Upload artifacts for ${{ inputs.neuron_version }}
       uses: actions/upload-artifact@v4
       with:
-        name: modeldb-${{ steps.run_models.outputs.json_file }}-${{ inputs.platform }}-${{ inputs.python_version }}
+        name: modeldb-${{ env.nrn_ver }}-${{ inputs.platform }}-${{ inputs.python_version }}
         path: |
           *.json.xz
           *.json
