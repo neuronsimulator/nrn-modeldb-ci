@@ -60,7 +60,7 @@ jobs:
         mv drop DROP
 
     - name: check for GitHub Actions artifact URL -> ${{ inputs.neuron_version }}
-      if: startsWith(env.NEURON_V1, 'https://github.com/neuronsimulator/')
+      if: startsWith(inputs.neuron_version, 'https://github.com/neuronsimulator/')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
