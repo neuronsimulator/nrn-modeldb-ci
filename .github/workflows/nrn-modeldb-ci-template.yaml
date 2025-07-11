@@ -116,7 +116,7 @@ jobs:
           # so we use a workaround
           for wheel in DROP/*.whl
           do
-            if ! python -m uv pip install --user "${wheel}"
+            if ! python -m uv pip install "${wheel}"
             then
               echo "Unable to install ${wheel}, trying another one"
             else
