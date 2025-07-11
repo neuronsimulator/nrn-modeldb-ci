@@ -4,19 +4,19 @@ on:
   push:
     branches: [master]
   pull_request:
-      branches: [ master ]
+      branches: [master]
   schedule:
     # Run at 2am every day
     - cron:  '0 2 * * *'
   workflow_call:
    inputs:
       neuron_v1:
-        description: Last official release (neuron) / NEURON pinned version / Azure drop (artifacts) url
+        description: Last official release (neuron) / NEURON pinned version / artifacts URL
         default: 'neuron'
         required: true
         type: string
       neuron_v2:
-        description: Last nightly release (neuron-nightly) / NEURON pinned version / Azure drop (artifacts) url
+        description: Last nightly release (neuron-nightly) / NEURON pinned version / artifacts URL
         default: 'neuron-nightly'
         required: true
         type: string
@@ -43,11 +43,11 @@ on:
   workflow_dispatch:
     inputs:
       neuron_v1:
-        description: Last official release (neuron) / NEURON pinned version / Azure drop (artifacts) url
+        description: Last official release (neuron) / NEURON pinned version / artifacts URL
         default: 'neuron'
         required: true
       neuron_v2:
-        description: Last nightly release (neuron-nightly) / NEURON pinned version / Azure drop (artifacts) url
+        description: Last nightly release (neuron-nightly) / NEURON pinned version / artifacts URL
         default: 'neuron-nightly'
         required: true
       models_to_run:
