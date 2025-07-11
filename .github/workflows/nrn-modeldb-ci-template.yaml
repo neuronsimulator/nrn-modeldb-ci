@@ -59,6 +59,19 @@ jobs:
         unzip DROP.zip
         mv drop DROP
 
+    - name: check for GitHub Actions artifact URL -> ${{ inputs.neuron_version }}
+      if: startsWith(env.NEURON_V1, 'https://github.com/neuronsimulator/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        ARTIFACT_ID=$(echo "${{ inputs.neuron_version }}" | grep --color=never -oE '[0-9]+$')
+        echo "Extracted Artifact ID: ${ARTIFACT_ID}"
+        gh api \
+          -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          /repos/neuronsimulator/nrn/actions/artifacts/${ARTIFACT_ID}/zip > DROP.zip
+        unzip -d DROP DROP.zip
+
     - name: Setup Python ${{ inputs.python_version }}
       uses: actions/setup-python@v5
       with:
@@ -72,9 +85,9 @@ jobs:
         sudo apt-get install xvfb
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1600x1200x24 -noreset -nolock -shmem &  # run in bg
         # Install python dependencies
-        python -m pip install --upgrade 'pip<=24.0'
+        python -m pip install uv
         # Install project in editable mode
-        python -m pip install -e .
+        python -m uv pip install -e .
 
     - name: Cache ModelDB models
       uses: actions/cache@v4
