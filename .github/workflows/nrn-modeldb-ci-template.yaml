@@ -109,13 +109,14 @@ jobs:
         NEURON_VERSION: ${{ inputs.neuron_version }}
         MODELS_TO_RUN: ${{ inputs.models_to_run }}
       run: |
+        python -m pip install uv
         # Install NEURON
         if [[ -d "DROP" ]]; then
           # due to https://github.com/pypa/pip/issues/12110 we cannot rely on `--find-links`
           # so we use a workaround
           for wheel in DROP/*.whl
           do
-            if ! python -m pip install --user "${wheel}"
+            if ! python -m uv pip install --user "${wheel}"
             then
               echo "Unable to install ${wheel}, trying another one"
             else
@@ -124,7 +125,7 @@ jobs:
             fi
           done
         else
-          python -m pip install $NEURON_VERSION
+          python -m uv pip install $NEURON_VERSION
         fi
         nrn_ver="$(python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)")"
         runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
