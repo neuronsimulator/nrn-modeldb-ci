@@ -15,7 +15,7 @@ from .config import *
 from .modeldb import ModelDB
 from .modelrun import is_dir_non_empty
 from .modelrun import ModelRunManager
-from .report import diff_reports
+from .report import diff_reports, merge_neuron_report_files
 
 
 def runmodels(args=None):
@@ -327,3 +327,48 @@ def diffreports2html(args=None):
         == 1
     )
     return code
+
+def mergereports(args=None):
+    """mergereports
+        Merge multiple NEURON report JSON files into a single report.
+    Usage:
+        mergereports --output=<output_file> <input_file>...
+        mergereports -h         Print help
+    Arguments:
+        input_file=PATH       Required: input JSON report files to merge
+    Options:
+        --output=<output_file>    Required: output JSON file path
+    Examples:
+        mergereports --output=merged.json report1.json report2.json report3.json
+    """
+    options = docopt(mergereports.__doc__, args)
+
+    output_file = options["--output"]
+    input_files = options["<input_file>"]
+
+    if not output_file:
+        print("Error: --output is required")
+        return 1
+
+    if not input_files:
+        print("Error: At least one input file is required")
+        return 1
+
+    try:
+        print(f"Merging {len(input_files)} files...")
+        for i, file in enumerate(input_files, 1):
+            print(f"  {i}. {file}")
+
+        merge_neuron_report_files(input_files, output_file)
+        print(f"Successfully merged reports into {output_file}")
+        return 0
+
+    except ValueError as e:
+        print(f"Error: {e}")
+        return 1
+    except FileNotFoundError as e:
+        print(f"Error: File not found - {e}")
+        return 1
+    except Exception as e:
+        print(f"Error: {e}")
+        return 1

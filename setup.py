@@ -44,6 +44,7 @@ def setup_package():
                 "modeldb-config = modeldb.commands:modeldb_config",
                 "report2html = modeldb.commands:report2html",
                 "diffreports2html = modeldb.commands:diffreports2html",
+                "mergereports = modeldb.commands:mergereports",
             ]
         ),
         long_description=long_description,

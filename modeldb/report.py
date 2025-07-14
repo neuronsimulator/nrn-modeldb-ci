@@ -185,3 +185,99 @@ def diff_reports(report1_json, report2_json):
                         )
 
     return diff_dict, gout_dict, runtime_dict, stats_dict, v1, v2
+
+
+def merge_neuron_reports(json_dicts: list[dict]) -> dict:
+    """
+    Merge multiple NEURON JSON reports with the following conditions:
+    - NEURON version must be the same across all files
+    - No overlapping model IDs (except "0")
+    - Stats are summed up in the output
+
+    Args:
+        json_dicts: List of NEURON reports (as dictionaries)
+
+    Returns:
+        Merged dictionary
+
+    Raises:
+        ValueError: If NEURON versions don't match or model IDs overlap
+    """
+    if not json_dicts:
+        raise ValueError("No JSON files provided")
+
+    merged_data = {}
+    neuron_version = None
+    all_model_ids = set()
+
+    # Initialize stats counters
+    total_failed_models = []
+    total_failed_runs = []
+    total_skipped_runs = []
+    total_models_run = 0
+
+    for data in json_dicts:
+        # Check NEURON version consistency
+        current_version = data["0"]["NEURON version"]
+        if neuron_version is None:
+            neuron_version = current_version
+        elif neuron_version != current_version:
+            raise ValueError(f"NEURON version mismatch: {neuron_version} vs {current_version}")
+
+        # Accumulate stats from the "0" key
+        stats = data["0"]["Stats"]
+        total_failed_models.extend(stats["Failed models"]["Accession numbers"])
+        total_failed_runs.extend(stats["Failed runs"]["Accession numbers"])
+        total_skipped_runs.extend(stats["Skipped runs"]["Accession numbers"])
+        total_models_run += stats["Total nof models run"]
+
+        # Check for overlapping model IDs and merge
+        for model_id, model_info in data.items():
+            if model_id == "0":
+                continue  # Skip the stats entry
+
+            if model_id in all_model_ids:
+                raise ValueError(f"Duplicate model ID found: {model_id}")
+
+            all_model_ids.add(model_id)
+            merged_data[model_id] = model_info
+
+    # Create the merged "0" entry
+    merged_data["0"] = {
+        "NEURON version": neuron_version,
+        "Stats": {
+            "Failed models": {
+                "Accession numbers": total_failed_models,
+                "Count": len(total_failed_models),
+            },
+            "Failed runs": {
+                "Accession numbers": total_failed_runs,
+                "Count": len(total_failed_runs),
+            },
+            "Skipped runs": {
+                "Accession numbers": total_skipped_runs,
+                "Count": len(total_skipped_runs),
+            },
+            "Total nof models run": total_models_run,
+        }
+    }
+
+    return merged_data
+
+def merge_neuron_report_files(input_files: list[str], output_file: str):
+    """
+    Merge JSON files and write to output file.
+
+    Args:
+        input_files: List of input JSON file paths
+        output_file: Output JSON file path
+    """
+    reports = []
+    for input_file in input_files:
+        with open(input_file, 'r+', encoding='utf-8'):
+            reports.append(json.load(input_file))
+
+    merged_data = merge_neuron_reports(reports)
+
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(merged_data, f, indent=4, sort_keys=True)
