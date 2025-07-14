@@ -354,21 +354,10 @@ def mergereports(args=None):
         print("Error: At least one input file is required")
         return 1
 
-    try:
-        print(f"Merging {len(input_files)} files...")
-        for i, file in enumerate(input_files, 1):
-            print(f"  {i}. {file}")
+    print(f"Merging {len(input_files)} files...")
+    for i, file in enumerate(input_files, 1):
+        print(f"  {i}. {file}")
 
-        merge_neuron_report_files(input_files, output_file)
-        print(f"Successfully merged reports into {output_file}")
-        return 0
-
-    except ValueError as e:
-        print(f"Error: {e}")
-        return 1
-    except FileNotFoundError as e:
-        print(f"Error: File not found - {e}")
-        return 1
-    except Exception as e:
-        print(f"Error: {e}")
-        return 1
+    merge_neuron_report_files(input_files, output_file)
+    print(f"Successfully merged reports into {output_file}")
+    return 0
