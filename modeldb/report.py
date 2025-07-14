@@ -274,8 +274,8 @@ def merge_neuron_report_files(input_files: list[str], output_file: str):
     """
     reports = []
     for input_file in input_files:
-        with open(input_file, 'r+', encoding='utf-8'):
-            reports.append(json.load(input_file))
+        with open(input_file, 'r+', encoding='utf-8') as f:
+            reports.append(json.load(f))
 
     merged_data = merge_neuron_reports(reports)
 

@@ -355,7 +355,7 @@ def mergereports(args=None):
         return 1
 
     print(f"Merging {len(input_files)} files...")
-    for i, file in enumerate(input_files, 1):
+    for i, file in enumerate(input_files, start=1):
         print(f"  {i}. {file}")
 
     merge_neuron_report_files(input_files, output_file)
