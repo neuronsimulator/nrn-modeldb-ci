@@ -39,6 +39,16 @@ on:
         default: '3.9'
         required: false
         type: string
+      groups1:
+        description: 'The number of groups to split NEURON V1 models into'
+        default: 1
+        required: false
+        type: string
+      groups2:
+        description: 'The number of groups to split NEURON V2 models into'
+        default: 3
+        required: false
+        type: string
 
   workflow_dispatch:
     inputs:
@@ -73,6 +83,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       models_to_run: ${{ steps.set-models.outputs.models_to_run }}
+      matrix1: ${{ steps.set-models.outputs.matrix1 }}
+      matrix2: ${{ steps.set-models.outputs.matrix2 }}
     steps:
       - name: Set models to run for PR
         id: set-models
@@ -80,6 +92,8 @@ jobs:
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUM_GROUPS1: ${{ inputs.groups1 || 1 }}
+          NUM_GROUPS2: ${{ inputs.groups2 || 3 }}
         run: |
           # For PRs we only have a few models for quick sanity checking.
           # Once the PR is green you need to manually run the ModelDB CI workflow by simply selecting your branch in the UI.
@@ -102,10 +116,35 @@ jobs:
             echo "models_to_run=$(echo $parse_models | jq -r .models)" >> $GITHUB_OUTPUT
           fi
 
+          matrix='{"include":['
+          for ((i=1; i<=NUM_GROUPS1; i++)); do
+            if [ $i -gt 1 ]; then
+              matrix+=','
+            fi
+            matrix+="{\"group_id\":$i}"
+          done
+          matrix+=']}'
+
+          echo "matrix1=$matrix" >> $GITHUB_OUTPUT
+
+          matrix='{"include":['
+          for ((i=1; i<=NUM_GROUPS2; i++)); do
+            if [ $i -gt 1 ]; then
+              matrix+=','
+            fi
+            matrix+="{\"group_id\":$i}"
+          done
+          matrix+=']}'
+
+          echo "matrix2=$matrix" >> $GITHUB_OUTPUT
+
   modeldb-v1:
     name: Running with V1
     needs:
       - set-models
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.set-models.outputs.matrix1) }}
     uses: ./.github/workflows/nrn-modeldb-ci-template.yaml
     with:
       neuron_version: ${{ github.event.inputs.neuron_v1 || inputs.neuron_v1 || 'neuron' }}
@@ -117,6 +156,9 @@ jobs:
     name: Running with V2
     needs:
       - set-models
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.set-models.outputs.matrix2) }}
     uses: ./.github/workflows/nrn-modeldb-ci-template.yaml
     with:
       neuron_version: ${{ github.event.inputs.neuron_v2 || inputs.neuron_v2 || 'neuron-nightly' }}
