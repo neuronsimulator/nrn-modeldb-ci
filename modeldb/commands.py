@@ -328,6 +328,7 @@ def diffreports2html(args=None):
     )
     return code
 
+
 def mergereports(args=None):
     """mergereports
         Merge multiple NEURON report JSON files into a single report.

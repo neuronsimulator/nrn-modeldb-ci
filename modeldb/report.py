@@ -222,7 +222,9 @@ def merge_neuron_reports(json_dicts: list[dict]) -> dict:
         if neuron_version is None:
             neuron_version = current_version
         elif neuron_version != current_version:
-            raise ValueError(f"NEURON version mismatch: {neuron_version} vs {current_version}")
+            raise ValueError(
+                f"NEURON version mismatch: {neuron_version} vs {current_version}"
+            )
 
         # Accumulate stats from the "0" key
         stats = data["0"]["Stats"]
@@ -259,10 +261,11 @@ def merge_neuron_reports(json_dicts: list[dict]) -> dict:
                 "Count": len(total_skipped_runs),
             },
             "Total nof models run": total_models_run,
-        }
+        },
     }
 
     return merged_data
+
 
 def merge_neuron_report_files(input_files: list[str], output_file: str):
     """
@@ -274,10 +277,10 @@ def merge_neuron_report_files(input_files: list[str], output_file: str):
     """
     reports = []
     for input_file in input_files:
-        with open(input_file, 'r+', encoding='utf-8') as f:
+        with open(input_file, "r+", encoding="utf-8") as f:
             reports.append(json.load(f))
 
     merged_data = merge_neuron_reports(reports)
 
-    with open(output_file, 'w', encoding='utf-8') as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         json.dump(merged_data, f, indent=4, sort_keys=True)
