@@ -408,7 +408,9 @@
       repl: ''
     - pattern: '^\s+\^'
       repl: ''
-      # this should be removed once the latest release and development branch include nrn#2027
+  model_dir: 
+    - '.'
+  # this should be removed once the latest release and development branch include nrn#2027
   ignore_exit_code: true
   run:
     - ringperf()
@@ -1281,6 +1283,8 @@
   run:
   script:
     - sed -i'.bak' -r 's/(tstop=mytstop=htmax= \(LearnDur \+ ZipDur \+ BaseDur\*2\) \*) 1e3/\1 2e1/g' params.hoc
+  skip: true
+  comment: "incompatibility at HOC level"
 144579:
   comment: ".mod files do not compile"
   skip: true
