@@ -1690,11 +1690,10 @@
   model_dir:
     - "Figure_1_single_EPSPs"
 266806:
-  comment: ".mod files do not compile"
   # there's also a Morphology_2 directory
   model_dir:
     - "Morphology_1/mod_files"
-  skip: true
+  github: 'pull/1'
 266842:
   # Scaleup_5x_all/modfiles/ also exists but sounds slower
   model_dir:
