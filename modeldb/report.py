@@ -1,14 +1,15 @@
-import json
-import re
 import difflib
+import json
 import logging
 import os
-import shlex
+import re
 import subprocess
-from .modeldb import ModelDB
+
 from pygments import highlight
-from pygments.lexers import DiffLexer
 from pygments.formatters import HtmlFormatter
+from pygments.lexers import DiffLexer
+
+from .modeldb import ModelDB
 
 
 mdb = ModelDB()
@@ -33,9 +34,9 @@ def curate_run_data(run_data, model=None):
     for model_specific_substitution in mdb.run_instr.get(model, {}).get(
         "curate_patterns", []
     ):
-        regex_dict[model_specific_substitution["pattern"]] = (
-            model_specific_substitution["repl"]
-        )
+        regex_dict[
+            model_specific_substitution["pattern"]
+        ] = model_specific_substitution["repl"]
 
     for regex_key, regex_value in regex_dict.items():
         updated_data = []

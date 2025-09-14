@@ -1,18 +1,20 @@
-import logging
-from docopt import docopt
-from os.path import abspath
-from pprint import pprint
-from . import config
-from .modelrun import ModelRunManager, is_dir_non_empty
-from .modeldb import ModelDB
 import inspect
+import json
+import os
 import shlex
 import subprocess
-from jinja2 import Environment, FileSystemLoader
-import os
 import sys
-from .config import *
 from pathlib import Path
+from pprint import pprint
+
+from docopt import docopt
+from jinja2 import Environment
+from jinja2 import FileSystemLoader
+
+from .config import *
+from .modeldb import ModelDB
+from .modelrun import is_dir_non_empty
+from .modelrun import ModelRunManager
 from .report import diff_reports
 import json
 import shutil
