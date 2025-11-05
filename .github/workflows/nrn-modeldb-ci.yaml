@@ -125,7 +125,6 @@ jobs:
       python_version: '3.9'
 
   nrn-modeldb-ci:
-    name: Compare results
     needs:
       - modeldb-v1
       - modeldb-v2
@@ -151,14 +150,18 @@ jobs:
 
       - name: Download artifacts for ${{ env.NEURON_V1 }}
         uses: actions/download-artifact@v4
+        env:
+          file: ${{ needs.modeldb-v1.outputs.json_file }}
         with:
-          name: modeldb-${{ env.NEURON_V1 }}-ubuntu-latest-3.9
+          name: modeldb-${{ env.file }}-ubuntu-latest-3.9
           path: v1
 
       - name: Download artifacts for ${{ env.NEURON_V2 }}
         uses: actions/download-artifact@v4
+        env:
+          file: ${{ needs.modeldb-v2.outputs.json_file }}
         with:
-          name: modeldb-${{ env.NEURON_V2 }}-ubuntu-latest-3.9
+          name: modeldb-${{ env.file }}-ubuntu-latest-3.9
           path: v2
 
       - name: diffreports2html
