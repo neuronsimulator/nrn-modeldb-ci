@@ -145,9 +145,9 @@ jobs:
         run: |
           set
           # Install python dependencies
-          python -m pip install --upgrade 'pip<=24.0'
-          # Install project in editable mode
-          python -m pip install -e .
+          python -m pip install --upgrade 'uv<=0.7.3'
+          # Install project
+          python -m uv pip install .
 
       - name: Download artifacts for ${{ env.NEURON_V1 }}
         uses: actions/download-artifact@v4

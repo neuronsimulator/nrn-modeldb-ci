@@ -59,6 +59,22 @@ jobs:
         unzip DROP.zip
         mv drop DROP
 
+    - name: check for artifact URL -> ${{ inputs.neuron_version }}
+      if: startsWith(inputs.neuron_version, 'https://github.com/neuronsimulator/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        ARTIFACT_ID=$(echo "${{ inputs.neuron_version }}" | grep --color=never -oE '[0-9]+$')
+        echo "Extracted Artifact ID: ${ARTIFACT_ID}"
+        gh api \
+          -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          /repos/neuronsimulator/nrn/actions/artifacts/${ARTIFACT_ID}/zip > DROP.zip
+        unzip -d DROP DROP.zip
+
+        # Set drop dir in the env
+        echo "DROP_DIR=$(pwd)/DROP" >> $GITHUB_ENV
+
     - name: Setup Python ${{ inputs.python_version }}
       uses: actions/setup-python@v5
       with:
@@ -72,9 +88,9 @@ jobs:
         sudo apt-get install xvfb
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1600x1200x24 -noreset -nolock -shmem &  # run in bg
         # Install python dependencies
-        python -m pip install --upgrade 'pip<=24.0'
-        # Install project in editable mode
-        python -m pip install -e .
+        python -m pip install --upgrade 'uv<=0.7.3'
+        # Install project
+        python -m uv pip install .
 
     - name: Cache ModelDB models
       uses: actions/cache@v4
@@ -102,7 +118,7 @@ jobs:
           # so we use a workaround
           for wheel in DROP/*.whl
           do
-            if ! python -m pip install --user "${wheel}"
+            if ! python -m uv pip install "${wheel}"
             then
               echo "Unable to install ${wheel}, trying another one"
             else
@@ -111,7 +127,7 @@ jobs:
             fi
           done
         else
-          python -m pip install $NEURON_VERSION
+          python -m uv pip install $NEURON_VERSION
         fi
         nrn_ver="$(python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)")"
         runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
