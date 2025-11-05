@@ -29,6 +29,16 @@ on:
         default: 'neuronsimulator/nrn-modeldb-ci'
         type: string
         required: false
+      platform:
+        description: 'The platform/OS'
+        default: 'ubuntu-latest'
+        required: false
+        type: string
+      python_version:
+        description: 'The Python version of the NEURON wheel'
+        default: '3.9'
+        required: false
+        type: string
 
   workflow_dispatch:
     inputs:
@@ -44,225 +54,131 @@ on:
         description: 'Empty for all models, space separated accession numbers for specific models'
         default: ''
         required: false
+      platform:
+        description: 'The platform/OS'
+        default: 'ubuntu-latest'
+        required: false
+      python_version:
+        description: 'The Python version of the NEURON wheel'
+        default: '3.9'
+        required: false
+
+env:
+  NEURON_V1: ${{ github.event.inputs.neuron_v1 || inputs.neuron_v1 || 'neuron' }}
+  NEURON_V2: ${{ github.event.inputs.neuron_v2 || inputs.neuron_v2 || 'neuron-nightly' }}
 
 jobs:
-  nrn-modeldb-ci:
+  set-models:
+    name: Set models to run for PR
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    env:
-      DISPLAY: ${{ ':0' }}
-      NEURON_V1: ${{ github.event.inputs.neuron_v1 || inputs.neuron_v1 || 'neuron' }}
-      NEURON_V2: ${{ github.event.inputs.neuron_v2 || inputs.neuron_v2 || 'neuron-nightly' }}
-      MODELS_TO_RUN: ${{ github.event.inputs.models_to_run || inputs.models_to_run || '' }}
-
+    outputs:
+      models_to_run: ${{ steps.set-models.outputs.models_to_run }}
     steps:
+      - name: Set models to run for PR
+        id: set-models
+        if: github.event_name == 'pull_request' && inputs.repo == ''
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # For PRs we only have a few models for quick sanity checking.
+          # Once the PR is green you need to manually run the ModelDB CI workflow by simply selecting your branch in the UI.
 
-    - uses: actions/checkout@v4
-      with:
-        repository: ${{ inputs.repo || github.repository }}
+          # The follwing selection aims to target different features (since we haven't worked on unit testing yet -> #38 ).
+          # Select a few models to run CI for PRs:
+          #   64195   -> run: null
+          #   22203   -> skip: true
+          #   156120  -> several model directories
+          #   97868   -> failed nrnivmodl
+          #   146030  -> curate_patterns
+          #   244679  -> no entry in modeldb-run.yaml
+          #   rest:   -> currently yielding differences in the pipeline
+          echo 'models_to_run=64195 22203 156120 51781 97868 22203 97756 97917 105507 136803 138379 138382 146030 244679 251881' >> $GITHUB_OUTPUT
 
-    - name: check for Azure drop NEURON_V1 -> ${{ env.NEURON_V1 }}
-      if: startsWith(env.NEURON_V1, 'https://dev.azure.com/neuronsimulator/')
-      run: |
-        # check URI
-        curl -sfSI -X GET '${{ env.NEURON_V1 }}'
+          # parse PR description for models to run
 
-        # Download Azure drop and unzip
-        AZURE_DROP_URL="$NEURON_V1"
-        rm -rf drop
-        wget --tries=4 -LO DROP_V1.zip ${AZURE_DROP_URL}
-        unzip DROP_V1.zip
-        mv drop DROP_V1
+          parse_models=$(gh pr view $PR_URL --json body -q '.body | capture("(MODELS_TO_RUN=)(?<models>\\d+( \\d+)*)")')
+          if [ ! -z "$parse_models" ]; then
+            echo "models_to_run=$(echo $parse_models | jq -r .models)" >> $GITHUB_OUTPUT
+          fi
 
-        # Set drop dir in the env
-        echo "DROP_DIR_V1=`pwd`/DROP_V1" >> $GITHUB_ENV
+  modeldb-v1:
+    name: Running with V1
+    needs:
+      - set-models
+    uses: ./.github/workflows/nrn-modeldb-ci-template.yaml
+    with:
+      neuron_version: ${{ github.event.inputs.neuron_v1 || inputs.neuron_v1 || 'neuron' }}
+      models_to_run: ${{ github.event.inputs.models_to_run || inputs.models_to_run || needs.set-models.outputs.models_to_run || '' }}
+      platform: ubuntu-latest
+      python_version: '3.9'
 
-    - name: check for Azure drop NEURON_V2 -> ${{ env.NEURON_V2 }}
-      if: startsWith(env.NEURON_V2, 'https://dev.azure.com/neuronsimulator/')
-      run: |
-        # check URI
-        curl -sfSI -X GET '${{ env.NEURON_V2 }}'
+  modeldb-v2:
+    name: Running with V2
+    needs:
+      - set-models
+    uses: ./.github/workflows/nrn-modeldb-ci-template.yaml
+    with:
+      neuron_version: ${{ github.event.inputs.neuron_v2 || inputs.neuron_v2 || 'neuron-nightly' }}
+      models_to_run: ${{ github.event.inputs.models_to_run || inputs.models_to_run || needs.set-models.outputs.models_to_run || '' }}
+      platform: ubuntu-latest
+      python_version: '3.9'
 
-        # Download Azure drop and unzip
-        AZURE_DROP_URL="$NEURON_V2"
-        rm -rf drop
-        wget --tries=4 -LO DROP_V2.zip ${AZURE_DROP_URL}
-        unzip DROP_V2.zip
-        mv drop DROP_V2
+  nrn-modeldb-ci:
+    needs:
+      - modeldb-v1
+      - modeldb-v2
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.repo || github.repository }}
 
-        # Set drop dir in the env
-        echo "DROP_DIR_V2=`pwd`/DROP_V2" >> $GITHUB_ENV
+      - name: Setup Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
 
-    - name: check for artifact URL NEURON_V1 -> ${{ env.NEURON_V1 }}
-      if: startsWith(env.NEURON_V1, 'https://github.com/neuronsimulator/')
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        ARTIFACT_ID=$(echo "${NEURON_V1}" | grep --color=never -oE '[0-9]+$')
-        echo "Extracted Artifact ID: ${ARTIFACT_ID}"
-        gh api \
-          -H "Accept: application/vnd.github+json" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/neuronsimulator/nrn/actions/artifacts/${ARTIFACT_ID}/zip > DROP_V1.zip
-        unzip -d DROP_V1 DROP_V1.zip
+      - name: Install dependencies and project
+        id: install-deps
+        run: |
+          set
+          # Install python dependencies
+          python -m pip install --upgrade 'uv<=0.7.3'
+          # Install project
+          python -m uv pip install .
 
-        # Set drop dir in the env
-        echo "DROP_DIR_V1=$(pwd)/DROP_V1" >> $GITHUB_ENV
+      - name: Download artifacts for ${{ env.NEURON_V1 }}
+        uses: actions/download-artifact@v4
+        env:
+          file: ${{ needs.modeldb-v1.outputs.json_file }}
+        with:
+          name: modeldb-${{ env.file }}-ubuntu-latest-3.9
+          path: v1
 
-    - name: check for artifact URL NEURON_V2 -> ${{ env.NEURON_V2 }}
-      if: startsWith(env.NEURON_V2, 'https://github.com/neuronsimulator/')
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        ARTIFACT_ID=$(echo "${NEURON_V2}" | grep --color=never -oE '[0-9]+$')
-        echo "Extracted Artifact ID: ${ARTIFACT_ID}"
-        gh api \
-          -H "Accept: application/vnd.github+json" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/neuronsimulator/nrn/actions/artifacts/${ARTIFACT_ID}/zip > DROP_V2.zip
-        unzip -d DROP_V2 DROP_V2.zip
+      - name: Download artifacts for ${{ env.NEURON_V2 }}
+        uses: actions/download-artifact@v4
+        env:
+          file: ${{ needs.modeldb-v2.outputs.json_file }}
+        with:
+          name: modeldb-${{ env.file }}-ubuntu-latest-3.9
+          path: v2
 
-        # Set drop dir in the env
-        echo "DROP_DIR_V2=$(pwd)/DROP_V2" >> $GITHUB_ENV
+      - name: diffreports2html
+        if: env.NEURON_V1 != env.NEURON_V2
+        env:
+          file1: ${{ needs.modeldb-v1.outputs.json_file }}
+          file2: ${{ needs.modeldb-v2.outputs.json_file }}
+        run: |
+          tree
+          diffreports2html v1/${file1}.json v2/${file2}.json
 
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.9
-    - name: Set models to run for PR
-      run: |
-        # For PRs we only have a few models for quick sanity checking.
-        # Once the PR is green you need to manually run the ModelDB CI workflow by simply selecting your branch in the UI.
-
-        # The following selection aims to target different features (since we haven't worked on unit testing yet -> #38 ).
-        # Select a few models to run CI for PRs:
-        #   64195   -> run: null
-        #   22203   -> skip: true
-        #   156120  -> several model directories
-        #   97868   -> failed nrnivmodl
-        #   146030  -> curate_patterns
-        #   244679  -> no entry in modeldb-run.yaml
-        #   rest:   -> currently yielding differences in the pipeline
-        echo 'MODELS_TO_RUN=64195 22203 156120 51781 97868 22203 97756 97917 105507 136803 138379 138382 146030 244679 251881' >> $GITHUB_ENV
-
-        # parse PR description for models to run
-
-        parse_models=$(gh pr view $PR_URL --json body -q '.body | capture("(MODELS_TO_RUN=)(?<models>\\d+( \\d+)*)")')
-        if [ ! -z "$parse_models" ]; then
-          echo "MODELS_TO_RUN=$(echo $parse_models | jq -r .models)" >> $GITHUB_ENV
-        fi
-
-      if: github.event_name == 'pull_request' && inputs.repo == ''
-      env:
-        PR_URL: ${{ github.event.pull_request.html_url }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Install dependencies and project
-      id: install-deps
-      run: |
-        set
-        # Set up Xvfb
-        sudo apt-get install xvfb
-        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1600x1200x24 -noreset -nolock -shmem &  # run in bg
-        # Install python dependencies
-        python -m pip install --upgrade 'pip<=24.0'
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        #Install project in editable mode
-        python -m pip install -e .
-
-    - name: Cache ModelDB models
-      uses: actions/cache@v4
-      with:
-        path: |
-          cache
-          modeldb/modeldb-meta.yaml
-        key: dynamic-models
-
-    - name: Get ModelDB models
-      run: getmodels $MODELS_TO_RUN
-
-    - name: Run Models with NEURON V1 -> ${{ env.NEURON_V1 }}
-      run: |
-        set -x
-        # Install NEURON V1
-        if [[ -d "${DROP_DIR_V1}" ]]; then
-          # due to https://github.com/pypa/pip/issues/12110 we cannot rely on `--find-links`
-          # so we use a workaround
-          for wheel in "${DROP_DIR_V1}"/*.whl
-          do
-            if ! python -m pip install --user "${wheel}"
-            then
-              echo "Unable to install ${wheel}, trying another one"
-            else
-              echo "Successfully installed ${wheel}"
-              break
-            fi
-          done
-        else
-          python -m pip install $NEURON_V1
-        fi
-        nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
-        # Filter out the gout data before generating HTML reports. The HTML
-        # diff uses the original gout files on disk anyway. Compress the large
-        # JSON file including gout data for inclusion in the artifacts
-        mv ${nrn_ver}.json ${nrn_ver}-full.json
-        jq -r 'del(.[].gout)' ${nrn_ver}-full.json > ${nrn_ver}.json
-        xz ${nrn_ver}-full.json
-        report2html ${nrn_ver}.json
-        if [[ -d "${DROP_DIR_V1}" ]]; then
-          python -m pip uninstall --yes neuron-nightly==${nrn_ver}
-        else
-          python -m pip uninstall --yes $NEURON_V1
-        fi
-
-        echo "nrn1_ver=$nrn_ver" >> $GITHUB_ENV
-
-    - name: Run Models with NEURON V2 -> ${{ env.NEURON_V2 }}
-      if: env.NEURON_V1 != env.NEURON_V2
-      run: |
-        # Install NEURON V2
-        if [[ -d "${DROP_DIR_V2}" ]]; then
-          # due to https://github.com/pypa/pip/issues/12110 we cannot rely on `--find-links`
-          # so we use a workaround
-          for wheel in "${DROP_DIR_V2}"/*.whl
-          do
-            if ! python -m pip install --user "${wheel}"
-            then
-              echo "Unable to install ${wheel}, trying another one"
-            else
-              echo "Successfully installed ${wheel}"
-              break
-            fi
-          done
-        else
-          python -m pip install $NEURON_V2
-        fi
-        nrn_ver=`python -c "from neuron import __version__ as nrn_ver; print(nrn_ver)"`
-        runmodels --gout --workdir=$nrn_ver $MODELS_TO_RUN
-        # Filter out the gout data before generating HTML reports. The HTML
-        # diff uses the original gout files on disk anyway. Compress the large
-        # JSON file including gout data for inclusion in the artifacts
-        mv ${nrn_ver}.json ${nrn_ver}-full.json
-        jq -r 'del(.[].gout)' ${nrn_ver}-full.json > ${nrn_ver}.json
-        xz ${nrn_ver}-full.json
-        report2html ${nrn_ver}.json
-        if [[ -d "${DROP_DIR_V2}" ]]; then
-          python -m pip uninstall --yes neuron-nightly==${nrn_ver}
-        else
-          python -m pip uninstall --yes $NEURON_V2
-        fi
-        echo "nrn2_ver=$nrn_ver" >> $GITHUB_ENV
-
-    - name: diffreports2html ${{ env.nrn1_ver }}.json <-> ${{ env.nrn2_ver }}.json
-      if: env.NEURON_V1 != env.NEURON_V2
-      run: |
-        diffreports2html ${nrn1_ver}.json ${nrn2_ver}.json
-
-    - uses: actions/upload-artifact@v4
-      if: ${{ always() }}
-      with:
-        name: ${{ env.nrn1_ver }}-vs-${{ env.nrn2_ver }}
-        path: |
-          ./*.json.xz
-          ./*.html
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        env:
+          file1: ${{ needs.modeldb-v1.outputs.json_file }}
+          file2: ${{ needs.modeldb-v2.outputs.json_file }}
+        with:
+          name: modeldb-comparison
+          path: |
+            v1/*vs*.html
