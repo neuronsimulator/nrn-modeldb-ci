@@ -1460,8 +1460,10 @@
     - "model;optmz"
   skip: true
 187473:
-  model_dir:
-    - mods
+    model_dir: mods
+    script:
+    # prevent hanging because of matplotlib window
+    - sed -i 's,^system,//system,' mosinit.hoc
 187604:
   curate_patterns:
     - pattern: 'TIME HOST 0: [0-9\.]+ seconds \(set up\)'
@@ -2039,6 +2041,23 @@
 2016662:
   skip: true
   comment: "Not on GitHub and dirs contain spaces"
+2016664:
+  model_dir: _mod
+2017402:
+  skip: true
+  comment: "Error: new_seed used as both variable and function in file Gfluc.mod"
+2018247:
+  skip: true
+  comment: "Not on GitHub and dirs contain spaces"
+2018260:
+  skip: true
+  comment: "Jupyter notebook. Requires conda"
+2018263:
+  skip: true
+  comment: "See README.md"
+2019342:
+  skip: true
+  comment: "branching.mod needs updating"
 139150:
   github: 'pull/1'
 185513:

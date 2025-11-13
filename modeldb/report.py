@@ -25,8 +25,8 @@ def curate_run_data(run_data, model=None):
         # nrniv: unable to open font "*helvetica-medium-r-normal*--14*", using "fixed" <-> special: unableto open font "*helvetica-medium-r-normal*--14*", using "fixed"
         "^nrniv:": "%neuron-executable%:",
         "^special:": "%neuron-executable%:",
-        "(Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d+\s+\d+:\d+:\d+ [A-Z\s]+ \d+": "%date_command%",
-        "total run time [0-9\.]+": "total run time %run_time%",
+        r"(Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d+\s+\d+:\d+:\d+ [A-Z\s]+ \d+": "%date_command%",
+        r"total run time [0-9\.]+": "total run time %run_time%",
         "(^.*distutils.*$)": "",
         "/.*?/lib/python.*/site-packages/": "%python-site-packages%",
     }
