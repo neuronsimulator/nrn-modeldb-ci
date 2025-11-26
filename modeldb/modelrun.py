@@ -182,7 +182,7 @@ def compile_mods(model, mods: list[list[Path]]):
     for mod in mods:
         run_commands(
             model,
-            ["nrnivmodl"] + [str(item) for item in mod],
+            ["nrnivmodl-cmake"] + [str(item) for item in mod],
             env={"MAKEFLAGS": " --max-load 0.0"},
             work_dir=model.run_info["start_dir"],
         )
