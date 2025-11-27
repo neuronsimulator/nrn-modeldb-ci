@@ -50,7 +50,7 @@ jobs:
     - name: Install dependencies (Linux)
       if: startsWith(inputs.platform, 'ubuntu')
       run: |
-        sudo apt-get install -y cmake ninja ccache
+        sudo apt-get install -y cmake ninja-build ccache
 
     - name: Install dependencies (MacOS)
       if: startsWith(inputs.platform, 'macos')
