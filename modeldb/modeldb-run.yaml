@@ -599,6 +599,7 @@
   script:
     - sed -i'.bak' -e 's/mustart  = -0.400/mustart  = 0.800/g;s/sigmastart  = 0.064/sigmastart  = 0.128/g' mylibs/TFparams.hoc
 84589:
+  github: 'pull/4'
   model_dir:
     - mod
   run:
@@ -756,6 +757,7 @@
     # avoid printing out times
     - sed -i'.bak' -e 's/^startsw()$/{startsw()}/g' ga_setup.hoc
 97860:
+  github: 'pull/2'
   model_dir:
     - mod
   run:
@@ -786,6 +788,7 @@
   script:
     - sed -i'.bak' -e 's/mkdll_("nrntraub", "mod", s.s)) {/1) {\n\t\tchdir("nrntraub")/g' mosinit.hoc
 98005:
+  github: 'pull/2'
   run:
     - run()
     - verify_graph_()
@@ -802,6 +805,7 @@
     - fig9A1()
     - verify_graph_()
 105385:
+  github: 'pull/2'
   model_dir:
     - mod
   run:
@@ -1109,6 +1113,7 @@
     - load_file("homrun.hoc")
     - verify_graph_()
 122329:
+  github: 'pull/3'
   run:
     - '{ load_file("withSKsoma.hoc") init() }'
     - tstop = 500
@@ -1121,6 +1126,7 @@
     - run()
     - verify_graph_()
 123453:
+  github: 'pull/2'
   run:
     - run_model(prot)
     - verify_graph_()
@@ -1812,6 +1818,7 @@
     - mods
   run:
 267599:
+  github: 'pull/1'
   # There is also a subdirectory that seems to have older versions.
   model_dir:
     - "."
@@ -1850,6 +1857,7 @@
 #    - sed 's/tstop=/tstop=20\/\//g' Fig_13.hoc > temp.tmp
 #    - mv temp.tmp Fig_13.hoc
 244922:
+  github: 'pull/2'
   # segfaults with cal4.mod in 8.2.2 on macOS, see https://github.com/neuronsimulator/nrn/issues/2206
   run:
     - run()
@@ -2063,6 +2071,20 @@
   github: 'pull/1'
 184732:
   github: 'pull/2'
+48332:
+  github: 'pull/2'
+125689:
+  github: 'pull/2'
+150551:
+  github: 'pull/4'
+180789:
+  github: 'pull/1'
+258643:
+  github: 'pull/2'
+267140:
+  github: 'pull/1'
+2018017:
+  github: 'pull/1'
 2016664:
   model_dir:
     - './_mod'
