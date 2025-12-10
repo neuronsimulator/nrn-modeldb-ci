@@ -408,7 +408,9 @@
       repl: ''
     - pattern: '^\s+\^'
       repl: ''
-      # this should be removed once the latest release and development branch include nrn#2027
+  model_dir:
+    - '.'
+  # this should be removed once the latest release and development branch include nrn#2027
   ignore_exit_code: true
   run:
     - ringperf()
@@ -1287,6 +1289,8 @@
   run:
   script:
     - sed -i'.bak' -r 's/(tstop=mytstop=htmax= \(LearnDur \+ ZipDur \+ BaseDur\*2\) \*) 1e3/\1 2e1/g' params.hoc
+  skip: true
+  comment: "incompatibility at HOC level"
 144579:
   comment: ".mod files do not compile"
   skip: true
@@ -1298,6 +1302,7 @@
   model_dir:
     - channels
 146030:
+  github: 'pull/1'
   curate_patterns:
     - pattern: 'Setup time for simulation:\s*[0-9]+(\.[0-9]+)?\s*seconds'
       repl: 'Setup time for simulation: %setup_time% seconds'
@@ -1691,11 +1696,10 @@
   model_dir:
     - "Figure_1_single_EPSPs"
 266806:
-  comment: ".mod files do not compile"
   # there's also a Morphology_2 directory
   model_dir:
     - "Morphology_1/mod_files"
-  skip: true
+  github: 'pull/1'
 266842:
   # Scaleup_5x_all/modfiles/ also exists but sounds slower
   model_dir:
@@ -2033,6 +2037,8 @@
   skip: true
   comment: ".mod files do not compile"
 2016138:
+  model_dir:
+    - "Figure1/Neuron_codes/mod"
   skip: true
   comment: ".mod files do not compile with NEURON 9.0"
 2016658:
@@ -2079,3 +2085,22 @@
   github: 'pull/1'
 2018017:
   github: 'pull/1'
+2016664:
+  model_dir:
+    - './_mod'
+2019342:
+  skip: true
+  comment: "Mod files do not compile"
+2018260:
+  github: 'pull/1'
+2018017:
+  github: 'pull/1'
+2019896:
+  github: 'pull/1'
+2018014:
+  github: 'pull/1'
+2019883:
+  github: 'pull/1'
+2019891:
+  skip: true
+  comment: "Missing hoc file in source"
