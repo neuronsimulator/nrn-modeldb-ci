@@ -11,6 +11,7 @@ from docopt import docopt
 from jinja2 import Environment
 from jinja2 import FileSystemLoader
 
+from . import config
 from .config import *
 from .modeldb import ModelDB
 from .modelrun import is_dir_non_empty
