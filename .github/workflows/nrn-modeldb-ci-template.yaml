@@ -32,9 +32,9 @@ on:
         default: 'ubuntu-latest'
         required: false
       python_version:
-        description: 'The Python version used by the wheel'
+        description: 'Python used to install NEURON and run models (need >=3.10 for NEURON 9)'
         type: string
-        default: '3.9'
+        default: '3.12'
         required: false
 
 jobs:

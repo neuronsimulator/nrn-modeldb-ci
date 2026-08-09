@@ -40,8 +40,8 @@ on:
         required: false
         type: string
       python_version:
-        description: 'The Python version of the NEURON wheel'
-        default: '3.9'
+        description: 'Python used to install NEURON and run models (need >=3.10 for NEURON 9)'
+        default: '3.12'
         required: false
         type: string
 
@@ -68,8 +68,8 @@ on:
         default: 'ubuntu-latest'
         required: false
       python_version:
-        description: 'The Python version of the NEURON wheel'
-        default: '3.9'
+        description: 'Python used to install NEURON and run models (need >=3.10 for NEURON 9)'
+        default: '3.12'
         required: false
 
 env:
@@ -124,7 +124,7 @@ jobs:
       repo: ${{ inputs.repo || 'neuronsimulator/nrn-modeldb-ci' }}
       ref: ${{ github.event.inputs.ref || inputs.ref || 'master' }}
       platform: ubuntu-latest
-      python_version: '3.9'
+      python_version: ${{ github.event.inputs.python_version || inputs.python_version || '3.12' }}
 
   modeldb-v2:
     name: Running with V2
@@ -137,7 +137,7 @@ jobs:
       repo: ${{ inputs.repo || 'neuronsimulator/nrn-modeldb-ci' }}
       ref: ${{ github.event.inputs.ref || inputs.ref || 'master' }}
       platform: ubuntu-latest
-      python_version: '3.9'
+      python_version: ${{ github.event.inputs.python_version || inputs.python_version || '3.12' }}
 
   nrn-modeldb-ci:
     needs:
