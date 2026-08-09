@@ -98,6 +98,7 @@ Useful `workflow_call` inputs:
 | `models_to_run` | (empty = all) | Space-separated ModelDB accession numbers |
 | `repo` | `neuronsimulator/nrn-modeldb-ci` | Package repository to clone |
 | **`ref`** | **`master`** | **Git branch, tag, or SHA checked out before `pip install .`** (selects `modeldb-run.yaml` and code) |
+| **`python_version`** | **`3.12`** | Interpreter for install/`runmodels` (NEURON 9 needs **≥3.10**; was previously hard-coded 3.9) |
 
 `uses: …@master` only pins the **workflow recipe**. The **package tree** (what `runmodels` uses) is controlled by **`ref`**. Callers that need an unmerged tip (e.g. a PR branch) pass `ref: that-branch` while keeping `uses@master` once this input exists on master.
 
