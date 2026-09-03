@@ -46,6 +46,7 @@ def setup_package():
                 "diffreports2html = modeldb.commands:diffreports2html",
                 "compare_gout_files = modeldb.commands:compare_gout_files",
                 "show_diff_gout = modeldb.commands:show_diff_gout",
+                "win-runmodels = modeldb.win_modeldb_driver:main",
             ]
         ),
         long_description=long_description,
