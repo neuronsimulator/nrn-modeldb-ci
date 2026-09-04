@@ -1161,7 +1161,10 @@
     - runa()
     - verify_graph_()
   script: # todo -> fix model for NEURON 8.0.0 and remove this script
+    # INITIAL VERBATIM return 0; is copied into void initmodel() (MSVC C2562).
+    # PROCEDURE states() also has return 0; stripping both is harmless.
     - sed -i'.bak' -e 's/return 0;//g' MOPP_Fig_1B_left/ichan2.mod
+    - sed -i'.bak' -e 's/return 0;//g' Granule_Fig_1B_right/ichan2.mod
 124513:
   script:
     # there are two problems with the code in this model:
@@ -1696,6 +1699,13 @@
   model_dir:
     - "Morphology_1/mod_files"
   github: 'pull/1'
+  # cache zip is still unfixed ModelDB. Same edits as ModelDBRepository/266806#1:
+  # CONSTANT cao -> ASSIGNED cao; RANGE r vs FUNCTION r in Hcn1.mod.
+  script:
+    - "sed -i'.bak' -e '/^CONSTANT { cao = 2(mM) }$/d' -e '/cai       (mM)$/a\\    cao       (mM)' Morphology_1/mod_files/cdp5StCmod.mod"
+    - "sed -i'.bak' -e '/^CONSTANT { cao = 2(mM) }$/d' -e '/cai       (mM)$/a\\    cao       (mM)' Morphology_2/mod_files/cdp5StCmod.mod"
+    - sed -i'.bak' -e 's/RANGE gbar,r,g, o/RANGE gbar,g, o/' Morphology_1/mod_files/Hcn1.mod
+    - sed -i'.bak' -e 's/RANGE gbar,r,g, o/RANGE gbar,g, o/' Morphology_2/mod_files/Hcn1.mod
 266842:
   # Scaleup_5x_all/modfiles/ also exists but sounds slower
   model_dir:

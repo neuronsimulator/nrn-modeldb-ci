@@ -121,6 +121,60 @@ def patch_97917_mkdll(model_dir: Path) -> list[str]:
     return [f"patched {target.name}: skip mkdll_ nrntraub, chdir nrntraub ({n})"]
 
 
+def patch_124291_ichan2(model_dir: Path) -> list[str]:
+    """sed -i'.bak' -e 's/return 0;//g' */ichan2.mod (INITIAL + PROCEDURE)."""
+    logs = []
+    for target in sorted(model_dir.rglob("ichan2.mod")):
+        if is_junk_mod(target):
+            continue
+        text = _read_backup(target)
+        n = text.count("return 0;")
+        target.write_text(text.replace("return 0;", ""), encoding="utf-8")
+        logs.append(f"patched {target.relative_to(model_dir)}: stripped return 0; ({n})")
+    if not logs:
+        raise FileNotFoundError(f"no ichan2.mod under {model_dir}")
+    return logs
+
+
+def patch_266806_cao_constant(model_dir: Path) -> list[str]:
+    """sed -i'.bak' -e '/^CONSTANT { cao = 2(mM) }$/d' Morphology_*/mod_files/cdp5StCmod.mod"""
+    logs = []
+    pat = re.compile(r"^CONSTANT \{ cao = 2\s*\(mM\) \}\s*\n?", re.M)
+    for target in sorted(model_dir.rglob("cdp5StCmod.mod")):
+        if is_junk_mod(target):
+            continue
+        text = _read_backup(target)
+        patched, n = pat.subn("", text)
+        n_asg = 0
+        if not re.search(r"^\s*cao\s+\(mM\)\s*$", patched, re.M):
+            patched, n_asg = re.subn(
+                r"^(\s*cai\s+\(mM\))\s*$",
+                r"\1\n    cao       (mM)",
+                patched,
+                count=1,
+                flags=re.M,
+            )
+        target.write_text(patched, encoding="utf-8")
+        logs.append(
+            f"patched {target.relative_to(model_dir)}: "
+            f"removed CONSTANT cao ({n}), ASSIGNED cao ({n_asg})"
+        )
+    if not logs:
+        raise FileNotFoundError(f"no cdp5StCmod.mod under {model_dir}")
+    for target in sorted(model_dir.rglob("Hcn1.mod")):
+        if is_junk_mod(target):
+            continue
+        text = _read_backup(target)
+        n = text.count("RANGE gbar,r,g, o")
+        target.write_text(
+            text.replace("RANGE gbar,r,g, o", "RANGE gbar,g, o"), encoding="utf-8"
+        )
+        logs.append(
+            f"patched {target.relative_to(model_dir)}: RANGE gbar,r,g, o -> gbar,g, o ({n})"
+        )
+    return logs
+
+
 def patch_105507_batch(model_dir: Path) -> list[str]:
     """sed batch_flag=0, tstop = 1e3, return tti/1e3, print tti/.*"""
     target = model_dir / "batch_.hoc"
@@ -138,6 +192,8 @@ SCRIPT_ALLOWLIST = {
     97756: patch_97756_startsw,
     97917: patch_97917_mkdll,
     105507: patch_105507_batch,  # Linux yaml only; Windows skip is WINDOWS_SKIP
+    124291: patch_124291_ichan2,
+    266806: patch_266806_cao_constant,
 }
 
 # Windows-only. Do not put these in modeldb-run.yaml skip: true (Linux GHA
