@@ -7,6 +7,9 @@ Unzip cache zips onto a C: workdir, honor yaml model_dir, nrnivmodl, write drive
 with forward-slash verify_dir_, then nrniv -nobanner (cwd nrnmech.dll auto-load,
 or -dll with forward slashes). Translate yaml script only for an allowlist. Windows-only skip
 WINDOWS_SKIP (Lytton VERBATIM POSIX); do not yaml skip those ids.
+
+--compile-launch-only stops after nrnivmodl + nrniv load (API completeness).
+No .mod files: skip nrnivmodl and launch hoc-only (Linux runmodels does that).
 """
 
 from __future__ import annotations
@@ -433,6 +436,8 @@ def run_one(
     compile_timeout: float,
     run_timeout: float,
     neuron_prefix: str | None = None,
+    compile_launch_only: bool = False,
+    skip_if_result: bool = False,
 ) -> dict:
     rec = {
         "id": model_id,
@@ -457,12 +462,21 @@ def run_one(
         rec["ladder"] = "skipped-verbatim-posix"
         rec["error"] = WINDOWS_SKIP[model_id]
         return rec
+    dest = workdir / str(model_id)
+    if skip_if_result:
+        prev = dest / "result.json"
+        if prev.is_file():
+            try:
+                old = json.loads(prev.read_text(encoding="utf-8"))
+                old["skipped_existing"] = True
+                return old
+            except Exception:
+                pass
     zip_path = cache_dir / f"{model_id}.zip"
     if not zip_path.is_file():
         rec["error"] = f"missing cache zip {zip_path}"
         rec["ladder"] = "failed-missing-zip"
         return rec
-    dest = workdir / str(model_id)
     if dest.exists():
         shutil.rmtree(dest)
     try:
@@ -477,15 +491,23 @@ def run_one(
     if "script" in instr:
         fn = SCRIPT_ALLOWLIST.get(model_id)
         if fn is None:
-            rec["ladder"] = "skipped-untranslated-script"
-            rec["error"] = f"yaml script present and not allowlisted: {instr['script']}"
-            return rec
-        try:
-            logs.extend(fn(model_dir))
-        except Exception:
-            rec["error"] = traceback.format_exc()
-            rec["ladder"] = "failed-script"
-            return rec
+            if compile_launch_only:
+                logs.append(
+                    "yaml script present and not allowlisted; skipped for compile+launch"
+                )
+            else:
+                rec["ladder"] = "skipped-untranslated-script"
+                rec["error"] = (
+                    f"yaml script present and not allowlisted: {instr['script']}"
+                )
+                return rec
+        else:
+            try:
+                logs.extend(fn(model_dir))
+            except Exception:
+                rec["error"] = traceback.format_exc()
+                rec["ladder"] = "failed-script"
+                return rec
     rec["script_logs"] = logs
 
     run_lines = instr.get("run", DEFAULT_RUN)
@@ -507,15 +529,6 @@ def run_one(
         rec["error"] = f"nrniv not on PATH: {rec['tools']}"
         rec["ladder"] = "failed-tools"
         return rec
-    if neuron_prefix:
-        if not rec["tools"]["cmake"]:
-            rec["error"] = f"cmake not on PATH for probe nrnivmodl: {rec['tools']}"
-            rec["ladder"] = "failed-tools"
-            return rec
-    elif not rec["tools"]["nrnivmodl"]:
-        rec["error"] = f"nrnivmodl not on PATH: {rec['tools']}"
-        rec["ladder"] = "failed-tools"
-        return rec
 
     try:
         mod_groups = collect_mod_groups(
@@ -527,11 +540,39 @@ def run_one(
         return rec
     rec["mod_dirs"] = [[str(d) for d in g] for g in mod_groups]
 
-    # --- ladder 1: nrnivmodl ---
+    # --- ladder 1: nrnivmodl (skip when the zip has no .mod files) ---
     if not mod_groups:
-        rec["error"] = "no .mod directories found"
-        rec["ladder"] = "failed-nrnivmodl"
-        rec["nrnivmodl"] = {"rc": -1, "output": ["no .mod directories found"]}
+        rec["nrnivmodl"] = {
+            "rc": 0,
+            "skipped": True,
+            "output": ["no .mod files; hoc-only launch"],
+        }
+        rec["dll"] = None
+        nrniv = rec["tools"]["nrniv"]
+        load = run_captured(
+            [nrniv, "-nobanner", "-c", "quit()"],
+            start_dir,
+            env,
+            min(120.0, run_timeout),
+        )
+        rec["load"] = load
+        rec["load_used_dll_flag"] = False
+        if load["rc"] != 0 or load["timeout"]:
+            rec["ladder"] = "failed-load"
+            rec["error"] = f"nrniv load rc={load['rc']} timeout={load['timeout']}"
+            return rec
+        rec["ladder"] = "compile+launch"
+        rec["gout"] = gout_info(model_dir)
+        return rec
+
+    if neuron_prefix:
+        if not rec["tools"]["cmake"]:
+            rec["error"] = f"cmake not on PATH for probe nrnivmodl: {rec['tools']}"
+            rec["ladder"] = "failed-tools"
+            return rec
+    elif not rec["tools"]["nrnivmodl"]:
+        rec["error"] = f"nrnivmodl not on PATH: {rec['tools']}"
+        rec["ladder"] = "failed-tools"
         return rec
     compile_out = []
     compile_rc = 0
@@ -611,6 +652,11 @@ def run_one(
         rec["error"] = f"nrniv load rc={load['rc']} timeout={load['timeout']}"
         return rec
 
+    if compile_launch_only:
+        rec["ladder"] = "compile+launch"
+        rec["gout"] = gout_info(model_dir)
+        return rec
+
     if not run_lines:
         rec["ladder"] = "compile+launch"
         rec["gout"] = gout_info(model_dir)
@@ -661,8 +707,37 @@ def main(argv=None) -> int:
         default="",
         help="Probe install (e.g. C:\\nrn-probe). Empty: PATH nrniv/nrnivmodl (wheel).",
     )
-    ap.add_argument("ids", nargs="+", type=int)
+    ap.add_argument(
+        "--compile-launch-only",
+        action="store_true",
+        help="Stop after nrnivmodl + nrniv load. Do not run mosinit/gout.",
+    )
+    ap.add_argument(
+        "--skip-if-result",
+        action="store_true",
+        help="Reuse workdir/<id>/result.json when present (resume a sweep).",
+    )
+    ap.add_argument(
+        "--ids-file",
+        default="",
+        help="Text file of model ids (one per line or whitespace-separated).",
+    )
+    ap.add_argument("ids", nargs="*", type=int)
     args = ap.parse_args(argv)
+    ids = list(args.ids)
+    if args.ids_file:
+        text = Path(args.ids_file).read_text(encoding="utf-8")
+        ids.extend(int(tok) for tok in text.split() if tok.strip())
+    if not ids:
+        ap.error("need ids arguments and/or --ids-file")
+    # keep order, drop dupes
+    seen = set()
+    uniq = []
+    for mid in ids:
+        if mid not in seen:
+            seen.add(mid)
+            uniq.append(mid)
+    ids = uniq
 
     os.environ.pop("PYTHONPATH", None)
     prefix = args.neuron_prefix or None
@@ -678,6 +753,7 @@ def main(argv=None) -> int:
     summary = {
         "python": sys.executable,
         "neuron_prefix": prefix,
+        "compile_launch_only": args.compile_launch_only,
         "nrnversion": None,
         "neuronhome": env0.get("NEURONHOME"),
         "nrniv": env0 and shutil.which("nrniv", path=env0.get("PATH")),
@@ -698,7 +774,7 @@ def main(argv=None) -> int:
                 summary["nrnversion"] = line.strip()
                 break
 
-    for mid in args.ids:
+    for mid in ids:
         print(f"=== model {mid} ===", flush=True)
         rec = run_one(
             mid,
@@ -708,6 +784,8 @@ def main(argv=None) -> int:
             args.compile_timeout,
             args.run_timeout,
             neuron_prefix=prefix,
+            compile_launch_only=args.compile_launch_only,
+            skip_if_result=args.skip_if_result,
         )
         summary["models"].append(rec)
         outp = workdir / str(mid) / "result.json"
@@ -718,8 +796,10 @@ def main(argv=None) -> int:
             f"gout={rec.get('gout')} error={rec.get('error')}",
             flush=True,
         )
+        (workdir / "summary.json").write_text(
+            json.dumps(summary, indent=2), encoding="utf-8"
+        )
 
-    (workdir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print("WROTE", workdir / "summary.json", flush=True)
     return 0
 
