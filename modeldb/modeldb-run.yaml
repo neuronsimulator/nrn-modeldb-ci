@@ -7,6 +7,12 @@
   run:
     - run()
     - verify_graph_()
+  script:
+    # forsec "*2*" is glob. cabcode wraps .*pat.* so the pattern is .**2*.*,
+    # which is invalid ECMAScript (MSVC std::regex error_badrepeat). libstdc++
+    # accepts it as .* + 2* + .* (match all). forsec "2" is valid regex on
+    # Linux/macOS/Windows (wrap .*2.*); names containing 2 (s2d, s2p, p2g).
+    - sed -i'.bak' -e 's/forsec "\*2\*"/forsec "2"/' mit4.hoc
 2730:
   run:
     - //launch but do not run

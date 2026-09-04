@@ -88,6 +88,25 @@ def _read_backup(path: Path) -> str:
     return text
 
 
+def patch_2487_forsec(model_dir: Path) -> list[str]:
+    """sed -i'.bak' -e 's/forsec "\\*2\\*"/forsec "2"/' mit4.hoc"""
+    logs = []
+    for target in sorted(model_dir.rglob("mit4.hoc")):
+        if "__MACOSX" in target.parts or target.name.startswith("._"):
+            continue
+        text = _read_backup(target)
+        n = text.count('forsec "*2*"')
+        if n == 0:
+            raise RuntimeError(f"{target}: no forsec \"*2*\" to patch")
+        target.write_text(text.replace('forsec "*2*"', 'forsec "2"'), encoding="utf-8")
+        logs.append(
+            f'patched {target.relative_to(model_dir)}: forsec "*2*" -> forsec "2" ({n})'
+        )
+    if not logs:
+        raise FileNotFoundError(f"no mit4.hoc under {model_dir}")
+    return logs
+
+
 def patch_51781_sed_seed(model_dir: Path) -> list[str]:
     """sed -i'.bak' -e 's#ropen(#// ropen(#g;s#rseed = fscan()#rseed=424242#g' testnet.hoc"""
     target = model_dir / "testnet.hoc"
@@ -188,6 +207,7 @@ def patch_105507_batch(model_dir: Path) -> list[str]:
 
 
 SCRIPT_ALLOWLIST = {
+    2487: patch_2487_forsec,
     51781: patch_51781_sed_seed,
     97756: patch_97756_startsw,
     97917: patch_97917_mkdll,

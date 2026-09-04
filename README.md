@@ -199,7 +199,7 @@ show_diff_gout linux-workdir win-gout-lf
 
 ### yaml `script:` and skips
 
-Only an **allowlist** of yaml `script:` entries is translated (Python, not `/bin/sh`). Untranslated `script:` is skipped in `--compile-launch-only` and is `skipped-untranslated-script` otherwise. Allowlisted compile-time patches (e.g. 124291 `ichan2` `return 0;`, 266806 cao/`Hcn1`) **are** applied in compile+launch.
+Only an **allowlist** of yaml `script:` entries is translated (Python, not `/bin/sh`). Untranslated `script:` is skipped in `--compile-launch-only` and is `skipped-untranslated-script` otherwise. Allowlisted compile-time patches (e.g. 2487 `forsec "*2*"` → `"2"`, 124291 `ichan2` `return 0;`, 266806 cao/`Hcn1`) **are** applied in compile+launch.
 
 `skip: true` in yaml is still skip. **WINDOWS_SKIP** (105507, 138379) is Windows-only (Lytton VERBATIM POSIX); do not put those ids in yaml `skip: true` (Linux GHA gold stays).
 
