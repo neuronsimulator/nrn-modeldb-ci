@@ -41,6 +41,13 @@ The following commands are now available:
   Note that models have to be downloaded beforehand with `getmodels`.
   You can specify `--virtual` so that NEURON GUI is run in headless mode. It requires a backend (n.r. `Xvfb`).
   Re-running in the same `--workdir` can mangle results. Please use `--clean` if you wish to re-run in the same `--workdir`.
+  **`runmodels` is Unix.** On Windows use `win-runmodels` (below).
+
+* `win-runmodels` -> thin Windows driver (not a port of `runmodels`).
+  ```
+  win-runmodels -h
+  ```
+  See [Testing on Windows](#testing-on-windows).
   
 
 * `report2html` -> create an interactive HTML report for a given json report (obtained with `runmodels`)
@@ -135,7 +142,72 @@ All entries are optional:
 
 (*) `verify_graph_()` saves all lines of all graphs to the `gout` file in the model working directory.
 
-### Model Run Activity Diagram
+## Testing on Windows
+
+`runmodels` uses `/bin/sh` for yaml `script:`, `nrnivmodl` without `PATHEXT`, and `./x86_64/special`. That does not work on Windows.
+
+This branch adds a **thin driver** (`win-runmodels` / `python modeldb/win_modeldb_driver.py`). It is serial, stdlib + PyYAML, and talks to a pip wheel or a CMake probe. It is **not** a `runmodels` port and is not wired into GitHub Actions.
+
+### Install
+
+Same editable install as on Linux, in a venv that already has the Windows NEURON wheel (or will use `--neuron-prefix`):
+
+```
+pip install -e .
+pip install pyyaml
+```
+
+`getmodels` can be run on Linux; copy `cache/<id>.zip` to the Windows machine. Do not use the vboxsf share as `--workdir` (write the run tree on `C:`).
+
+### Wheel vs probe
+
+| | How |
+| --- | --- |
+| **pip wheel** | Put the venv `Scripts` on `PATH`. Leave `--neuron-prefix` empty. `C:\nrn` (setup.exe) must not be on `PATH`. |
+| **CMake probe** | `--neuron-prefix C:\build-msvc-port` (RelWithDebInfo). Probe `nrnivmodl` is cmake, not the wheel `.cmd` (the wrapper hardcodes Release). Do not copy `nrniv.dll` from the probe onto a pip wheel. |
+
+A 3.14 `win_amd64` wheel from `msvc-wheel-dev` is the product under test. The probe is for iterating `NRN_DLLSYM` extracts before a wheel recut.
+
+### Compile + load (`runmodels --norun` plus quit)
+
+`--compile-launch-only` stops after `nrnivmodl` (or hoc-only if there are no `.mod` files) and `nrniv -c "quit()"` (cwd `nrnmech.dll` auto-load, or `-dll` with forward slashes). That is the Windows analogue of `runmodels --norun`, except it also **loads** the dll.
+
+```
+win-runmodels --cache C:\path\to\cache --workdir C:\path\to\winrun --yaml modeldb\modeldb-run.yaml --compile-launch-only 279 51781
+```
+
+Many ids:
+
+```
+win-runmodels --cache ... --workdir ... --yaml ... --compile-launch-only --ids-file linux-green-ids.txt --skip-if-result
+```
+
+`--skip-if-result` resumes from `workdir/<id>/result.json`. `--compile-timeout` / `--run-timeout` default 900 / 600 seconds.
+
+Each model writes `workdir/<id>/result.json`. The last `workdir/summary.json` has all records (`ladder`: `compile+launch`, `failed-nrnivmodl`, `failed-load`, `gout`, `skipped`, …).
+
+### Full run + gout
+
+Omit `--compile-launch-only` to load `mosinit.hoc` and `driver.hoc` (`verify_graph_()`). Graph gout under SSH can be blank; a desktop session may be needed. Windows gout is CRLF; `compare_gout_files` is byte-exact. Copy gout to Linux and strip `\r` before comparing to a Linux gold:
+
+```
+compare_gout_files linux-workdir win-gout-lf
+show_diff_gout linux-workdir win-gout-lf
+```
+
+`show_diff_gout` / `diffgout` launch `nrngui` (typically on Linux).
+
+### yaml `script:` and skips
+
+Only an **allowlist** of yaml `script:` entries is translated (Python, not `/bin/sh`). Untranslated `script:` is skipped in `--compile-launch-only` and is `skipped-untranslated-script` otherwise. Allowlisted compile-time patches (e.g. 2487 `forsec "*2*"` → `"2"`, 124291 `ichan2` `return 0;`, 266806 cao/`Hcn1`) **are** applied in compile+launch.
+
+`skip: true` in yaml is still skip. **WINDOWS_SKIP** (105507, 138379) is Windows-only (Lytton VERBATIM POSIX); do not put those ids in yaml `skip: true` (Linux GHA gold stays).
+
+### What “success” means here
+
+Compile+launch on a recut `win_amd64` wheel is the API test (`nrnivmodl` + load). Expect remaining `failed-nrnivmodl` for Lytton/POSIX VERBATIM, a couple of harness/zip cases, and python models. CVode gout differences across OS are common and are not a compile/load failure (`show_diff_gout`).
+
+## Model Run Activity Diagram
 
 When launching `runmodels` the following happens: 
 
@@ -143,7 +215,7 @@ When launching `runmodels` the following happens:
 
 See model configuration section for details on how to configure the model run.
 
-### Report
+## Report
 
 The generated report following `runmodels` contains te following info:
 
