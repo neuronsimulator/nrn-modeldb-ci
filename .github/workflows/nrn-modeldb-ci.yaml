@@ -29,14 +29,19 @@ on:
         default: 'neuronsimulator/nrn-modeldb-ci'
         type: string
         required: false
+      ref:
+        description: 'Git ref (branch, tag, or SHA) of this repo to checkout for the package'
+        type: string
+        default: 'master'
+        required: false
       platform:
         description: 'The platform/OS'
         default: 'ubuntu-latest'
         required: false
         type: string
       python_version:
-        description: 'The Python version of the NEURON wheel'
-        default: '3.9'
+        description: 'Python used to install NEURON and run models (need >=3.10 for NEURON 9)'
+        default: '3.12'
         required: false
         type: string
 
@@ -54,18 +59,26 @@ on:
         description: 'Empty for all models, space separated accession numbers for specific models'
         default: ''
         required: false
+      ref:
+        description: 'Git ref (branch, tag, or SHA) of this repo to checkout for the package'
+        default: 'master'
+        required: false
       platform:
         description: 'The platform/OS'
         default: 'ubuntu-latest'
         required: false
       python_version:
-        description: 'The Python version of the NEURON wheel'
-        default: '3.9'
+        description: 'Python used to install NEURON and run models (need >=3.10 for NEURON 9)'
+        default: '3.12'
         required: false
 
 env:
   NEURON_V1: ${{ github.event.inputs.neuron_v1 || inputs.neuron_v1 || 'neuron' }}
   NEURON_V2: ${{ github.event.inputs.neuron_v2 || inputs.neuron_v2 || 'neuron-nightly' }}
+  # Package tree ref for checkout (workflow_call or workflow_dispatch)
+  MDB_CI_REF: ${{ github.event.inputs.ref || inputs.ref || 'master' }}
+  # Must match python_version used when uploading V1/V2 modeldb-* artifacts
+  MDB_PYTHON_VERSION: ${{ github.event.inputs.python_version || inputs.python_version || '3.12' }}
 
 jobs:
   set-models:
@@ -110,8 +123,10 @@ jobs:
     with:
       neuron_version: ${{ github.event.inputs.neuron_v1 || inputs.neuron_v1 || 'neuron' }}
       models_to_run: ${{ github.event.inputs.models_to_run || inputs.models_to_run || needs.set-models.outputs.models_to_run || '' }}
+      repo: ${{ inputs.repo || 'neuronsimulator/nrn-modeldb-ci' }}
+      ref: ${{ github.event.inputs.ref || inputs.ref || 'master' }}
       platform: ubuntu-latest
-      python_version: '3.9'
+      python_version: ${{ github.event.inputs.python_version || inputs.python_version || '3.12' }}
 
   modeldb-v2:
     name: Running with V2
@@ -121,8 +136,10 @@ jobs:
     with:
       neuron_version: ${{ github.event.inputs.neuron_v2 || inputs.neuron_v2 || 'neuron-nightly' }}
       models_to_run: ${{ github.event.inputs.models_to_run || inputs.models_to_run || needs.set-models.outputs.models_to_run || '' }}
+      repo: ${{ inputs.repo || 'neuronsimulator/nrn-modeldb-ci' }}
+      ref: ${{ github.event.inputs.ref || inputs.ref || 'master' }}
       platform: ubuntu-latest
-      python_version: '3.9'
+      python_version: ${{ github.event.inputs.python_version || inputs.python_version || '3.12' }}
 
   nrn-modeldb-ci:
     needs:
@@ -133,6 +150,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: ${{ inputs.repo || github.repository }}
+          ref: ${{ env.MDB_CI_REF }}
 
       - name: Setup Python 3.9
         uses: actions/setup-python@v5
@@ -153,7 +171,7 @@ jobs:
         env:
           file: ${{ needs.modeldb-v1.outputs.json_file }}
         with:
-          name: modeldb-${{ env.file }}-ubuntu-latest-3.9
+          name: modeldb-${{ env.file }}-ubuntu-latest-${{ env.MDB_PYTHON_VERSION }}
           path: v1
 
       - name: Download artifacts for ${{ env.NEURON_V2 }}
@@ -161,7 +179,7 @@ jobs:
         env:
           file: ${{ needs.modeldb-v2.outputs.json_file }}
         with:
-          name: modeldb-${{ env.file }}-ubuntu-latest-3.9
+          name: modeldb-${{ env.file }}-ubuntu-latest-${{ env.MDB_PYTHON_VERSION }}
           path: v2
 
       - name: diffreports2html

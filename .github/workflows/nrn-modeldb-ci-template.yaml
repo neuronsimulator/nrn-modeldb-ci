@@ -21,15 +21,20 @@ on:
         default: 'neuronsimulator/nrn-modeldb-ci'
         type: string
         required: false
+      ref:
+        description: 'Git ref (branch, tag, or SHA) of the package repo to checkout'
+        type: string
+        default: 'master'
+        required: false
       platform:
         description: 'The platform/OS to run the CI'
         type: string
         default: 'ubuntu-latest'
         required: false
       python_version:
-        description: 'The Python version used by the wheel'
+        description: 'Python used to install NEURON and run models (need >=3.10 for NEURON 9)'
         type: string
-        default: '3.9'
+        default: '3.12'
         required: false
 
 jobs:
@@ -45,6 +50,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         repository: ${{ inputs.repo || github.repository }}
+        ref: ${{ inputs.ref || 'master' }}
 
     - name: check for Azure drop of NEURON -> ${{ inputs.neuron_version }}
       if: startsWith(inputs.neuron_version, 'https://dev.azure.com/neuronsimulator/')
