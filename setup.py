@@ -44,6 +44,8 @@ def setup_package():
                 "modeldb-config = modeldb.commands:modeldb_config",
                 "report2html = modeldb.commands:report2html",
                 "diffreports2html = modeldb.commands:diffreports2html",
+                "compare_gout_files = modeldb.commands:compare_gout_files",
+                "show_diff_gout = modeldb.commands:show_diff_gout",
             ]
         ),
         long_description=long_description,

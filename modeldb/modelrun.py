@@ -320,7 +320,13 @@ def run_model(model):
 
         if "model_dir" in model:
             # go over all of the `model_dir`s and group the mod files together for compilation
-            for model_dir in model["model_dir"]:
+            # Handle model["model_dir"] as a string or list
+            model_dirs = (
+                model["model_dir"].split(";")
+                if isinstance(model["model_dir"], str)
+                else model["model_dir"]
+            )
+            for model_dir in model_dirs:
                 mod_groups.append(
                     find_modfile_group(
                         Path(model.model_dir) / item for item in model_dir.split(";")

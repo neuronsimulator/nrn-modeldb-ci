@@ -16,6 +16,55 @@ from .modeldb import ModelDB
 from .modelrun import is_dir_non_empty
 from .modelrun import ModelRunManager
 from .report import diff_reports
+import json
+import shutil
+import filecmp
+
+
+def _compare_gout_files_internal(
+    folder1: str, folder2: str
+) -> tuple[list[str], list[str], list[str]]:
+    """
+    Internal helper to compare 'gout' files between two folders.
+
+    Args:
+        folder1 (str): Path to first folder
+        folder2 (str): Path to second folder
+
+    Returns:
+        tuple: (files_only_in_folder1, files_only_in_folder2, files_different_content)
+    """
+    # Convert to Path objects
+    folder1_path = Path(folder1)
+    folder2_path = Path(folder2)
+
+    # Find all gout files in both folders
+    gout_files1 = {
+        str(p.relative_to(folder1_path))
+        for p in folder1_path.rglob("gout")
+        if p.is_file()
+    }
+    gout_files2 = {
+        str(p.relative_to(folder2_path))
+        for p in folder2_path.rglob("gout")
+        if p.is_file()
+    }
+
+    # Find files unique to each folder
+    only_in_folder1 = list(gout_files1 - gout_files2)
+    only_in_folder2 = list(gout_files2 - gout_files1)
+
+    # Find common files that differ in content
+    common_files = gout_files1 & gout_files2
+    different_content = []
+
+    for file_path in common_files:
+        file1 = folder1_path / file_path
+        file2 = folder2_path / file_path
+        if not filecmp.cmp(file1, file2, shallow=False):
+            different_content.append(file_path)
+
+    return sorted(only_in_folder1), sorted(only_in_folder2), sorted(different_content)
 
 
 def runmodels(args=None):
@@ -327,3 +376,112 @@ def diffreports2html(args=None):
         == 1
     )
     return code
+
+
+def compare_gout_files(args=None):
+    """compare_gout_files
+
+    Compare 'gout' files between two folders and list files that differ.
+
+    Usage:
+        compare_gout_files <folder1> <folder2>
+        compare_gout_files -h         Print help
+
+    Arguments:
+        folder1=PATH      Required: path to first folder containing gout files
+        folder2=PATH      Required: path to second folder containing gout files
+
+    Examples:
+        compare_gout_files 3246-master 3246-8.0.2
+    """
+    options = docopt(compare_gout_files.__doc__, args)
+
+    folder1 = options.pop("<folder1>")
+    folder2 = options.pop("<folder2>")
+
+    only_in_folder1, only_in_folder2, different_content = _compare_gout_files_internal(
+        folder1, folder2
+    )
+
+    # Print results
+    print("Files only in {}:".format(folder1))
+    for f in only_in_folder1:
+        print(f"  {f}")
+
+    print("\nFiles only in {}:".format(folder2))
+    for f in only_in_folder2:
+        print(f"  {f}")
+
+    print("\nFiles in both folders with different content:")
+    for f in different_content:
+        print(f"  {f}")
+
+    # Return status code
+    return 1 if only_in_folder1 or only_in_folder2 or different_content else 0
+
+
+def show_diff_gout(args=None):
+    """show_diff_gout
+
+    Compare 'gout' files between two folders, list differences, and show graphical comparisons one at a time.
+
+    Usage:
+        show_diff_gout <folder1> <folder2>
+        show_diff_gout -h         Print help
+
+    Arguments:
+        folder1=PATH      Required: path to first folder containing gout files
+        folder2=PATH      Required: path to second folder containing gout files
+
+    Examples:
+        show_diff_gout 8.2.6 827
+    """
+    options = docopt(show_diff_gout.__doc__, args)
+
+    folder1 = options.pop("<folder1>")
+    folder2 = options.pop("<folder2>")
+
+    # Get the list of differing files
+    only_in_folder1, only_in_folder2, different_content = _compare_gout_files_internal(
+        folder1, folder2
+    )
+
+    # Print results (same as compare_gout_files)
+    print("Files only in {}:".format(folder1))
+    for f in only_in_folder1:
+        print(f"  {f}")
+
+    print("\nFiles only in {}:".format(folder2))
+    for f in only_in_folder2:
+        print(f"  {f}")
+
+    print("\nFiles in both folders with different content:")
+    for f in different_content:
+        print(f"  {f}")
+
+    # Show graphical comparisons for files with different content
+    if different_content:
+        print(
+            "\nShowing graphical comparisons (press Enter after closing each NEURON window to continue)..."
+        )
+        folder1_path = Path(folder1)
+        folder2_path = Path(folder2)
+
+        for file_path in different_content:
+            gout_file1 = str(folder1_path / file_path)
+            gout_file2 = str(folder2_path / file_path)
+
+            print(f"\nComparing: {file_path}")
+            cmd = 'nrngui -c "strdef gout1" -c "gout1=\\"{}\\"" -c "strdef gout2" -c "gout2=\\"{}\\"" modeldb/showgout.hoc'.format(
+                gout_file1, gout_file2
+            )
+            commands = shlex.split(cmd)
+            # Run and wait for the process to complete (user closes NEURON GUI)
+            process = subprocess.Popen(commands)
+            process.wait()
+
+            # Prompt for user input to continue
+            input("Press Enter to continue to the next comparison...")
+
+    # Return status code
+    return 1 if only_in_folder1 or only_in_folder2 or different_content else 0

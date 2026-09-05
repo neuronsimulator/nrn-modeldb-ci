@@ -68,6 +68,18 @@ The following commands are now available:
   Note that the generated HTML file is self-contained.
   
 
+* `compare_gout_files` -> list all gout paths that differ between two folders.
+  ```
+  compare_gout_files -h
+  ```
+  Does not require a ```--gout``` arg to ```runmodels```.
+
+
+* `show_diff_gout` -> like `compare_gout_files` but also does diffgout for each.
+  ```
+  show_diff_gout -h
+  ```
+
 * `modeldb-config` -> list configuration for `nrn-modeldb-ci`:
   ```
     modeldb-config
